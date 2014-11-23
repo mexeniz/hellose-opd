@@ -75,6 +75,7 @@ module.exports.createAppointment = function(appInfo, callback){
 //When Remove Roundward 
 //Appointments Which has roundWard = roundward._id 
 //must be canceled
+//DOCTOR USE UPDATEAPPOINTMENTS ( Chain from RoundwardControl . CancleRoundward)
 module.exports.updateAppointments = function(rwid,callback)
 {
 	var promise = Appointment.find({roundWard : rwid}).exec();
@@ -90,6 +91,7 @@ module.exports.updateAppointments = function(rwid,callback)
 	});
 };
 
+//PATIENT 
 module.exports.cancelAppointment = function(appId,callback)
 {
 	console.log(appId);
@@ -102,10 +104,21 @@ module.exports.cancelAppointment = function(appId,callback)
 	});
 };
 
-module.exports.editAppointment = function(appId_last,appInfo_new,callback)
+module.exports.editAppointment = function(userId,doctor_userId,callback)
 {
+
+
 	//Check Integrity of New Entry 
-	Appointment
+	Appointment.findOne(appInfo_new).exec()
+	.then(function(existingAppointment){
+		if(existingAppointment === null){
+			return Appointment.findById(last_appId).exec(); //Find The Old One
+		}
+		return callback('existing Appointment');
+	})
+	.then(function(old_appointment){
+
+	});
 	//CancelAppointment Derm
 	module.exports.cancelAppointment(appId)
 	//Create New Appointment with Status " Pending "

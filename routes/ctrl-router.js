@@ -43,6 +43,14 @@ router.get('/create', function(req,res){
 	res.render('appointment/createAppointment');
 });
 
+
+router.post('/createP', function(req,res){
+	//Callback function on get finished
+	//Render Appointment Creation View
+	res.render('appointment/createAppointment');
+});
+
+
 router.get('/import', function(req,res){
 	//Callback function on get finished
 	//Render Appointment Creation View
@@ -183,10 +191,7 @@ router.get('/chooseDate/', function(req,res,next){
 
 router.post('/createAppointment/',function(req,res,next){
 	var appInfo = {
-		//firstname : req.body['docfirstname'],
-		//lastname : req.body['doclastname'],
-		//doctor_id : req.user.id
-		doctor_id : mongoose.Types.ObjectId(req.body['doctorid']),
+		doctor_id : mongoose.Types.ObjectId(req.body['userId']),
 		patientid : mongoose.Types.ObjectId(req.body['patientid']) , 
 		date : req.body['date'],
 		time : req.body['time'],
@@ -229,3 +234,26 @@ router.post('/cancelAppointment',function(req,res,next){
 	});
 });
 
+//Edit Appointment 
+
+/*
+	CANCEL ROUNDWARD -> EDITAPPOINTMENT = 'canceled'
+*/
+
+// router.post('/editAppointment',function(req,res,next){
+// 	var userId = req.body['userId']; //Find 'patient'
+// 	var doctor_userId = req.body['doctorid']; //Find 'doctor'
+// 	var appInfo_new = {
+// 	date : req.body['date'], //Find roundWard
+// 	time : req.body['time'], //Find roundWard
+// 	slot: Number,
+// 	status: String
+// 	};
+
+// 	AppointmentControl.editAppointment(,function(err,result){
+// 		if(err){
+// 			return next(err);
+// 		}
+// 		return res.json(result);
+// 	});
+// });
