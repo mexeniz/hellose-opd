@@ -1,6 +1,0 @@
-{
-  "generator-yangular": {
-    "scriptsDir": "app/scripts/",
-    "viewsDir": "app/views/"
-  }
-}

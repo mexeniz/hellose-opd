@@ -1,0 +1,35 @@
+<h2>Patients</h2>
+<p>View patients or <a href="edit.html">add</a> a patient.</p>
+<% if (locals.flash) { %>
+    <p><%= flash %></p>
+<% } %>
+<ul>
+    <li class="header">
+        <span class="field">Patient_id</span>
+        <span class="field">Ssn</span>
+        <span class="field">Firstname</span>
+        <span class="field">Lastname</span>
+        <span class="field">Email</span>
+        <span class="field">Gender</span>
+        <span class="field">Blood_type</span>
+        <span class="field">Tel_number</span>
+        <span class="field">Physical_record</span>
+        <span class="field">Actions</span>
+    </li>
+    <% for(var i=0; i<patients.length; i++) {%>
+            <li class="row">
+                <span class="field"><%= patients[i]['patient_id'] %></span>
+                <span class="field"><%= patients[i]['ssn'] %></span>
+                <span class="field"><%= patients[i]['firstname'] %></span>
+                <span class="field"><%= patients[i]['lastname'] %></span>
+                <span class="field"><%= patients[i]['email'] %></span>
+                <span class="field"><%= patients[i]['gender'] %></span>
+                <span class="field"><%= patients[i]['blood_type'] %></span>
+                <span class="field"><%= patients[i]['tel_number'] %></span>
+                <span class="field"><%= patients[i]['physical_record'] %></span>
+                <span class="field">
+                    <a href="<%= patients[i]._id %>" >patients</a>
+                </span>
+            </li>
+    <% } %>
+</ul>
