@@ -1,5 +1,5 @@
 (function(){
-var app = angular.module('yapp', ['ui.router']) ;
+var app = angular.module('main', ['ui.router']) ;
 
 app.config([
 	'$stateProvider',
