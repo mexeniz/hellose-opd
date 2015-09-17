@@ -1,0 +1,96 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>[PATIENT]Hello SE : Hospital OPD System</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/bower_components/components-font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="/bower_components/angular-snap/angular-snap.css" />
+    <link rel="stylesheet" href="styles/main.css">
+
+  </head>
+  <body ng-app="patients">
+    <div class="">
+      <div ui-view="" class="ng-scope">
+          <div class="ui-base ng-scope">
+            <div ui-view="" class="ng-scope">
+              <div class="dashboard-page ng-scope">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-sm-12 col-md-12 main ng-scope" ui-view="">
+                      <div class="ng-scope">
+                        <div class="snap-drawers">
+                          <snap-drawer class="snap-drawer snap-drawer-left">
+                            <div class="snap-menu">
+                              <div class="sidebar-header text-center">
+                                <img src="images/flat-avatar.png" alt="" class="sidebar-img img-circle">
+                              </div>
+
+                              <!-- MENU BAR --> 
+                              
+                              <ul class="snap-ul">
+                                <li ng-class="{active: $state.includes('overview')}" class="active"><a ui-sref="overview" href="#/dashboard/overview">HOME</a></li>
+                                <li ng-class="{active: $state.includes('reports')}"><a ui-sref="reports" href="#/dashboard/reports">REPORTS</a></li>
+                                <li><a ui-sref="login" href="#/login">LOGOUT</a></li>
+                              </ul>
+                            </div>
+                          </snap-drawer></div>
+                        <snap-dragger>
+                        </snap-dragger>
+                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px);">
+
+                        <a href="" snap-toggle="left" ng-click="menuOpen = !menuOpen">
+                          <span class="menutoggle">
+                            <i ng-hide="menuOpen" class="fa fa-info fa-2x ng-hide"></i>
+                            <i ng-show="menuOpen" class="fa fa-info fa-2x"></i>
+                          </span>
+                        </a>
+                            <ui-view></ui-view>
+                        </snap-content> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template -->
+    <script type="text/ng-template" id="/main.html">
+      <div class="fr">
+        <h2>Hello SE <small>Hospital OPD System</small></h2>
+      </div>
+      <div class="jumbotron">
+        <div class="container">
+          <h1>Welcome!</h1>
+          I don't want to bloat this Versatile Theme Free Edition AngularJS Admin theme with a lot of plugins. To install plugins we have bower. Let's keep it real clean!<br><br>
+          <p>
+            <a ui-sref="login" class="btn btn-primary btn-lg btn-white" href="#/login">Logout</a>
+          </p>
+          
+        </div>
+      </div>
+                    
+    </script>
+    <!-- Template -->
+    <script type="text/ng-template" id="/new.html">   
+    </script
+    <script type="text/ng-template" id="/search.html">   
+    </script>
+    <!-- bower:js -->
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="/bower_components/ui-router/release/angular-ui-router.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="/bower_components/snapjs/snap.js"></script>
+    <script src="/bower_components/angular-snap/angular-snap.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/javascripts/patients_app.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>

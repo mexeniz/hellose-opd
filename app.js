@@ -1,9 +1,17 @@
+//////////////////////////////////////
+// Server-sided Script
+// app.js
+// version : 1
+// SE : Group 3
+//////////////////////////////////////
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
 //DB Connection
 var mongoose = require('mongoose');
 require('./models/model-patients');
@@ -14,17 +22,20 @@ var main_routes = require('./routes/ctrl-main');
 var physical_routes = require('./routes/ctrl-physicalrecords');
 var patients_routes = require('./routes/ctrl-patients');
 
+//Define app as Server-sided module
 var app = express();
 
 app.use('/', main_routes);
 app.use('/physical_records', physical_routes);
 app.use('/patients', patients_routes);
 
+//Define DB connection
 mongoose.connect('mongodb://localhost/hellose-opd');
 
-// view engine setup
+//View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

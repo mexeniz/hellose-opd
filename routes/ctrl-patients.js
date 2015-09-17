@@ -13,8 +13,13 @@ router.get('/list', function(req, res, next) {
   
   Patient.find(function(err, patient){
     if(err){ return next(err); }
-   res.json(patient);
+    res.json(patient);
   });
+});
+
+router.get('/',function(req,res,next){
+  console.log("HI THERE");
+  res.render('patients/index');
 });
 
 router.get('/:patient', function(req, res, next) {
