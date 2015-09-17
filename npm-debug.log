@@ -3,11 +3,11 @@
 2 info using npm@2.14.2
 3 info using node@v4.0.0
 4 verbose run-script [ 'prestart', 'start', 'poststart' ]
-5 info prestart flapper-news@0.0.0
-6 info start flapper-news@0.0.0
+5 info prestart HelloSE-OPD@0.0.0
+6 info start HelloSE-OPD@0.0.0
 7 verbose unsafe-perm in lifecycle true
-8 info flapper-news@0.0.0 Failed to exec start script
-9 verbose stack Error: flapper-news@0.0.0 start: `node ./bin/www`
+8 info HelloSE-OPD@0.0.0 Failed to exec start script
+9 verbose stack Error: HelloSE-OPD@0.0.0 start: `node ./bin/www`
 9 verbose stack Exit status 1
 9 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:214:16)
 9 verbose stack     at emitTwo (events.js:87:13)
@@ -17,21 +17,21 @@
 9 verbose stack     at ChildProcess.emit (events.js:172:7)
 9 verbose stack     at maybeClose (internal/child_process.js:817:16)
 9 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
-10 verbose pkgid flapper-news@0.0.0
+10 verbose pkgid HelloSE-OPD@0.0.0
 11 verbose cwd /home/c3mx/workspaces/nodejs/hellose-opd
 12 error Linux 3.16.0-34-generic
 13 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
 14 error node v4.0.0
 15 error npm  v2.14.2
 16 error code ELIFECYCLE
-17 error flapper-news@0.0.0 start: `node ./bin/www`
+17 error HelloSE-OPD@0.0.0 start: `node ./bin/www`
 17 error Exit status 1
-18 error Failed at the flapper-news@0.0.0 start script 'node ./bin/www'.
-18 error This is most likely a problem with the flapper-news package,
+18 error Failed at the HelloSE-OPD@0.0.0 start script 'node ./bin/www'.
+18 error This is most likely a problem with the HelloSE-OPD package,
 18 error not with npm itself.
 18 error Tell the author that this fails on your system:
 18 error     node ./bin/www
 18 error You can get their info via:
-18 error     npm owner ls flapper-news
+18 error     npm owner ls HelloSE-OPD
 18 error There is likely additional logging output above.
 19 verbose exit [ 1, true ]

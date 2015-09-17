@@ -18,8 +18,8 @@ router.get('/list', function(req, res, next) {
 });
 
 router.get('/',function(req,res,next){
-  console.log("HI THERE");
-  res.render('patients/index');
+  console.log("Test Console Log !");
+  res.render('patients/index_tutor');
 });
 
 router.get('/:patient', function(req, res, next) {
