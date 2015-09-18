@@ -12,16 +12,35 @@ var PhysicalRecord = mongoose.model('PhysicalRecord');
 router.get('/list', function(req, res, next) {
   
   Patient.find(function(err, patient){
-    if(err){ return next(err); }
-   res.json(patient);
+    // Check if error
+    if(err) { return next(err); }
+    // Return view
+    res.render("patients/index");
   });
 });
 
+// Warehouse for patient list
+router.get('/store', function(req, res, next) {
+  /*Patient.find(function(err, patient){
+    if(err){ return next(err); }
+    res.json(patient);
+  });*/
+  res.json([{id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"}]);
+});
+
+
+// Information for each patient
 router.get('/:patient', function(req, res, next) {
   req.patient.populate('physical_record', function(err, patient) {
     if (err) { return next(err); }
-    console.log('Retreive Patient '+patient);
-    res.json(patient);
+    res.render("patients/info", { patient: patient });
   });
 });
 

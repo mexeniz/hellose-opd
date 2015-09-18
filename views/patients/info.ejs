@@ -1,0 +1,15 @@
+<% layout('layout') -%>
+<div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
+  <h1>Patient Info</h1>
+  <p>SSN: <%= patient.ssn %></p>
+  <p>Name: <%= patient.name %></p>
+  <p>Email: <%= patient.email %></p>
+  <p>Gender: <%= patient.gender %></p>
+  <p>Bloodtype: <%= patient.blood_type %></p>
+  <p>Tel: <%= patient.tel_number %></p>
+  <p>Weight: <%= patient.physical_record.weight %></p>
+  <p>Height: <%= patient.physical_record.height %></p>
+  <p>Blood pressure: <%= patient.physical_record.blood_pressure %></p>
+  <p>Pulse: <%= patient.physical_record.pulse %></p>
+  <p>Temperature: <%= patient.physical_record.temperature %></p>
+</div>

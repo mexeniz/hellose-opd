@@ -1,0 +1,80 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello SE : Hospital OPD System</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/lib/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="/lib/angular-snap/angular-snap.css" />
+    <link rel="stylesheet" href="/styles/main.css">
+
+  </head>
+  
+  <body ng-app="patients">
+    
+    <!-- Left navigation -->
+    <div class="">
+      <div ui-view="" class="ng-scope">
+          <div class="ui-base ng-scope">
+            <div ui-view="" class="ng-scope">
+              <div class="dashboard-page ng-scope">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-sm-12 col-md-12 main ng-scope" ui-view="">
+                      <div class="ng-scope">
+                        <div class="snap-drawers">
+                          <snap-drawer class="snap-drawer snap-drawer-left">
+                            <div class="snap-menu">
+                              <div class="sidebar-header text-center">
+                                <img src="/images/flat-avatar.png" 
+                                     alt="" 
+                                     class="sidebar-img img-circle">
+                              </div>
+
+                              <!-- MENU BAR --> 
+                              <ul class="snap-ul">
+                                <li class="active">
+                                    <a href="/patients/list">HOME
+                                    </a>
+                                </li>
+                                <li>
+                                  <a href="/">LOGOUT</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </snap-drawer>
+                        </div>
+                        <!-- Snap dragger -->
+                        <snap-dragger></snap-dragger>
+                        
+                        <!-- Snap content -->
+                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px); background-color: white; width:80%">
+
+                        <%-body -%>
+                        <ui-view></ui-view>
+                        </snap-content> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- bower:js -->
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/lib/angular-mocks/angular-mocks.js"></script>
+    <script src="/lib/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="/lib/angular-animate/angular-animate.js"></script>
+    <script src="/lib/snapjs/snap.js"></script>
+    <script src="/lib/angular-snap/angular-snap.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/javascripts/patients_app.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>

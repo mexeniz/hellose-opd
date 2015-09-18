@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var engine = require('ejs-locals');
 //DB Connection
 var mongoose = require('mongoose');
 require('./models/model-patients');
@@ -23,6 +24,7 @@ app.use('/patients', patients_routes);
 mongoose.connect('mongodb://localhost/hellose-opd');
 
 // view engine setup
+app.engine('ejs', engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
