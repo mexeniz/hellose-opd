@@ -10,7 +10,7 @@ var PhysicalRecord = mongoose.model('PhysicalRecord');
 
 
 router.get('/list', function(req, res, next) {
-  
+
   Patient.find(function(err, patient){
     // Check if error
     if(err) { return next(err); }
@@ -21,18 +21,18 @@ router.get('/list', function(req, res, next) {
 
 // Warehouse for patient list
 router.get('/store', function(req, res, next) {
-  /*Patient.find(function(err, patient){
+  Patient.find(function(err, patient){
     if(err){ return next(err); }
     res.json(patient);
-  });*/
-  res.json([{id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
+  });
+  /*res.json([{id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
             {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
             {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
             {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
             {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
             {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
             {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"}]);
+            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"}]);*/
 });
 
 
