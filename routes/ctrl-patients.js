@@ -43,10 +43,7 @@ router.post('/test', function(req, res, next) {
 
 // Information for each patient
 router.get('/:patient', function(req, res, next) {
-  req.patient.populate('physical_record', function(err, patient) {
-    if (err) { return next(err); }
-    res.render("patients/info", { patient: patient });
-  });
+  res.render("patients/info");
 });
 
 
