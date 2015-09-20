@@ -34,13 +34,12 @@
 
                               <!-- MENU BAR --> 
                               <ul class="snap-ul">
-                                <li class="active">
-                                    <a href="/patients/list">HOME
-                                    </a>
-                                </li>
-                                <li>
-                                  <a href="/">LOGOUT</a>
-                                </li>
+                                <li ng-class="{active: $state.includes('home')}" class="active"><a ui-sref="overview" href="#/home">HOME</a></li>
+                                <li><a href="patients/">PATIENTS</a></li>
+                                <li><a href="physical_records/">PHYSICAL RECORDS</a></li>
+                                <li><a href="medical_records/">MEDICAL RECORDS</a></li>
+                                <li><a href="prescriptions/">PRESCRIPTIONS</a></li>
+                                <li><a ui-sref="login" href="#/login">LOGOUT</a></li>
                               </ul>
                             </div>
                           </snap-drawer>

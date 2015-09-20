@@ -25,7 +25,7 @@ router.get('/store', function(req, res, next) {
     // Check if error
     if(err) { return next(err); }
     // Return view
-    //console.log(patient)
+    console.log(patient)
     res.json(patient);
   });
   /*res.json([{id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
@@ -41,11 +41,30 @@ router.get('/store', function(req, res, next) {
 
 // Information for each patient
 router.get('/:patient', function(req, res, next) {
+  /*console.log("patient :" +res.patient);
   req.patient.populate('physical_record', function(err, patient) {
     if (err) { return next(err); }
     console.log(patient);
     res.render("patients/info", { patient: patient });
-  });
+  });*/
+    var id = req.params.patient;
+    Patient.findOne({patient_id: id}, function(err, patient){
+          if(err) {
+              return res.json(500, {
+                  message: 'Error getting patient.'
+              });
+          }
+          if(!patient) {
+              return res.json(404, {
+                  message: 'No such patient.'
+              });
+          }
+          patient.populate('physical_record', function(err, p) {
+              console.log(p);
+              //return res.json(p);
+              return res.render('patients/info', {patient: p});
+          });
+    });
 });
 
 
@@ -71,8 +90,8 @@ router.post('/:patient/physicalrecord/insert', function(req, res, next) {
 });
 
 router.param('patient', function(req, res, next, id) {
-  var query = Patient.findById(id);
-
+  //var query = Patient.findByPatientID(id );
+  var query = Patient.find({patient_id : id}) ;
   query.exec(function (err, patient){
     if (err) { return next(err); }
     if (!patient) { return next(new Error('can\'t find post')); }

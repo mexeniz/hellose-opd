@@ -38,9 +38,10 @@ app.controller('LoginCtrl', [
 app.controller('MainCtrl', [
 	'$scope',
 	'$stateParams', 
-	function($scope , posts,$stateParams){
-	  $scope.test = 'Hello world!';
-
+	function($scope , $stateParams){
+	  $scope.goToPatients = function(){
+		$location.path('/patients');
+	  }
 }]);
 
 })();

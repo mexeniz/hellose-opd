@@ -8,7 +8,7 @@ var mongoose = require('mongoose'),
  */
 
 var PatientsSchema = new Schema({
-    patient_id: Schema.Types.ObjectId ,
+    patient_id: 'String' ,
     ssn: {type : 'String' , maxlength: 13 , trim : true},
     firstname: 'String',
     lastname: 'String',

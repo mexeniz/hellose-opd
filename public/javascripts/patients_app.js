@@ -1,24 +1,33 @@
 (function(){
 var app = angular.module('patients', ['ui.router']) ;
 
-// app.factory('patient', ['$http', function($http){
-// 	return {
-// 		getList: function() {
-// 			return $http.get('/patients/store');
-// 		}
-// 	}	  
-// }]);
-app.factory('patients_fac', ['$http', function($http){
+app.config([
+	'$stateProvider',
+	'$urlRouterProvider',
+	function($stateProvider, $urlRouterProvider) {
+
+	  $stateProvider
+	    .state('list', {
+	      url: '/list',
+	      controller: 'ListCtrl',
+	      resolve: {
+		    patientsPromise: ['patients', function(patients){
+		      return patients.getList();
+		    }]
+		  }
+	    });
+	    
+	  $urlRouterProvider.otherwise('list');
+}]);
+
+app.factory('patients', ['$http', function($http){
 	  var o = {
 	  	patients : []
 	  };
 	  // Use Route! Connect to backend and retrieve data
 	  o.getList = function() {
-	    return $http.json('/patients/store').success(function(data){
-	      for(var i = 0  ; i < data.length  ; i++){
-			o.patients.push(data[i]);
-			console.log(o.patients[o.patients.length-1]);
-			}
+	    return $http.get('/patients/store').success(function(data){
+	      angular.copy(data, o.patients);
 	    });
 	  };
 	  o.create = function(patient) {
@@ -30,13 +39,10 @@ app.factory('patients_fac', ['$http', function($http){
 	}]);
 app.controller('ListCtrl', [
 	'$scope', 
-	'patients_fac' ,
-	function($scope , patients_fac ){
-		$scope.patients = patients_fac.getList();
-		console.log(patients_fac);
-		for (var i = 0 ; i < $scope.patients.length  ; i++){
-			console.log(i+1 +" " +$scope.patients[i]) ;
-		}
+	'patients' ,
+	'$stateParams' ,
+	function($scope , patients ,$stateParams ){
+		$scope.patients = patients.patients ;
 	}
 ]);
 
