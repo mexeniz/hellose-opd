@@ -16,11 +16,11 @@
     </thead>
     <tbody>
       <tr ng-repeat="patient in patients">
-        <td>{{ patient.id }}</td>
+        <td>{{ patient._id }}</td>
         <td>{{ patient.ssn }}</td>
         <td>{{ patient.firstname}} {{ patient.lastname }}</td>
         <td>
-          <a href="/patients/{{ patients.id }}" style="color: black">
+          <a href="/patients/{{ patient._id }}" style="color: black">
             <i class="fa fa-list"></i>
           </a>
         </td>
