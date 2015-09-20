@@ -12,27 +12,32 @@ var PhysicalRecord = mongoose.model('PhysicalRecord');
 router.get('/list', function(req, res, next) {
   
   Patient.find(function(err, patient){
-    // Check if error
     if(err) { return next(err); }
-    // Return view
     res.render("patients/index");
   });
 });
 
 // Warehouse for patient list
 router.get('/store', function(req, res, next) {
-  /*Patient.find(function(err, patient){
+  Patient.find(function(err, patient){
     if(err){ return next(err); }
     res.json(patient);
-  });*/
-  res.json([{id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"}]);
+  });
+});
+
+router.get('/infostore', function(req, res, next) {
+  var param = req.query.patient;
+  Patient.findOne({'_id': mongoose.Types.ObjectId(param)}, function(err, patient) {
+    if (err) { return next(err); }
+    patient.populate('physical_record', function(err, physical_record) {
+      if (err) { return next(err); }
+      res.json(physical_record);
+    });
+  });
+});
+
+router.post('/test', function(req, res, next) {
+    res.json(req.body);
 });
 
 

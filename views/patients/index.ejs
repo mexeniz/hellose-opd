@@ -1,28 +1,30 @@
 <% layout('layout') -%>
-<div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
-  <h1>Patient List</h1>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="patient in patients">
-        <td>{{ patient.ssn }}</td>
-        <td>{{ patient.firstname}} {{ patient.lastname }}</td>
-        <td>
-          <a href="/patients/{{ patient.id }}" style="color: black">
-            <i class="fa fa-list"></i>
-          </a>
-        </td>
-        <td><i class="fa fa-pencil"></i></td>
-        <td><i class="fa fa-trash-o"></i></td>
-      </tr>
-    </tbody>
-  </table>
+<div ng-app="patients">
+  <div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
+    <h1>Patient List</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="patient in patients">
+          <td>{{ patient.ssn }}</td>
+          <td>{{ patient.firstname}} {{ patient.lastname }}</td>
+          <td>
+            <a href="/patients/{{ patient._id }}" style="color: black">
+              <i class="fa fa-list"></i>
+            </a>
+          </td>
+          <td><i class="fa fa-pencil"></i></td>
+          <td><i class="fa fa-trash-o"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

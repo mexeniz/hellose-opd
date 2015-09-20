@@ -5,21 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var engine = require('ejs-locals');
+
 //DB Connection
 var mongoose = require('mongoose');
 require('./models/model-patients');
 require('./models/model-physicalrecords');
 
-//Routers
-var main_routes = require('./routes/ctrl-main');
-var physical_routes = require('./routes/ctrl-physicalrecords');
-var patients_routes = require('./routes/ctrl-patients');
 
 var app = express();
-
-app.use('/', main_routes);
-app.use('/physical_records', physical_routes);
-app.use('/patients', patients_routes);
 
 mongoose.connect('mongodb://localhost/hellose-opd');
 
@@ -32,10 +25,18 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Routers
+var main_routes = require('./routes/ctrl-main');
+var physical_routes = require('./routes/ctrl-physicalrecords');
+var patients_routes = require('./routes/ctrl-patients');
+
+app.use('/', main_routes);
+app.use('/physical_records', physical_routes);
+app.use('/patients', patients_routes);
 
 
 // catch 404 and forward to error handler
