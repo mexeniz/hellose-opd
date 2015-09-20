@@ -12,3 +12,6 @@ var PhysicalRecord = mongoose.model('PhysicalRecord');
 router.get('/', function(req, res, next) {
   res.render('main/index');
 });
+router.get('/patients', function(req, res, next) {
+  res.render('patients/index');
+});
