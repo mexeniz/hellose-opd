@@ -1,25 +1,36 @@
 (function(){
 var app = angular.module('patients', ['ui.router']) ;
 
-app.factory('patient', ['$http', function($http){
-	return {
-		getList: function() {
-			return $http.get('/patients/store');
-		},
-		create: function(patient) {
-			console.log(patient);
-		  return $http.post('/patients/insert', patient);
-		}
-	}
-}]);
+app.factory('patients_fac', ['$http', function($http){
+	  var o = {
+	  	patients : []
+	  };
+	  // Use Route! Connect to backend and retrieve data
+	  o.getList = function() {
+	    return $http.get('/patients/store').success(function(data){
+	      for(var i = 0  ; i < data.length  ; i++){
+					o.patients.push(data[i]);
+					console.log(o.patients[o.patients.length-1]);
+				}
+	    });
+	  };
+	  o.create = function(patient) {
+		  return $http.post('/patients/insert', patient).success(function(data){
+				console.log(data);
+		    o.patients.push(data);
+			});
+	  };
+	  return o;
+	}]);
 
 app.controller('ListCtrl', [
 	'$scope',
-	'patient' ,
-	function($scope , patient){
-		patient.getList().success(function(data) {
-			$scope.patients = data;
-		});
+	'patients_fac' ,
+	function($scope , patients_fac ){
+		patients_fac.getList();
+		$scope.patients = patients_fac.patients;
+
+		// Function to generate mock-up patient data
 		$scope.generateData = function() {
 			var sex = ['m', 'f'];
 			var bloodType = ['A', 'B', 'AB', 'O'];
@@ -36,7 +47,7 @@ app.controller('ListCtrl', [
 			}
 			genTelNum = '0' + genTelNum.toString();
 
-			patient.create(
+			patients_fac.create(
 				{
 					ssn: genSSN,
 					firstname: 'Firstname' + num,
@@ -46,10 +57,7 @@ app.controller('ListCtrl', [
 					blood_type: bloodType[Math.floor(Math.random() * bloodType.length)],
 					tel_number: [genTelNum]
 				}
-			).success(function(data){
-		    console.log(data);
-				$scope.patients.push(data);
-			});
+			);
 		};
 	}
 ]);

@@ -1,3 +1,4 @@
+<!doctype html>
 <% layout('layout') -%>
 <div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
   <h1>Patient List</h1>
@@ -6,18 +7,20 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>SSN</th>
         <th>Name</th>
-        <th></th>
+        <th>Detail</th>
         <th></th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="patient in patients">
+        <td>{{ patient.id }}</td>
         <td>{{ patient.ssn }}</td>
         <td>{{ patient.firstname}} {{ patient.lastname }}</td>
         <td>
-          <a href="/patients/{{ patient.id }}" style="color: black">
+          <a href="/patients/{{ patients.id }}" style="color: black">
             <i class="fa fa-list"></i>
           </a>
         </td>

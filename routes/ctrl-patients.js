@@ -2,37 +2,20 @@ var express = require('express');
 var router = express.Router();
 module.exports = router;
 
-
 //  creating a GET route for retrieving posts
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
 
-
-router.get('/list', function(req, res, next) {
-
+// Warehouse for patient list
+router.get('/store', function(req, res, next) {
   Patient.find(function(err, patient){
     // Check if error
     if(err) { return next(err); }
     // Return view
-    res.render("patients/index");
-  });
-});
-
-// Warehouse for patient list
-router.get('/store', function(req, res, next) {
-  Patient.find(function(err, patient){
-    if(err){ return next(err); }
+    //console.log(patient)
     res.json(patient);
   });
-  /*res.json([{id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"},
-            {id: "asdfsfsdfsf",ssn:"1111111111111",firstname: "นายสมชาย",lastname: "รักสงบ"}]);*/
 });
 
 
@@ -40,6 +23,7 @@ router.get('/store', function(req, res, next) {
 router.get('/:patient', function(req, res, next) {
   req.patient.populate('physical_record', function(err, patient) {
     if (err) { return next(err); }
+    console.log(patient);
     res.render("patients/info", { patient: patient });
   });
 });
@@ -72,7 +56,6 @@ router.param('patient', function(req, res, next, id) {
   query.exec(function (err, patient){
     if (err) { return next(err); }
     if (!patient) { return next(new Error('can\'t find post')); }
-
     req.patient = patient;
     return next();
   });
