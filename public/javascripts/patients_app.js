@@ -21,8 +21,32 @@ app.controller('ListCtrl', [
 			$scope.patients = data;
 		});
 		$scope.generateData = function() {
-			//patient.create({ssn: '1234567890123', firstname: 'test', lastname: 'test', email: 'test@test.com', gender: 'm', blood_type: 'A', tel_number: ['0831111111']});
-			patient.create({firstname: 'fuck u bitchhhhhhhhhh'}).success(function(data){
+			var sex = ['m', 'f'];
+			var bloodType = ['A', 'B', 'AB', 'O'];
+			var num = $scope.patients.length;
+
+			var genSSN = num.toString();
+			while(genSSN.length < 13) {
+				genSSN = Math.floor(Math.random()*10).toString() + genSSN;
+			}
+
+			var genTelNum = num.toString();
+			while(genTelNum.length < 9) {
+				genTelNum = Math.floor(Math.random()*10).toString() + genTelNum;
+			}
+			genTelNum = '0' + genTelNum.toString();
+
+			patient.create(
+				{
+					ssn: genSSN,
+					firstname: 'Firstname' + num,
+					lastname: 'Lastname' + num,
+					email: 'test' + num + '@test.com',
+					gender: sex[Math.floor(Math.random() * sex.length)],
+					blood_type: bloodType[Math.floor(Math.random() * bloodType.length)],
+					tel_number: [genTelNum]
+				}
+			).success(function(data){
 		    console.log(data);
 				$scope.patients.push(data);
 			});
