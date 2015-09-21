@@ -9,7 +9,7 @@ var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
 
 
-router.get('/list', function(req, res, next) {
+router.get('/', function(req, res, next) {
   
   Patient.find(function(err, patient){
     if(err) { return next(err); }
@@ -25,9 +25,10 @@ router.get('/store', function(req, res, next) {
   });
 });
 
-router.get('/infostore', function(req, res, next) {
-  var param = req.query.patient;
-  Patient.findOne({'_id': mongoose.Types.ObjectId(param)}, function(err, patient) {
+router.get('/infostore/:patient_id', function(req, res, next) {
+  var param = req.params.patient_id;
+  console.log(param);
+  Patient.findOne({_id: mongoose.Types.ObjectId(param)}, function(err, patient) {
     if (err) { return next(err); }
     patient.populate('physical_record', function(err, physical_record) {
       if (err) { return next(err); }
