@@ -1,13 +1,14 @@
 <% layout('layout') -%>
-<div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
+<div class="container" style="color: black; width: auto" ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')">
   <h1>Patient Info</h1>
-  <p>ID: <%= patient.id %></p>
-  <p>SSN: <%= patient.ssn %></p>
-  <p>Name: <%= patient.firstname +" "+ patient.lastname %></p>
-  <p>Email: <%= patient.email %></p>
-  <p>Gender: <%= patient.gender %></p>
-  <p>Bloodtype: <%= patient.blood_type %></p>
-  <p>Tel: <%= patient.tel_number %></p>
+  <p>ID: {{ patient._id }}</p>
+  <p>SSN: {{  patient.ssn }}</p>
+  <p>Name: {{ patient.firstname +" "+ patient.lastname }}</p>
+  <p>Email: {{ patient.email }}</p>
+  <p>Gender: {{ patient.gender }}</p>
+  <p>Bloodtype: {{ patient.blood_type }}</p>
+  <p>Tel: {{ patient.tel_number }}</p>
+  <button type="button" class="btn btn-primary" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -20,16 +21,14 @@
       </tr>
     </thead>
     <tbody>
-         <% for(var i=0; i< patient.physical_record.length; i++) { %>
-        <tr> 
-        <td> <%=patient.physical_record[i].date %> </td>
-        <td> <%=patient.physical_record[i].weight %></td>
-        <td> <%=patient.physical_record[i].height %> </td>
-        <td> <%=patient.physical_record[i].blood_pressure %> </td>
-        <td> <%=patient.physical_record[i].pulse %></td>
-        <td> <%=patient.physical_record[i].temperature %> </td>
+        <tr ng-repeat="physical_record in patient.physical_record"> 
+        <td> {{ physical_record.date }} </td>
+        <td> {{ physical_record.weight }}</td>
+        <td> {{ physical_record.height }}</td>
+        <td> {{ physical_record.blood_pressure }}</td>
+        <td> {{ physical_record.pulse }}</td>
+        <td> {{ physical_record.temperature }}</td>
         </tr>
-        <% } %>
       
     </tbody>
   </table>

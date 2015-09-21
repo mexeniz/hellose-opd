@@ -20,14 +20,23 @@ router.get('/store', function(req, res, next) {
 
 
 // Information for each patient
-router.get('/:patient', function(req, res, next) {
-  req.patient.populate('physical_record', function(err, patient) {
+router.get('/:patient_id', function(req, res, next) {
+  /*req.patient.populate('physical_record', function(err, patient) {
     if (err) { return next(err); }
     console.log(patient);
     res.render("patients/info", { patient: patient });
-  });
+  });*/
+  res.render("patients/info", { patient_id: req.params.patient_id});
 });
 
+// Information for each patient
+router.get('/info/:patient', function(req, res, next) {
+  req.patient.populate('physical_record', function(err, patient) {
+    if (err) { return next(err); }
+    res.json(patient);
+  });
+  
+});
 
 router.post('/insert', function(req, res, next) {
   var patient = new Patient(req.body);

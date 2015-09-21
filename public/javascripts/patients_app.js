@@ -22,11 +22,16 @@ app.factory('patients_fac', ['$http', function($http){
 	  };
 		o.addPhysicalRecord = function(patient, pRecord)
 		{
-			return $http.post('/' + patient._id + '/physicalrecord/insert', pRecord).success(function(data){
+			return $http.post('/patients/' + patient._id + '/physicalrecord/insert', pRecord).success(function(data){
 				console.log(data);
 		    patient.physical_record.push(data);
 			});
 		}
+
+		o.getPatient = function(patient_id) {
+			return $http.get('/patients/info/' + patient_id);
+		}
+
 	  return o;
 	}]);
 
@@ -79,6 +84,36 @@ app.controller('ListCtrl', [
 			};
 			console.log(pRecord);
 			patients_fac.addPhysicalRecord(patient, pRecord);
+		};
+	}
+]);
+
+app.controller('InfoCtrl', [
+	'$scope',
+	'patients_fac',
+
+	function($scope, patients_fac){
+
+		$scope.init = function(patient_id) {
+			$scope.patient_id = patient_id;
+			console.log($scope.patient_id);
+			patients_fac.getPatient($scope.patient_id).success(function(data){
+				console.log(data);
+				$scope.patient = data;
+		    });
+		}
+
+		$scope.generatePhysicalRecord = function()
+		{
+			var pRecord = {
+				weight: Math.floor(Math.random()*50 + 50),
+				height: Math.floor(Math.random()*70 + 120),
+				blood_pressure: Math.floor(Math.random()*50 + 100),
+				pulse: Math.floor(Math.random()*30 + 30),
+				temperature: Math.floor(Math.random()*5 + 35)
+			};
+			console.log(pRecord);
+			patients_fac.addPhysicalRecord($scope.patient, pRecord);
 		};
 	}
 ]);
