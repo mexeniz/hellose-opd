@@ -4,25 +4,22 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var engine = require('ejs-locals');
 //DB Connection
 var mongoose = require('mongoose');
 require('./models/model-patients');
 require('./models/model-physicalrecords');
 
-//Routers
-var main_routes = require('./routes/ctrl-main');
-var physical_routes = require('./routes/ctrl-physicalrecords');
-var patients_routes = require('./routes/ctrl-patients');
+
 
 var app = express();
 
-app.use('/', main_routes);
-app.use('/physical_records', physical_routes);
-app.use('/patients', patients_routes);
+
 
 mongoose.connect('mongodb://localhost/hellose-opd');
 
 // view engine setup
+app.engine('ejs', engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -35,6 +32,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+//Routers
+var main_routes = require('./routes/ctrl-main');
+var records_routes = require('./routes/ctrl-records');
+var patients_routes = require('./routes/ctrl-patients');
+
+app.use('/', main_routes);
+app.use('/records', records_routes);
+app.use('/patients', patients_routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

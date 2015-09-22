@@ -1,86 +1,127 @@
 (function(){
-var app = angular.module('main', ['ui.router']) ;
+var app = angular.module('patients', ['ui.router']) ;
 
-app.config([
-	'$stateProvider',
-	'$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
-
-	  $stateProvider
-	    .state('home', {
-	      url: '/home',
-	      templateUrl: '/home.html',
-	      controller: 'MainCtrl'
-	    });
-	  $stateProvider
-	  	.state('login', {
-		  url: '/login',
-		  templateUrl: '/login.html',
-		  controller: 'LoginCtrl'
-		});
-
-	  $urlRouterProvider.otherwise('login');
-}]);
-app.factory('patient', ['$http', function($http){
+app.factory('patients_fac', ['$http', function($http){
 	  var o = {
-	    patient: []
+	  	patients : []
 	  };
 	  // Use Route! Connect to backend and retrieve data
-	  o.getAll = function() {
-	    return $http.get('/patient/list').success(function(data){
-	      angular.copy(data, o.patient);
+	  o.getList = function() {
+	    return $http.get('/patients/store').success(function(data){
+	      for(var i = 0  ; i < data.length  ; i++){
+					o.patients.push(data[i]);
+					console.log(o.patients[o.patients.length-1]);
+				}
 	    });
 	  };
 	  o.create = function(patient) {
-		  return $http.post('/patient', patient).success(function(data){
-		    o.patient.push(data);
-		});
+		  return $http.post('/patients/insert', patient).success(function(data){
+				console.log(data);
+		    o.patients.push(data);
+			});
 	  };
-	 //  o.upvote = function(post) {
-		//   return $http.put('/posts/' + post._id + '/upvote')
-		//     .success(function(data){
-		//       post.upvotes += 1;
-		//     });
-		// };
-	 //  o.get = function(id) {
-		//   return $http.get('/posts/' + id).then(function(res){
-		//   	console.log(res.data);
-		//     return res.data;
-		//   });
-		// };
-	 //  o.addComment = function(id, comment) {
-  // 			return $http.post('/posts/' + id + '/comments', comment);
-		// };
-	 //  o.upvoteComment = function(post, comment) {
-		//   return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote')
-		//     .success(function(data){
-		//       comment.upvotes += 1;
-		//     });
-		// };
+		o.addPhysicalRecord = function(patient, pRecord)
+		{
+			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
+				console.log(data);
+		    patient.physical_record.push(data);
+			});
+		}
+
+		o.getPatient = function(patient_id) {
+			return $http.get('/patients/info/' + patient_id);
+		}
+
 	  return o;
 	}]);
 
-app.controller('LoginCtrl', [
+app.controller('ListCtrl', [
 	'$scope',
-	'$location',
-	'$stateParams', 
-	function($scope , $location ,$stateParams){
-		$scope.title = "This is Title"
-	 	console.log('login');
-	 $scope.loginSubmit = function() {
-	 	console.log('Submit');
-		// $window.location.href = '/index.html#home';
-		$location.path('/home');
-	};
-}]);
+	'patients_fac',
 
-app.controller('MainCtrl', [
+	function($scope, patients_fac){
+		patients_fac.getList();
+		$scope.patients = patients_fac.patients;
+
+		// Function to generate mock-up patient data
+		$scope.generateData = function() {
+			var sex = ['m', 'f'];
+			var bloodType = ['A', 'B', 'AB', 'O'];
+			var num = $scope.patients.length;
+
+			var genSSN = num.toString();
+			while(genSSN.length < 13) {
+				genSSN = Math.floor(Math.random()*10).toString() + genSSN;
+			}
+
+			var genTelNum = num.toString();
+			while(genTelNum.length < 9) {
+				genTelNum = Math.floor(Math.random()*10).toString() + genTelNum;
+			}
+			genTelNum = '0' + genTelNum.toString();
+
+			var genPatientID = num.toString();
+			while(genPatientID.length < 8) {
+				genPatientID = Math.floor(Math.random()*10).toString() + genPatientID;
+			}
+
+			patients_fac.create(
+				{
+					patient_id : genPatientID,
+					ssn: genSSN,
+					firstname: 'Firstname' + num,
+					lastname: 'Lastname' + num,
+					email: 'test' + num + '@test.com',
+					gender: sex[Math.floor(Math.random() * sex.length)],
+					blood_type: bloodType[Math.floor(Math.random() * bloodType.length)],
+					tel_number: [genTelNum]
+				}
+			);
+		};
+
+		$scope.generatePhysicalRecord = function(patient)
+		{
+			var pRecord = {
+				weight: Math.floor(Math.random()*50 + 50),
+				height: Math.floor(Math.random()*70 + 120),
+				blood_pressure: Math.floor(Math.random()*50 + 100),
+				pulse: Math.floor(Math.random()*30 + 30),
+				temperature: Math.floor(Math.random()*5 + 35)
+			};
+			console.log(pRecord);
+			patients_fac.addPhysicalRecord(patient, pRecord);
+		};
+	}
+]);
+
+app.controller('InfoCtrl', [
 	'$scope',
-	'posts' ,
-	'$stateParams', 
-	function($scope , posts,$stateParams){
-	  $scope.test = 'Hello world!';
+	'patients_fac',
 
-}]);
+	function($scope, patients_fac){
+
+		$scope.init = function(patient_id) {
+			$scope.patient_id = patient_id;
+			console.log($scope.patient_id);
+			patients_fac.getPatient($scope.patient_id).success(function(data){
+				console.log(data);
+				$scope.patient = data;
+		    });
+		}
+
+		$scope.generatePhysicalRecord = function()
+		{
+			var pRecord = {
+				weight: Math.floor(Math.random()*50 + 50),
+				height: Math.floor(Math.random()*70 + 120),
+				blood_pressure: Math.floor(Math.random()*50 + 100),
+				pulse: Math.floor(Math.random()*30 + 30),
+				temperature: Math.floor(Math.random()*5 + 35)
+			};
+			console.log(pRecord);
+			patients_fac.addPhysicalRecord($scope.patient, pRecord);
+		};
+	}
+]);
 
 })();
