@@ -1,13 +1,16 @@
 <% layout('layout') -%>
 <div class="container" style="color: black; width: auto" ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')">
   <h1>Patient Info</h1>
-  <p>ID: {{ patient._id }}</p>
+  <p>Patient ID: {{ patient.patient_id }}</p>
   <p>SSN: {{  patient.ssn }}</p>
   <p>Name: {{ patient.firstname +" "+ patient.lastname }}</p>
   <p>Email: {{ patient.email }}</p>
   <p>Gender: {{ patient.gender }}</p>
   <p>Bloodtype: {{ patient.blood_type }}</p>
-  <p>Tel: {{ patient.tel_number }}</p>
+  <h1>Tel:</h1>
+    <ul ng-repeat="tel_num in patient.tel_number"> 
+      <l>{{ tel_num }}</l>
+    </ul>
   <button type="button" class="btn btn-primary" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
   <table class="table table-striped">
     <thead>
