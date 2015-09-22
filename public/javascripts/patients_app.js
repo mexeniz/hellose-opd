@@ -22,7 +22,7 @@ app.factory('patients_fac', ['$http', function($http){
 	  };
 		o.addPhysicalRecord = function(patient, pRecord)
 		{
-			return $http.post('/patients/' + patient._id + '/physicalrecord/insert', pRecord).success(function(data){
+			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
 				console.log(data);
 		    patient.physical_record.push(data);
 			});
@@ -60,8 +60,14 @@ app.controller('ListCtrl', [
 			}
 			genTelNum = '0' + genTelNum.toString();
 
+			var genPatientID = num.toString();
+			while(genPatientID.length < 8) {
+				genPatientID = Math.floor(Math.random()*10).toString() + genPatientID;
+			}
+
 			patients_fac.create(
 				{
+					patient_id : genPatientID,
 					ssn: genSSN,
 					firstname: 'Firstname' + num,
 					lastname: 'Lastname' + num,

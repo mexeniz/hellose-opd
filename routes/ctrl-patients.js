@@ -12,59 +12,45 @@ router.get('/store', function(req, res, next) {
   Patient.find(function(err, patient){
     // Check if error
     if(err) { return next(err); }
-    // Return view
-    //console.log(patient)
     res.json(patient);
   });
 });
 
 
 // Information for each patient
-router.get('/:patient_id', function(req, res, next) {
-  /*req.patient.populate('physical_record', function(err, patient) {
-    if (err) { return next(err); }
-    console.log(patient);
-    res.render("patients/info", { patient: patient });
-  });*/
+router.get('/:patient_id ', function(req, res, next) {
   res.render("patients/info", { patient_id: req.params.patient_id});
 });
 
-// Information for each patient
+router.post('/insert', function(req, res, next) {
+  var patient = new Patient(req.body);
+  console.log(patient);
+  patient.save(function(err, patient){
+    if(err){ return next(err); }
+    res.json(patient);
+  });
+});
+
+// Physical Record for individual patient
 router.get('/info/:patient', function(req, res, next) {
   req.patient.populate('physical_record', function(err, patient) {
     if (err) { return next(err); }
     res.json(patient);
   });
-  
-});
-
-router.post('/insert', function(req, res, next) {
-  var patient = new Patient(req.body);
-  patient.save(function(err, patient){
-    if(err){ return next(err); }
-
-    res.json(patient);
+  /*req.patient.populate('physical_record', function(err, patient) {
+      if (err) { return next(err); }
+      req.patient.populate('medical_record', function(err, patient) {
+        if (err) { return next(err); }
+        res.json(patient);
   });
-});
-
-router.post('/:patient/physicalrecord/insert', function(req, res, next) {
-  var physicalRecord = new PhysicalRecord(req.body);
-  physicalRecord.save(function(err, physicalRecord){
-    if(err){ return next(err); }
-    req.patient.physical_record.push(physicalRecord._id);
-    req.patient.save(function(err, patient) {
-      if(err){ return next(err); }
-      res.json(physicalRecord);
-    });
-  });
+  });*/
 });
 
 router.param('patient', function(req, res, next, id) {
-  var query = Patient.findById(id);
-
-  query.exec(function (err, patient){
+  Patient.find({patient_id : id} , function (err, patient){
     if (err) { return next(err); }
     if (!patient) { return next(new Error('can\'t find post')); }
+    console.log(patient) ;
     req.patient = patient;
     return next();
   });

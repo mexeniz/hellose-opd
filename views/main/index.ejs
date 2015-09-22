@@ -75,8 +75,11 @@
                               <!-- MENU BAR --> 
                               
                               <ul class="snap-ul">
-                                <li ng-class="{active: $state.includes('overview')}" class="active"><a ui-sref="overview" href="#/dashboard/overview">HOME</a></li>
-                                <li ng-class="{active: $state.includes('reports')}"><a ui-sref="reports" href="#/dashboard/reports">REPORTS</a></li>
+                                <li ng-class="{active: $state.includes('home')}" class="active"><a ui-sref="overview" href="#/home">HOME</a></li>
+                                <li><a href="patients/">PATIENTS</a></li>
+                                <li><a href="physical_records/">PHYSICAL RECORDS</a></li>
+                                <li><a href="medical_records/">MEDICAL RECORDS</a></li>
+                                <li><a href="prescriptions/">PRESCRIPTIONS</a></li>
                                 <li><a ui-sref="login" href="#/login">LOGOUT</a></li>
                               </ul>
                             </div>
@@ -101,7 +104,7 @@
                           This is a home page!<br>
                           Navigate the web site by selecting on sidebar.<br><br>
                           <p>
-                            <a ui-sref="login" class="btn btn-primary btn-lg btn-white" href="#/login">Logout</a>
+                              <img src="/images/flat-avatar.png" vertical-align ="middle" class="user-avatar img-circle img-responsive" />
                           </p>
                           
                         </div>

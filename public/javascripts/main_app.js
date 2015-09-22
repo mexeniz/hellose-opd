@@ -4,7 +4,8 @@ var app = angular.module('main', ['ui.router']) ;
 app.config([
 	'$stateProvider',
 	'$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
+	'$locationProvider',
+	function($stateProvider, $urlRouterProvider ,$locationProvider) {
 
 	  $stateProvider
 	    .state('home', {
@@ -18,7 +19,7 @@ app.config([
 		  templateUrl: '/login.html',
 		  controller: 'LoginCtrl'
 		});
-
+	  $locationProvider.html5Mode(true);
 	  $urlRouterProvider.otherwise('login');
 }]);
 

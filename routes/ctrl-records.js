@@ -6,28 +6,52 @@ var express = require('express');
 var router = express.Router();
 module.exports = router;
 
-var physicalrecords = router,
-    Model = require('../models/model-physicalrecords.js');
+//  creating a GET route for retrieving posts
+var mongoose = require('mongoose');
+var Patient = mongoose.model('Patient');
+var PhysicalRecord = mongoose.model('PhysicalRecord');
 
-physicalrecords.get('/', function(req, res) {
-    Model.find(function(err, physicalrecords){
-        if (req.accepts('html', 'json') === 'json') {
-            if(err) {
-                return res.json(500, {
-                    message: 'Error getting physicalrecords.'
-                });
-            }
-            return res.json(physicalrecords);
-        } else {
-            if(err) {
-                return res.send('500: Internal Server Error', 500);
-            }
-        return res.render('physicalrecords/index', {physicalrecords: physicalrecords});
-        }
+
+
+// Insert new Physical Record
+router.post('/physical/insert/:patient', function(req, res, next) {
+  var physicalRecord = new PhysicalRecord(req.body);
+  physicalRecord.save(function(err, physicalRecord){
+    if(err){ return next(err); }
+    req.patient.physical_record.push(physicalRecord._id);
+    req.patient.save(function(err, patient) {
+      if(err){ return next(err); }
+      res.json(physicalRecord);
     });
+  });
 });
 
-physicalrecords.post('/', function(req, res) {
+// Insert new Medical Record
+router.post('/medical/insert/:patient', function(req, res, next) {
+ // Do Something....
+ /* var physicalRecord = new PhysicalRecord(req.body);
+  physicalRecord.save(function(err, physicalRecord){
+    if(err){ return next(err); }
+    req.patient.physical_record.push(physicalRecord._id);
+    req.patient.save(function(err, patient) {
+      if(err){ return next(err); }
+      res.json(physicalRecord);
+    });
+  });*/
+});
+
+router.param('patient', function(req, res, next, id) {
+  var query = Patient.findById(id);
+
+  query.exec(function (err, patient){
+    if (err) { return next(err); }
+    if (!patient) { return next(new Error('can\'t find post')); }
+    req.patient = patient;
+    return next();
+  });
+});
+/*
+records.post('/', function(req, res) {
     var physicalrecord = new Model({
         // TODO: generate Date parser.,
         'weight': req.body['weight'],
@@ -57,7 +81,7 @@ physicalrecords.post('/', function(req, res) {
     });
 });
 
-physicalrecords.get('/:id', function(req, res) {
+records.get('/:id', function(req, res) {
     var id = req.params.id;
     Model.findOne({_id: id}, function(err, physicalrecord){
         if (req.accepts('html', 'json') === 'json') {
@@ -84,7 +108,7 @@ physicalrecords.get('/:id', function(req, res) {
     });
 });
 
-physicalrecords.put('/:id', function(req, res) {
+records.put('/:id', function(req, res) {
     var id = req.params.id;
     Model.findOne({_id: id}, function(err, physicalrecord){
         if (req.accepts('html', 'json') === 'json') {
@@ -144,7 +168,7 @@ physicalrecords.put('/:id', function(req, res) {
     });
 });
 
-physicalrecords.delete('/:id', function(req, res) {
+records.delete('/:id', function(req, res) {
     var id = req.params.id;
     Model.findOne({_id: id}, function(err, physicalrecord){
         if (req.accepts('html', 'json') === 'json') {
@@ -170,5 +194,4 @@ physicalrecords.delete('/:id', function(req, res) {
         }
     });
 });
-
-module.exports.physicalrecords = physicalrecords;
+*/
