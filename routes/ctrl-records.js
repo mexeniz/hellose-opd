@@ -11,7 +11,15 @@ var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
 
+// Get form to create new Physical Record
+router.get('/physical/create/:patid', function(req, res, next) {
+    res.render('records/physical/edit' , { patient_id: req.params.patid});
+});
 
+// Get form to create new Medical Record
+router.get('/medical/create/:patid', function(req, res, next) {
+    res.render('records/medical/edit' , { patient_id: req.params.patid});
+});
 
 // Insert new Physical Record
 router.post('/physical/insert/:patient', function(req, res, next) {
@@ -40,6 +48,69 @@ router.post('/medical/insert/:patient', function(req, res, next) {
   });*/
 });
 
+// Get form to edit the Physical Record
+router.get('/physical/edit/:physid', function(req, res, next) {
+    res.render('records/physical/edit' , { _id: req.params.:physid});
+});
+
+// Get form to edit the Medical Record
+router.get('/medical/edit/::medid', function(req, res, next) {
+    res.render('records/medical/edit' , { _id: req.params.:medid});
+});
+
+// Update the Physical Record
+router.put('/physical/update/:physid', function(req, res, next) {
+    var id = req.params.physid;
+    PhysicalRecord.findOne({_id: id}, function(err, physicalrecord){
+        if(err) {
+            return res.send('500: Internal Server Error', 500);
+        }
+        if(!physicalrecord) {
+            return res.end('No such Physical Record');
+        }
+        // Check If there are exist field.
+        physicalrecord['weight'] = req.body['weight'] ? req.body['weight'] : physicalrecord['weight'];
+        physicalrecord['height'] = req.body['height'] ? req.body['height'] : physicalrecord['height'];
+        physicalrecord['blood_pressure'] = req.body['blood_pressure'] ? req.body['blood_pressure'] : physicalrecord['blood_pressure'];
+        physicalrecord['pulse'] = req.body['pulse'] ? req.body['pulse'] : physicalrecord['pulse'];
+        physicalrecord['temperature'] = req.body['temperature'] ? req.body['temperature'] : physicalrecord['temperature'];
+        physicalrecord.save(function(err, physicalrecord){
+            if(err) {
+                return res.send('500: Internal Server Error', 500);
+            }
+            if(!physicalrecord) {
+                return res.end('No such No such Physical Record');
+            }
+            return res.render('records/physical/edit', {physicalrecord: physicalrecord, flash: 'Saved.'});
+        });
+    });
+});
+
+// Update the Medical Record
+router.put('/medical/update/:medid', function(req, res, next) {
+    // Do Something..
+});
+
+// Delete the Physical Record
+router.delete('/physical/delete/:pid/:physid', function(req, res, next) {
+    var id = req.params.physid;
+    Patient.findOne.findOne({_id: id}, function(err, patient){
+        //remove physical id from patient's array
+        PhysicalRecord.findOne({_id: id}, function(err, physicalrecord){
+            if(err) {
+                return res.send('500: Internal Server Error', 500);
+            }
+            if(!physicalrecord) {
+                return res.end('No such physicalrecord');
+            }
+            return res.render('index', {flash: 'Item deleted.'});
+        });
+    });
+});
+// Delete the Medical Record
+router.delete('/medical/delete/:pid/:physid', function(req, res, next) {
+    // Do Something..
+});
 router.param('patient', function(req, res, next, id) {
   var query = Patient.findById(id);
 

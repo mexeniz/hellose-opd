@@ -22,13 +22,12 @@ router.get('/store', function(req, res, next) {
 
 
 // Information for each patient
-router.get('/:pid', function(req, res, next) {
-  res.render("patients/info", { patient_id: req.params.pid});
+router.get('/:patid', function(req, res, next) {
+  res.render("patients/info", { patient_id: req.params.patid});
 });
 
 router.post('/insert', function(req, res, next) {
   var patient = new Patient(req.body);
-  console.log(patient);
   patient.save(function(err, patient){
     if(err){ return next(err); }
     res.json(patient);
@@ -36,8 +35,8 @@ router.post('/insert', function(req, res, next) {
 });
 
 // Physical Record for individual patient
-router.get('/info/:pid', function(req, res, next) {
-  var id = req.params.pid;
+router.get('/info/:patid', function(req, res, next) {
+  var id = req.params.patid;
     Patient.findOne({patient_id: id}, function(err, patient){
           if(err) {
               return res.json(500, {
