@@ -111,6 +111,9 @@ app.controller('InfoCtrl', [
 		$scope.showPhysicalRecordForm = function(mode,pRecord){
 			console.log($scope.showPhysModal);
 			$scope.mode = mode;
+			console.log($scope.mode);
+			console.log(this);
+			console.log(pRecord);
 			if(mode == 'edit'){
 				$scope.id = pRecord._id;
 				$scope.weight = pRecord.weight;
@@ -163,12 +166,13 @@ app.controller('InfoCtrl', [
 						$scope.patient.physical_record[i]['date'] = date;
 					}
 				}
+				this.id = '';
+				this.weight = '';
+				this.height = '';
+				this.blood_pressure = '';
+				this.pulse = '';
+				this.temperature = '';
 			}
-			this.weight = '';
-			this.height = '';
-			this.blood_pressure = '';
-			this.pulse = '';
-			this.temperature = '';
 			$scope.showPhysModal = !$scope.showPhysModal ;
 		};
 
