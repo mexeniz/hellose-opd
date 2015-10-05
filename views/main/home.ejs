@@ -8,24 +8,9 @@
     <link rel="stylesheet" href="/lib/fontawesome/css/font-awesome.css" />
     <link rel="stylesheet" href="/lib/angular-snap/angular-snap.css" />
     <link rel="stylesheet" href="/styles/main.css">
-<<<<<<< HEAD
 
-=======
-    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
->>>>>>> master
   </head>
-  
-  <body ng-app="patients">
-    
-    <!-- Left navigation -->
+  <body ng-app="main">
     <div class="">
       <div ui-view="" class="ng-scope">
           <div class="ui-base ng-scope">
@@ -39,41 +24,47 @@
                           <snap-drawer class="snap-drawer snap-drawer-left">
                             <div class="snap-menu">
                               <div class="sidebar-header text-center">
-                                <img src="/images/flat-avatar.png" 
-                                     alt="" 
-                                     class="sidebar-img img-circle">
+                                <img src="images/flat-avatar.png" alt="" class="sidebar-img img-circle">
                               </div>
 
                               <!-- MENU BAR --> 
+                              
                               <ul class="snap-ul">
-<<<<<<< HEAD
                                 <li ng-class="{active: $state.includes('home')}" class="active"><a ui-sref="overview" href="#/home">HOME</a></li>
                                 <li><a href="patients/">PATIENTS</a></li>
                                 <li><a href="physical_records/">PHYSICAL RECORDS</a></li>
                                 <li><a href="medical_records/">MEDICAL RECORDS</a></li>
                                 <li><a href="prescriptions/">PRESCRIPTIONS</a></li>
                                 <li><a ui-sref="login" href="#/login">LOGOUT</a></li>
-=======
-                                <li ng-class="{active: $state.includes('home')}" class="active"><a ui-sref="overview" href="/home">HOME</a></li>
-                                <li><a href="/patients/">PATIENTS</a></li>
-                                <li><a href="/physical_records/">PHYSICAL RECORDS</a></li>
-                                <li><a href="/medical_records/">MEDICAL RECORDS</a></li>
-                                <li><a href="/prescriptions/">PRESCRIPTIONS</a></li>
-                                <li><a ui-sref="/login" href="#/login">LOGOUT</a></li>
->>>>>>> master
                               </ul>
                             </div>
-                          </snap-drawer>
-                        </div>
-                        <!-- Snap dragger -->
-                        <snap-dragger></snap-dragger>
-                        
-                        <!-- Snap content -->
-                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px); background-color: white; width:80%">
+                          </snap-drawer></div>
+                        <snap-dragger>
+                        </snap-dragger>
+                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px);">
 
-                        <%-body -%>
-                        <ui-view></ui-view>
-                        </snap-content> 
+                        <a href="" snap-toggle="left" ng-click="menuOpen = !menuOpen">
+                          <span class="menutoggle">
+                            <i ng-hide="menuOpen" class="fa fa-info fa-2x ng-hide"></i>
+                            <i ng-show="menuOpen" class="fa fa-info fa-2x"></i>
+                          </span>
+                        </a>
+    
+                      <div class="fr">
+                        <h2>Hello SE <small>Hospital OPD System</small></h2>
+                      </div>
+                      <div class="jumbotron">
+                        <div class="container">
+                          <h1>Welcome to Hello SE OPD System!</h1><br><br>
+                          This is a home page!<br>
+                          Navigate the web site by selecting on sidebar.<br><br>
+                          <p>
+                              <img src="/images/flat-avatar.png" vertical-align ="middle" class="user-avatar img-circle img-responsive" />
+                          </p>
+                          
+                        </div>
+                      </div>
+                    </snap-content> 
                   </div>
                 </div>
               </div>
@@ -81,7 +72,6 @@
           </div>
         </div>
       </div>
-    </div>
 
     <!-- bower:js -->
     <script src="/lib/angular/angular.js"></script>
@@ -94,7 +84,7 @@
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="/javascripts/patients_app.js"></script>
+    <script src="/javascripts/main_app.js"></script>
     <!-- endbuild -->
   </body>
 </html>

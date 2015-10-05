@@ -36,6 +36,7 @@ app.factory('patient', ['$http', function($http){
 		    o.patient.push(data);
 		});
 	  };
+<<<<<<< HEAD
 	 //  o.upvote = function(post) {
 		//   return $http.put('/posts/' + post._id + '/upvote')
 		//     .success(function(data){
@@ -57,6 +58,8 @@ app.factory('patient', ['$http', function($http){
 		//       comment.upvotes += 1;
 		//     });
 		// };
+=======
+>>>>>>> master
 	  return o;
 	}]);
 

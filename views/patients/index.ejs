@@ -1,4 +1,5 @@
 <!doctype html>
+<<<<<<< HEAD
 <% layout('layout') -%>
 <div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
   <h1>Patient List </h1>
@@ -29,3 +30,50 @@
     </tbody>
   </table>
 </div>
+=======
+    <%- include ../include/header.ejs %>
+
+    <body ng-app="patients" ng-controller="ListCtrl" >
+
+    <%- include ../include/snap_header.ejs %>
+
+    <div class="container" style="color: black; width: auto" >
+      <h1>Patient List</h1>
+      <button type="button" class="btn btn-primary" ng-click="generateData()">Generate Data</button>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Patient ID</th>
+            <th>SSN</th>
+            <th>Name</th>
+            <th>Records</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="patient in patients">
+            <td>{{ patient.patient_id }}</td>
+            <td>{{ patient.ssn }}</td>
+            <td>{{ patient.firstname}} {{ patient.lastname }}</td>
+            <td>
+              <a href="/patients/{{ patient.patient_id }}" class="btn btn-primary" style="color: black">
+                <i class="fa fa-list"></i>
+              </a>
+            </td>
+            <td>
+              <a href="/patients/edit/{{ patient.patient_id }}" class="btn btn-info" style="color: black">
+                <i class="fa fa-pencil"></i>
+              </a>
+            </td>
+            <td><span class="btn btn-danger"><i class="fa fa-trash-o" ng-click="removePatient({{ patient.patient_id }})"></i></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <%- include ../include/snap_footer.ejs %>
+
+  </body>
+</html>
+>>>>>>> master

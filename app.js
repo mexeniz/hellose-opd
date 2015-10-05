@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 require('./models/model-patients');
 require('./models/model-physicalrecords');
 
+<<<<<<< HEAD
 //Routers
 var main_routes = require('./routes/ctrl-main');
 var physical_routes = require('./routes/ctrl-physicalrecords');
@@ -20,6 +21,13 @@ var app = express();
 app.use('/', main_routes);
 app.use('/physical_records', physical_routes);
 app.use('/patients', patients_routes);
+=======
+
+
+var app = express();
+
+
+>>>>>>> master
 
 mongoose.connect('mongodb://localhost/hellose-opd');
 
@@ -37,6 +45,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+<<<<<<< HEAD
+=======
+//Routers
+var main_routes = require('./routes/ctrl-main');
+var records_routes = require('./routes/ctrl-records');
+var patients_routes = require('./routes/ctrl-patients');
+
+app.use('/', main_routes);
+app.use('/records', records_routes);
+app.use('/patients', patients_routes);
+>>>>>>> master
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
