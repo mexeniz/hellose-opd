@@ -1,3 +1,4 @@
+<!doctype html>
 <% layout('layout') -%>
 <div class="container" style="color: black; width: auto" ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')">
   <h1>Patient Info</h1>
@@ -46,4 +47,30 @@
       
     </tbody>
   </table>
+
+   <modal title="Physical Record Form" visible="showPhysModal">
+    <form role="form">
+      <div class="form-group">
+        <label for="weight">Weight</label>
+        <input class="form-control" id="weight" placeholder="Enter weight" />
+      </div>
+      <div class="form-group">
+        <label for="height">Height</label>
+        <input class="form-control" id="height" placeholder="Enter height" />
+      </div>
+      <div class="form-group">
+        <label for="blood_pressure">Blood Pressure</label>
+        <input class="form-control" id="blood_pressure" placeholder="Enter blood pressure" />
+      </div>
+      <div class="form-group">
+        <label for="pulse">Pulse</label>
+        <input class="form-control" id="pulse" placeholder="Enter pulse" />
+      </div>
+      <div class="form-group">
+        <label for="temperature">Temperature </label>
+        <input class="form-control" id="weight" placeholder="Enter temperature celcius" />
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+  </modal>
 </div>
