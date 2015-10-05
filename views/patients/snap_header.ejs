@@ -1,0 +1,36 @@
+<!-- Left navigation -->
+    <div class="">
+      <div ui-view="" class="ng-scope">
+          <div class="ui-base ng-scope">
+            <div ui-view="" class="ng-scope">
+              <div class="dashboard-page ng-scope">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-sm-12 col-md-12 main ng-scope" ui-view="">
+                      <div class="ng-scope">
+                        <div class="snap-drawers">
+                          <snap-drawer class="snap-drawer snap-drawer-left">
+                            <div class="snap-menu">
+                              <div class="sidebar-header text-center">
+                                <img src="/images/flat-avatar.png" 
+                                     alt="" 
+                                     class="sidebar-img img-circle">
+                              </div>
+
+                              <!-- MENU BAR --> 
+                              <ul class="snap-ul">
+                                <li ng-class="{active: $state.includes('home')}" class="active"><a ui-sref="overview" href="/home">HOME</a></li>
+                                <li><a href="/patients/">PATIENTS</a></li>
+                                <li><a href="/physical_records/">PHYSICAL RECORDS</a></li>
+                                <li><a href="/medical_records/">MEDICAL RECORDS</a></li>
+                                <li><a href="/prescriptions/">PRESCRIPTIONS</a></li>
+                                <li><a ui-sref="/login" href="#/login">LOGOUT</a></li>
+                              </ul>
+                            </div>
+                          </snap-drawer>
+                        </div>
+                        <!-- Snap dragger -->
+                        <snap-dragger></snap-dragger>
+                        
+                        <!-- Snap content -->
+                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px); background-color: white; width:80%">

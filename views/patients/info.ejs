@@ -1,49 +1,87 @@
-<% layout('layout') -%>
-<div class="container" style="color: black; width: auto" ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')">
-  <h1>Patient Info</h1>
-  <p>Patient ID: {{ patient.patient_id }}</p>
-  <p>SSN: {{  patient.ssn }}</p>
-  <p>Name: {{ patient.firstname +" "+ patient.lastname }}</p>
-  <p>Address: {{ patient.address }}</p>
-  <p>Email: {{ patient.email }}</p>
-  <p>Gender: {{ patient.gender }}</p>
-  <p>Bloodtype: {{ patient.blood_type }}</p>
-  <h1>Tel:</h1>
-    <ul ng-repeat="tel_num in patient.tel_number"> 
-      <l>{{ tel_num }}</l>
-    </ul>
-  <button type="button" class="btn btn-primary" ng-click="createPhysicalRecord()">Create Physical Record</button>
-  <button type="button" class="btn btn-info" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Weight</th>
-        <th>Height</th>
-        <th>Blood pressure</th>
-        <th>Pulse</th>
-        <th>Temperature</th>
-        <th>Modify</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="physical_record in patient.physical_record"> 
-        <td> {{ physical_record.date }} </td>
-        <td> {{ physical_record.weight }}</td>
-        <td> {{ physical_record.height }}</td>
-        <td> {{ physical_record.blood_pressure }}</td>
-        <td> {{ physical_record.pulse }}</td>
-        <td> {{ physical_record.temperature }}</td>
-        <td>
-            <span class="btn btn-info">
-              <i class="fa fa-pencil" ng-click="editPhysicalRecord(patient.patient_id ,physical_record._id)"></i>
-            </span>
-            <span class="btn btn-danger">
-              <i class="fa fa-trash-o" ng-click="removePhysicalRecord(patient.patient_id ,physical_record._id)"></i>
-            </span>
-        </td>
-        </tr>
-      
-    </tbody>
-  </table>
-</div>
+<!doctype html>
+
+    <%- include /header.ejs %>
+
+    <body ng-app="patients" ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')">
+
+    <%- include /snap_header.ejs %>
+
+      <div class="container" style="color: black; width: auto" >
+        <h1>Patient Info</h1>
+        <p>Patient ID: {{ patient.patient_id }}</p>
+        <p>SSN: {{  patient.ssn }}</p>
+        <p>Name: {{ patient.firstname +" "+ patient.lastname }}</p>
+        <p>Address: {{ patient.address }}</p>
+        <p>Email: {{ patient.email }}</p>
+        <p>Gender: {{ patient.gender }}</p>
+        <p>Bloodtype: {{ patient.blood_type }}</p>
+        <h1>Tel:</h1>
+          <ul ng-repeat="tel_num in patient.tel_number"> 
+            <l>{{ tel_num }}</l>
+          </ul>
+        <button type="button" class="btn btn-primary" ng-click="createPhysicalRecord()">Create Physical Record</button>
+        <button type="button" class="btn btn-info" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Weight</th>
+              <th>Height</th>
+              <th>Blood pressure</th>
+              <th>Pulse</th>
+              <th>Temperature</th>
+              <th>Modify</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat="physical_record in patient.physical_record"> 
+              <td> {{ physical_record.date }} </td>
+              <td> {{ physical_record.weight }}</td>
+              <td> {{ physical_record.height }}</td>
+              <td> {{ physical_record.blood_pressure }}</td>
+              <td> {{ physical_record.pulse }}</td>
+              <td> {{ physical_record.temperature }}</td>
+              <td>
+                  <span class="btn btn-info">
+                    <i class="fa fa-pencil" ng-click="editPhysicalRecord(patient.patient_id ,physical_record._id)"></i>
+                  </span>
+                  <span class="btn btn-danger">
+                    <i class="fa fa-trash-o" ng-click="removePhysicalRecord(patient.patient_id ,physical_record._id)"></i>
+                  </span>
+              </td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+        </div>
+
+    <%- include /snap_footer.ejs %>
+
+    <modal title="Physical Record Form" visible="showPhysModal">
+      <form role="form">
+        <div class="form-group">
+          <label for="weight">Weight</label>
+          <input class="form-control" id="weight" placeholder="Enter weight" />
+        </div>
+        <div class="form-group">
+          <label for="height">Height</label>
+          <input class="form-control" id="height" placeholder="Enter height" />
+        </div>
+        <div class="form-group">
+          <label for="blood_pressure">Blood Pressure</label>
+          <input class="form-control" id="blood_pressure" placeholder="Enter blood pressure" />
+        </div>
+        <div class="form-group">
+          <label for="pulse">Pulse</label>
+          <input class="form-control" id="pulse" placeholder="Enter pulse" />
+        </div>
+        <div class="form-group">
+          <label for="temperature">Temperature </label>
+          <input class="form-control" id="weight" placeholder="Enter temperature celcius" />
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </modal>
+  </body>
+</html>

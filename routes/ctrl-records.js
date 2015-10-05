@@ -106,7 +106,7 @@ router.delete('/physical/delete/:patid/:physid', function(req, res, next) {
         });
 });
 // Delete the Medical Record
-router.delete('/medical/delete/:patid/:physid', function(req, res, next) {
+router.delete('/medical/delete/:patid/:medid', function(req, res, next) {
     // Do Something..
 });
 router.param('patient', function(req, res, next, id) {
