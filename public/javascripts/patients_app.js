@@ -35,6 +35,13 @@ app.factory('patients_fac', ['$http', function($http){
 app.factory('records_fac', ['$http', function($http){
 	  var o = {};
 	  // Use Route! Connect to backend and retrieve data
+	  o.updatePhysicalRecord = function(pRecord)
+		{
+			return $http.put('/records/physical/update/'+ pRecord._id , pRecord).success(function(data){
+		    patient.physical_record.push(data);
+			});
+		}
+
 	  o.deletePhysicalRecord = function(patid,physid) {
 		console.log('Deleting :'+physid);
 		return $http.delete('/records/physical/delete/'+patid+'/'+physid);
@@ -92,7 +99,6 @@ app.controller('InfoCtrl', [
 	'$scope',
 	'patients_fac',
 	'records_fac',
-
 	function($scope, patients_fac,records_fac){
 		$scope.init = function(patient_id) {
 			$scope.patient_id = patient_id;
@@ -102,8 +108,23 @@ app.controller('InfoCtrl', [
 		    });
 		}
 		$scope.showPhysModal = false ;
-		$scope.showPhysicalRecordForm = function(){
+		$scope.showPhysicalRecordForm = function(mode,pRecord){
 			console.log($scope.showPhysModal);
+			$scope.mode = mode;
+			if(mode == 'edit'){
+				$scope.id = pRecord._id;
+				$scope.weight = pRecord.weight;
+				$scope.height = pRecord.height;
+				$scope.blood_pressure = pRecord.blood_pressure;
+				$scope.pulse = pRecord.pulse;
+				$scope.temperature = pRecord.temperature;
+			}else if(mode == 'create'){
+				$scope.weight = '';
+				$scope.height = '';
+				$scope.blood_pressure = '';
+				$scope.pulse = '';
+				$scope.temperature = '';
+			};
 			$scope.showPhysModal = !$scope.showPhysModal ;
 			console.log("after "+$scope.showPhysModal);
 		}
@@ -120,9 +141,10 @@ app.controller('InfoCtrl', [
 			patients_fac.addPhysicalRecord($scope.patient, pRecord);
 		};
 
-		$scope.createPhysicalRecord = function()
+		$scope.submitPhysicalRecord = function()
 		{
 			var pRecord = {
+				_id: this.id,
 				weight: this.weight,
 				height: this.height,
 				blood_pressure: this.blood_pressure,
@@ -130,7 +152,23 @@ app.controller('InfoCtrl', [
 				temperature: this.temperature
 			};
 			console.log(pRecord);
-			patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			if($scope.mode == 'create'){
+				patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			}else if($scope.mode == 'edit'){
+				records_fac.updatePhysicalRecord(pRecord);
+				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
+					if($scope.patient.physical_record[i]['_id'] == pRecord._id){
+						var date = $scope.patient.physical_record[i]['date'];
+						$scope.patient.physical_record[i] = pRecord;
+						$scope.patient.physical_record[i]['date'] = date;
+					}
+				}
+			}
+			this.weight = '';
+			this.height = '';
+			this.blood_pressure = '';
+			this.pulse = '';
+			this.temperature = '';
 			$scope.showPhysModal = !$scope.showPhysModal ;
 		};
 
