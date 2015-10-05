@@ -102,7 +102,7 @@ app.controller('InfoCtrl', [
 		    });
 		}
 		$scope.showPhysModal = false ;
-		$scope.createPhysicalRecord = function(){
+		$scope.showPhysicalRecordForm = function(){
 			console.log($scope.showPhysModal);
 			$scope.showPhysModal = !$scope.showPhysModal ;
 			console.log("after "+$scope.showPhysModal);
@@ -130,7 +130,8 @@ app.controller('InfoCtrl', [
 				temperature: $scope.temperature
 			};
 			console.log(pRecord);
-			patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			//patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			$scope.showPhysModal = !$scope.showPhysModal ;
 		};
 
 		$scope.removePhysicalRecord = function(patid, physid ){

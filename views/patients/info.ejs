@@ -19,7 +19,7 @@
           <ul ng-repeat="tel_num in patient.tel_number"> 
             <l>{{ tel_num }}</l>
           </ul>
-        <button type="button" class="btn btn-primary" ng-click="createPhysicalRecord()">Create Physical Record</button>
+        <button type="button" class="btn btn-primary" ng-click="showPhysicalRecordForm()">Create Physical Record</button>
         <button type="button" class="btn btn-info" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
         <table class="table table-striped">
           <thead>
@@ -59,28 +59,28 @@
     <%- include /snap_footer.ejs %>
 
     <modal title="Physical Record Form" visible="showPhysModal">
-      <form role="form">
+      <form ng-submit="createPhysicalRecord()">
         <div class="form-group">
           <label for="weight">Weight</label>
-          <input class="form-control" id="weight" placeholder="Enter weight" />
+          <input type="text" class="form-control" id="weight" placeholder="Enter weight" ng-model="weight"></input>
         </div>
         <div class="form-group">
           <label for="height">Height</label>
-          <input class="form-control" id="height" placeholder="Enter height" />
+          <input type="text" class="form-control" id="height" placeholder="Enter height" ng-model="height"></input>
         </div>
         <div class="form-group">
           <label for="blood_pressure">Blood Pressure</label>
-          <input class="form-control" id="blood_pressure" placeholder="Enter blood pressure" />
+          <input type="text" class="form-control" id="blood_pressure" placeholder="Enter blood pressure" ng-model="blood_pressure"></input>
         </div>
         <div class="form-group">
           <label for="pulse">Pulse</label>
-          <input class="form-control" id="pulse" placeholder="Enter pulse" />
+          <input type="text" class="form-control" id="pulse" placeholder="Enter pulse" ng-model="pulse"></input>
         </div>
         <div class="form-group">
           <label for="temperature">Temperature </label>
-          <input class="form-control" id="weight" placeholder="Enter temperature celcius" />
+          <input type="text" class="form-control" id="temperature" placeholder="Enter temperature celcius" ng-model="temperature"></input>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" id="submit" class="btn btn-default">Submit</button>
       </form>
     </modal>
   </body>
