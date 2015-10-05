@@ -36,7 +36,7 @@ app.factory('records_fac', ['$http', function($http){
 	  var o = {};
 	  // Use Route! Connect to backend and retrieve data
 	  o.deletePhysicalRecord = function(patid,physid) {
-		console.log('Deleting :'+physid);	
+		console.log('Deleting :'+physid);
 		return $http.delete('/records/physical/delete/'+patid+'/'+physid);
 	  };
 	  return o;
@@ -75,6 +75,7 @@ app.controller('ListCtrl', [
 				{
 					patient_id : genPatientID,
 					ssn: genSSN,
+					address: 'Address ' + num,
 					firstname: 'Firstname' + num,
 					lastname: 'Lastname' + num,
 					email: 'test' + num + '@test.com',
