@@ -85,19 +85,6 @@ app.controller('ListCtrl', [
 				}
 			);
 		};
-
-		$scope.generatePhysicalRecord = function(patient)
-		{
-			var pRecord = {
-				weight: Math.floor(Math.random()*50 + 50),
-				height: Math.floor(Math.random()*70 + 120),
-				blood_pressure: Math.floor(Math.random()*50 + 100),
-				pulse: Math.floor(Math.random()*30 + 30),
-				temperature: Math.floor(Math.random()*5 + 35)
-			};
-			console.log(pRecord);
-			patients_fac.addPhysicalRecord(patient, pRecord);
-		};
 	}
 ]);
 
@@ -128,6 +115,20 @@ app.controller('InfoCtrl', [
 			console.log(pRecord);
 			patients_fac.addPhysicalRecord($scope.patient, pRecord);
 		};
+
+		$scope.createPhysicalRecord = function()
+		{
+			var pRecord = {
+				weight: $scope.weight,
+				height: $scope.height,
+				blood_pressure: $scope.blood_pressure,
+				pulse: $scope.pulse,
+				temperature: $scope.temperature
+			};
+			console.log(pRecord);
+			patients_fac.addPhysicalRecord($scope.patient, pRecord);
+		};
+
 		$scope.removePhysicalRecord = function(patid, physid ){
 			if(confirm("Confirm na kub") ){
 				records_fac.deletePhysicalRecord(patid, physid);
