@@ -94,7 +94,6 @@ router.put('/medical/update/:medid', function(req, res, next) {
 // Delete the Physical Record
 router.delete('/physical/delete/:patid/:physid', function(req, res, next) {
     var id = req.params.physid;
-    console.log('PARAM =' + req.params.patid + "  and " +req.params.physid);
     PhysicalRecord.findOneAndRemove({_id: id}, function(err, physicalrecord){
         console.log(physicalrecord);
             if(err) {
