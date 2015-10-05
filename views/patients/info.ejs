@@ -1,41 +1,3 @@
-<<<<<<< HEAD
-<% layout('layout') -%>
-<div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
-  <h1>Patient Info</h1>
-  <p>ID: <%= patient.patient_id %></p>
-  <p>SSN: <%= patient.ssn %></p>
-  <p>Name: <%= patient.firstname +" "+ patient.lastname %></p>
-  <p>Email: <%= patient.email %></p>
-  <p>Gender: <%= patient.gender %></p>
-  <p>Bloodtype: <%= patient.blood_type %></p>
-  <p>Tel: <%= patient.tel_number %></p>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Weight</th>
-        <th>Height</th>
-        <th>Blood pressure</th>
-        <th>Pulse</th>
-        <th>Temperature</th>
-      </tr>
-    </thead>
-    <tbody>
-         <% for(var i=0; i< patient.physical_record.length; i++) { %>
-        <tr> 
-        <td> <%=patient.physical_record[i].date %> </td>
-        <td> <%=patient.physical_record[i].weight %></td>
-        <td> <%=patient.physical_record[i].height %> </td>
-        <td> <%=patient.physical_record[i].blood_pressure %> </td>
-        <td> <%=patient.physical_record[i].pulse %></td>
-        <td> <%=patient.physical_record[i].temperature %> </td>
-        </tr>
-        <% } %>
-      
-    </tbody>
-  </table>
-</div>
-=======
 <!doctype html>
 
     <%- include ../include/header.ejs %>
@@ -172,4 +134,3 @@
     </modal>
   </body>
 </html>
->>>>>>> master

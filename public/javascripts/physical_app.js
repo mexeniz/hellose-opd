@@ -36,30 +36,6 @@ app.factory('patient', ['$http', function($http){
 		    o.patient.push(data);
 		});
 	  };
-<<<<<<< HEAD
-	 //  o.upvote = function(post) {
-		//   return $http.put('/posts/' + post._id + '/upvote')
-		//     .success(function(data){
-		//       post.upvotes += 1;
-		//     });
-		// };
-	 //  o.get = function(id) {
-		//   return $http.get('/posts/' + id).then(function(res){
-		//   	console.log(res.data);
-		//     return res.data;
-		//   });
-		// };
-	 //  o.addComment = function(id, comment) {
-  // 			return $http.post('/posts/' + id + '/comments', comment);
-		// };
-	 //  o.upvoteComment = function(post, comment) {
-		//   return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote')
-		//     .success(function(data){
-		//       comment.upvotes += 1;
-		//     });
-		// };
-=======
->>>>>>> master
 	  return o;
 	}]);
 

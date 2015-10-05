@@ -1,36 +1,4 @@
 <!doctype html>
-<<<<<<< HEAD
-<% layout('layout') -%>
-<div class="container" style="color: black; width: auto" ng-controller="ListCtrl">
-  <h1>Patient List </h1>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>SSN</th>
-        <th>Name</th>
-        <th>Detail</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="patient in patients">
-        <td>{{ patient.patient_id }}</td>
-        <td>{{ patient.ssn }}</td>
-        <td>{{ patient.firstname}} {{ patient.lastname }}</td>
-        <td>
-          <a ng-href="{{ patient.patient_id }}"/ style="color: black">
-            <i class="fa fa-list"></i>
-          </a>
-        </td>
-        <td><i class="fa fa-pencil"></i></td>
-        <td><i class="fa fa-trash-o"></i></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-=======
     <%- include ../include/header.ejs %>
 
     <body ng-app="patients" ng-controller="ListCtrl" >
@@ -76,4 +44,3 @@
 
   </body>
 </html>
->>>>>>> master

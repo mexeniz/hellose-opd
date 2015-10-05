@@ -1,45 +1,13 @@
 (function(){
 var app = angular.module('patients', ['ui.router']) ;
 
-<<<<<<< HEAD
-app.config([
-	'$stateProvider',
-	'$urlRouterProvider',
-	function($stateProvider, $urlRouterProvider) {
-
-	  $stateProvider
-	    .state('list', {
-	      url: '/list',
-	      controller: 'ListCtrl',
-	      resolve: {
-		    patientsPromise: ['patients', function(patients){
-		      return patients.getList();
-		    }]
-		  }
-	    });
-	    
-	  $urlRouterProvider.otherwise('list');
-}]);
-
-app.factory('patients', ['$http', function($http){
-=======
 app.factory('patients_fac', ['$http', function($http){
->>>>>>> master
 	  var o = {
 	  	patients : []
 	  };
 	  // Use Route! Connect to backend and retrieve data
 	  o.getList = function() {
 	    return $http.get('/patients/store').success(function(data){
-<<<<<<< HEAD
-	      angular.copy(data, o.patients);
-	    });
-	  };
-	  o.create = function(patient) {
-		  return $http.post('/patients', patient).success(function(data){
-		    o.patients.push(data);
-		});
-=======
 	      for(var i = 0  ; i < data.length  ; i++){
 					o.patients.push(data[i]);
 					console.log(o.patients[o.patients.length-1]);
@@ -77,22 +45,10 @@ app.factory('records_fac', ['$http', function($http){
 	  o.deletePhysicalRecord = function(patid,physid) {
 		console.log('Deleting :'+physid);
 		return $http.delete('/records/physical/delete/'+patid+'/'+physid);
->>>>>>> master
 	  };
 	  return o;
 	}]);
 app.controller('ListCtrl', [
-<<<<<<< HEAD
-	'$scope', 
-	'patients' ,
-	'$stateParams' ,
-	function($scope , patients ,$stateParams ){
-		$scope.patients = patients.patients ;
-	}
-]);
-
-})();
-=======
 	'$scope',
 	'patients_fac',
 
