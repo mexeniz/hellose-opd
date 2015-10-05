@@ -50,12 +50,12 @@ router.post('/medical/insert/:patient', function(req, res, next) {
 
 // Get form to edit the Physical Record
 router.get('/physical/edit/:physid', function(req, res, next) {
-    res.render('records/physical/edit' , { _id: req.params.:physid});
+    res.render('records/physical/edit' , { _id: req.params.physid});
 });
 
 // Get form to edit the Medical Record
-router.get('/medical/edit/::medid', function(req, res, next) {
-    res.render('records/medical/edit' , { _id: req.params.:medid});
+router.get('/medical/edit/:medid', function(req, res, next) {
+    res.render('records/medical/edit' , { _id: req.params.medid});
 });
 
 // Update the Physical Record
@@ -92,23 +92,21 @@ router.put('/medical/update/:medid', function(req, res, next) {
 });
 
 // Delete the Physical Record
-router.delete('/physical/delete/:pid/:physid', function(req, res, next) {
+router.delete('/physical/delete/:patid/:physid', function(req, res, next) {
     var id = req.params.physid;
-    Patient.findOne.findOne({_id: id}, function(err, patient){
-        //remove physical id from patient's array
-        PhysicalRecord.findOne({_id: id}, function(err, physicalrecord){
+    console.log('PARAM =' + req.params.patid + "  and " +req.params.physid);
+    PhysicalRecord.findOneAndRemove({_id: id}, function(err, physicalrecord){
+        console.log(physicalrecord);
             if(err) {
                 return res.send('500: Internal Server Error', 500);
             }
             if(!physicalrecord) {
                 return res.end('No such physicalrecord');
             }
-            return res.render('index', {flash: 'Item deleted.'});
         });
-    });
 });
 // Delete the Medical Record
-router.delete('/medical/delete/:pid/:physid', function(req, res, next) {
+router.delete('/medical/delete/:patid/:physid', function(req, res, next) {
     // Do Something..
 });
 router.param('patient', function(req, res, next, id) {

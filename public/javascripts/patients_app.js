@@ -16,25 +16,31 @@ app.factory('patients_fac', ['$http', function($http){
 	  };
 	  o.create = function(patient) {
 		  return $http.post('/patients/insert', patient).success(function(data){
-				console.log(data);
 		    o.patients.push(data);
 			});
 	  };
 		o.addPhysicalRecord = function(patient, pRecord)
 		{
 			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
-				console.log(data);
 		    patient.physical_record.push(data);
 			});
 		}
 
 		o.getPatient = function(patient_id) {
-			return $http.get('/patients/info/' + patient_id);
+			return $http.get('/patients/info/' +patient_id);
 		}
 
 	  return o;
 	}]);
-
+app.factory('records_fac', ['$http', function($http){
+	  var o = {};
+	  // Use Route! Connect to backend and retrieve data
+	  o.deletePhysicalRecord = function(patid,physid) {
+		console.log('Deleting :'+physid);	
+		return $http.delete('/records/physical/delete/'+patid+'/'+physid);
+	  };
+	  return o;
+	}]);
 app.controller('ListCtrl', [
 	'$scope',
 	'patients_fac',
@@ -97,14 +103,14 @@ app.controller('ListCtrl', [
 app.controller('InfoCtrl', [
 	'$scope',
 	'patients_fac',
+	'records_fac',
 
-	function($scope, patients_fac){
+	function($scope, patients_fac,records_fac){
 
 		$scope.init = function(patient_id) {
 			$scope.patient_id = patient_id;
 			console.log($scope.patient_id);
 			patients_fac.getPatient($scope.patient_id).success(function(data){
-				console.log(data);
 				$scope.patient = data;
 		    });
 		}
@@ -120,6 +126,16 @@ app.controller('InfoCtrl', [
 			};
 			console.log(pRecord);
 			patients_fac.addPhysicalRecord($scope.patient, pRecord);
+		};
+		$scope.removePhysicalRecord = function(patid, physid ){
+			if(confirm("Confirm na kub") ){
+				records_fac.deletePhysicalRecord(patid, physid);
+				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
+					if($scope.patient.physical_record[i]['_id'] == physid){
+						$scope.patient.physical_record.splice(i,1) ;
+					}
+				}
+			}
 		};
 	}
 ]);

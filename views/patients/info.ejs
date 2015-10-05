@@ -4,6 +4,7 @@
   <p>Patient ID: {{ patient.patient_id }}</p>
   <p>SSN: {{  patient.ssn }}</p>
   <p>Name: {{ patient.firstname +" "+ patient.lastname }}</p>
+  <p>Address: {{ patient.address }}</p>
   <p>Email: {{ patient.email }}</p>
   <p>Gender: {{ patient.gender }}</p>
   <p>Bloodtype: {{ patient.blood_type }}</p>
@@ -11,7 +12,8 @@
     <ul ng-repeat="tel_num in patient.tel_number"> 
       <l>{{ tel_num }}</l>
     </ul>
-  <button type="button" class="btn btn-primary" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
+  <button type="button" class="btn btn-primary" ng-click="createPhysicalRecord()">Create Physical Record</button>
+  <button type="button" class="btn btn-info" ng-click="generatePhysicalRecord()">Generate Physical Record</button>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -21,6 +23,7 @@
         <th>Blood pressure</th>
         <th>Pulse</th>
         <th>Temperature</th>
+        <th>Modify</th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +34,14 @@
         <td> {{ physical_record.blood_pressure }}</td>
         <td> {{ physical_record.pulse }}</td>
         <td> {{ physical_record.temperature }}</td>
+        <td>
+            <span class="btn btn-info">
+              <i class="fa fa-pencil" ng-click="editPhysicalRecord(patient.patient_id ,physical_record._id)"></i>
+            </span>
+            <span class="btn btn-danger">
+              <i class="fa fa-trash-o" ng-click="removePhysicalRecord(patient.patient_id ,physical_record._id)"></i>
+            </span>
+        </td>
         </tr>
       
     </tbody>

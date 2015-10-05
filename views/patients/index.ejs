@@ -20,12 +20,16 @@
         <td>{{ patient.ssn }}</td>
         <td>{{ patient.firstname}} {{ patient.lastname }}</td>
         <td>
-          <a href="/patients/{{ patient.patient_id }}" style="color: black">
+          <a href="/patients/{{ patient.patient_id }}" class="btn btn-primary" style="color: black">
             <i class="fa fa-list"></i>
           </a>
         </td>
-        <td><i class="fa fa-pencil"></i></td>
-        <td><i class="fa fa-trash-o"></i></td>
+        <td>
+          <a href="/patients/edit/{{ patient.patient_id }}" class="btn btn-info" style="color: black">
+            <i class="fa fa-pencil"></i>
+          </a>
+        </td>
+        <td><span class="btn btn-danger"><i class="fa fa-trash-o" ng-click="removePatient({{ patient.patient_id }})"></i></span></td>
       </tr>
     </tbody>
   </table>
