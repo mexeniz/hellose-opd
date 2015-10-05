@@ -123,14 +123,14 @@ app.controller('InfoCtrl', [
 		$scope.createPhysicalRecord = function()
 		{
 			var pRecord = {
-				weight: $scope.weight,
-				height: $scope.height,
-				blood_pressure: $scope.blood_pressure,
-				pulse: $scope.pulse,
-				temperature: $scope.temperature
+				weight: this.weight,
+				height: this.height,
+				blood_pressure: this.blood_pressure,
+				pulse: this.pulse,
+				temperature: this.temperature
 			};
 			console.log(pRecord);
-			//patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			patients_fac.addPhysicalRecord($scope.patient, pRecord);
 			$scope.showPhysModal = !$scope.showPhysModal ;
 		};
 
