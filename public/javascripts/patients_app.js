@@ -107,7 +107,7 @@ app.controller('InfoCtrl', [
 				$scope.patient = data;
 		    });
 		}
-		$scope.showPhysModal = false ;
+		$scope.showPhysModal = false;
 		$scope.showPhysicalRecordForm = function(mode,pRecord){
 			console.log($scope.showPhysModal);
 			$scope.mode = mode;
@@ -186,6 +186,90 @@ app.controller('InfoCtrl', [
 				}
 			}
 		};
+
+
+		// MEDICAL RECORD
+		$scope.showMedModal = false;
+		$scope.diseaseIdOptions = [ 'ICD10', 'SNOMED', 'DRG' ];
+		$scope.showMedicalRecordForm = function(mode,pRecord){
+			console.log($scope.showMedModal);
+			$scope.mode = mode;
+			console.log($scope.mode);
+			console.log(this);
+			console.log(pRecord);
+			if(mode == 'edit'){
+				/*$scope.id = pRecord._id;
+				$scope.weight = pRecord.weight;
+				$scope.height = pRecord.height;
+				$scope.blood_pressure = pRecord.blood_pressure;
+				$scope.pulse = pRecord.pulse;
+				$scope.temperature = pRecord.temperature;*/
+			}else if(mode == 'create'){
+				/*$scope.weight = '';
+				$scope.height = '';
+				$scope.blood_pressure = '';
+				$scope.pulse = '';
+				$scope.temperature = '';*/
+			};
+			$scope.showMedModal = !$scope.showMedModal ;
+			console.log("after "+$scope.showMedModal);
+		}
+		$scope.generateMedicalRecord = function()
+		{
+			/*var pRecord = {
+				weight: Math.floor(Math.random()*50 + 50),
+				height: Math.floor(Math.random()*70 + 120),
+				blood_pressure: Math.floor(Math.random()*50 + 100),
+				pulse: Math.floor(Math.random()*30 + 30),
+				temperature: Math.floor(Math.random()*5 + 35)
+			};
+			console.log(pRecord);
+			patients_fac.addPhysicalRecord($scope.patient, pRecord);*/
+		};
+
+		$scope.submitMedicalRecord = function()
+		{
+			/*var pRecord = {
+				_id: this.id,
+				weight: this.weight,
+				height: this.height,
+				blood_pressure: this.blood_pressure,
+				pulse: this.pulse,
+				temperature: this.temperature
+			};
+			console.log(pRecord);
+			if($scope.mode == 'create'){
+				patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			}else if($scope.mode == 'edit'){
+				records_fac.updatePhysicalRecord(pRecord);
+				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
+					if($scope.patient.physical_record[i]['_id'] == pRecord._id){
+						var date = $scope.patient.physical_record[i]['date'];
+						$scope.patient.physical_record[i] = pRecord;
+						$scope.patient.physical_record[i]['date'] = date;
+					}
+				}
+				this.id = '';
+				this.weight = '';
+				this.height = '';
+				this.blood_pressure = '';
+				this.pulse = '';
+				this.temperature = '';
+			}*/
+			$scope.showMedModal = !$scope.showMedModal ;
+		};
+
+		$scope.removeMedicalRecord = function(patid, physid ){
+			if(confirm("Confirm na kub") ){
+				/*records_fac.deletePhysicalRecord(patid, physid);
+				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
+					if($scope.patient.physical_record[i]['_id'] == physid){
+						$scope.patient.physical_record.splice(i,1) ;
+					}
+				}*/
+			}
+		};
+
 	}
 ]);
 

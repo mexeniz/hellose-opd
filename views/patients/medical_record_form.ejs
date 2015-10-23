@@ -1,0 +1,25 @@
+<modal title="Medical Record Form" visible="showMedModal">
+  <form ng-submit="submitPhysicalRecord()">
+    <div class="form-group">
+      <label for="id_type">ID Type</label>
+      <select class="form-control" id="id_type" ng-model="data.repeatSelect">
+        <option value="">---Please select---</option>
+        <option  ng-repeat="option in diseaseIdOptions" value="{{option}}">{{option}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="blood_pressure">Disease ID</label>
+      <input type="text" class="form-control" id="blood_pressure" placeholder="Enter disease ID eg. A00" ng-model="blood_pressure"></input>
+    </div>
+    <div class="form-group">
+      <label for="blood_pressure">Disease name</label>
+      <input type="text" class="form-control" id="blood_pressure" placeholder="Enter disease name" ng-model="blood_pressure"></input>
+    </div>
+    <div class="form-group">
+      <label for="symptoms">Symptoms:</label>
+      <textarea class="form-control" rows="5" id="symptoms" ng-model="pulse"></textarea>
+    </div>
+    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+  </form>
+</modal>

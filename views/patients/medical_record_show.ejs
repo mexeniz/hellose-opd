@@ -1,0 +1,50 @@
+<div class="row" >
+        <div class="col-md-12">
+          <div class="panel panel-info" style=" color: black; width: auto ; font-size: 20px">
+              <div class="panel-heading" style="background-color:#31708f ; color: white;">
+                
+                <h3 class="panel-title" style="font-size: 30px">Medical Record <button type="button" class="btn btn-primary" ng-click="showMedicalRecordForm('create')">Create</button>
+                <button type="button" class="btn btn-info" ng-click="generateMedicalRecord()">Generate</button>
+                </h3>
+              </div>
+              <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Doctor's name</th>
+                <th>ID Type</th>
+                <th>Disease ID</th>
+                <th>Disease Name</th>
+                <th>Symptom</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="physical_record in patient.physical_record"> 
+                <td>xx/xx/xx</td>
+                <td>Dr.Johnny Bravo</td>
+                <td>SNOMED</td>
+                <td>A00</td>
+                <td>WTF Disease</td>
+                <td>Abdominal Pain  Acute Diarrhoea in Adults
+Breathlessness/Breathing Difficulties Chest Pain
+Cough Coughing up Blood (Haemoptysis)
+Coughs and Colds in Children  Cramps in the Leg
+Dizziness Dry Eyes</td>
+                <td>
+                    <span class="btn btn-info" ng-click="showMedicalRecordForm('edit',physical_record)">
+                      <i class="fa fa-pencil" ></i>
+                    </span>
+                    <span class="btn btn-danger" ng-click="removeMedicalRecord(patient.patient_id ,physical_record._id)">
+                      <i class="fa fa-trash-o" ></i>
+                    </span>
+                </td>
+                </tr>
+              
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
