@@ -5,6 +5,7 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
+var MedicalRecord = mongoose.model('MedicalRecord');
 
 /* GET patients page. */
 router.get('/', function(req, res, next) {
@@ -37,21 +38,23 @@ router.post('/insert', function(req, res, next) {
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
-    Patient.findOne({patient_id: id}, function(err, patient){
-          if(err) {
-              return res.json(500, {
-                  message: 'Error getting patient.'
-              });
-          }
-          if(!patient) {
-              return res.json(404, {
-                  message: 'No such patient.'
-              });
-          }
-          patient.populate('physical_record', function(err, p) {
-              res.json(p) ;
+    Patient.findOne({patient_id: id})
+          .populate('physical_record')
+          .populate('medical_record')
+          .exec(function(err, patient) {
+              if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+              }
+              if(!patient) {
+                  return res.json(404, {
+                      message: 'Patient not found!'
+                  });
+              }
+              res.json(patient) ;
           });
-    });
+
     // RESERVE FOR MEDICAL RECORDS
   /*req.patient.populate('physical_record', function(err, patient) {
       if (err) { return next(err); }

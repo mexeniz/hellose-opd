@@ -1,24 +1,54 @@
 <modal title="Medical Record Form" visible="showMedModal">
-  <form ng-submit="submitPhysicalRecord()">
+  <label>Diseases:</label>
+  <form ng-submit="submitMedicalRecord()">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID Type</th>
+          <th>Disease ID</th>
+          <th>Disease Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr ng-repeat="disease in medicalRecord.diseases"> 
+          <td>{{ disease.disease_id_type }}</td>
+          <td>{{ disease.disease_id }}</td>
+          <td>{{ disease.name }}</td>
+          <td>
+              <span class="btn btn-info" ng-click="showAddDisease('edit', disease)">
+                <i class="fa fa-pencil" ></i>
+              </span>
+              <span class="btn btn-danger" ng-click="removeDisease($index)">
+                <i class="fa fa-trash-o" ></i>
+              </span>
+          </td>
+          </tr>
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" ng-click="showAddDisease('create')">Add disease</button>
     <div class="form-group">
-      <label for="id_type">ID Type</label>
-      <select class="form-control" id="id_type" ng-model="data.repeatSelect">
+      <label>Symptoms:</label>
+      <textarea class="form-control" rows="5" ng-model="disease.symptoms"></textarea>
+    </div>
+    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+  </form>
+</modal>
+
+<modal title="Add disease" visible="showAddDiseaseModal">
+  <form ng-submit="submitAddDisease()">
+    <div class="form-group">
+      <label>ID Type</label>
+      <select class="form-control" ng-model="disease.disease_id_type">
         <option value="">---Please select---</option>
         <option  ng-repeat="option in diseaseIdOptions" value="{{option}}">{{option}}</option>
       </select>
-    </div>
-
-    <div class="form-group">
-      <label for="blood_pressure">Disease ID</label>
-      <input type="text" class="form-control" id="blood_pressure" placeholder="Enter disease ID eg. A00" ng-model="blood_pressure"></input>
-    </div>
-    <div class="form-group">
-      <label for="blood_pressure">Disease name</label>
-      <input type="text" class="form-control" id="blood_pressure" placeholder="Enter disease name" ng-model="blood_pressure"></input>
-    </div>
-    <div class="form-group">
-      <label for="symptoms">Symptoms:</label>
-      <textarea class="form-control" rows="5" id="symptoms" ng-model="pulse"></textarea>
+        <label>Disease ID</label>
+        <input type="text" class="form-control" placeholder="Enter disease ID eg. A00" ng-model="disease.disease_id"></input>
+      <div class="form-group">
+        <label>Disease name</label>
+        <input type="text" class="form-control" placeholder="Enter disease name" ng-model="disease.name"></input>
+      </div>
     </div>
     <button type="submit" id="submit" class="btn btn-primary">Submit</button>
   </form>

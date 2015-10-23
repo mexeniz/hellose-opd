@@ -21,7 +21,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="physical_record in patient.physical_record"> 
+                <tr ng-repeat="medical_record in patient.medical_record"> 
                 <td>xx/xx/xx</td>
                 <td>Dr.Johnny Bravo</td>
                 <td>SNOMED</td>
@@ -33,10 +33,10 @@ Cough Coughing up Blood (Haemoptysis)
 Coughs and Colds in Children  Cramps in the Leg
 Dizziness Dry Eyes</td>
                 <td>
-                    <span class="btn btn-info" ng-click="showMedicalRecordForm('edit',physical_record)">
+                    <span class="btn btn-info" ng-click="showMedicalRecordForm('edit', medical_record)">
                       <i class="fa fa-pencil" ></i>
                     </span>
-                    <span class="btn btn-danger" ng-click="removeMedicalRecord(patient.patient_id ,physical_record._id)">
+                    <span class="btn btn-danger" ng-click="removeMedicalRecord(patient.patient_id , medical_record._id)">
                       <i class="fa fa-trash-o" ></i>
                     </span>
                 </td>

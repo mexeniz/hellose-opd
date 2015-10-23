@@ -19,12 +19,7 @@ app.factory('patients_fac', ['$http', function($http){
 		    o.patients.push(data);
 			});
 	  };
-		o.addPhysicalRecord = function(patient, pRecord)
-		{
-			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
-		    patient.physical_record.push(data);
-			});
-		}
+		
 
 		o.getPatient = function(patient_id) {
 			return $http.get('/patients/info/' +patient_id);
@@ -32,9 +27,16 @@ app.factory('patients_fac', ['$http', function($http){
 
 	  return o;
 	}]);
-app.factory('records_fac', ['$http', function($http){
+app.factory('physical_records_fac', ['$http', function($http){
 	  var o = {};
 	  // Use Route! Connect to backend and retrieve data
+		o.addPhysicalRecord = function(patient, pRecord)
+		{
+			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
+		    patient.physical_record.push(data);
+			});
+		}
+
 	  o.updatePhysicalRecord = function(pRecord)
 		{
 			return $http.put('/records/physical/update/'+ pRecord._id , pRecord).success(function(data){
@@ -48,6 +50,31 @@ app.factory('records_fac', ['$http', function($http){
 	  };
 	  return o;
 	}]);
+
+app.factory('medical_records_fac', ['$http', function($http){
+	  var o = {};
+	  // Use Route! Connect to backend and retrieve data
+		o.add = function(patient, medRecord)
+		{
+			//return $http.post('/records/medical/insert/'+ patient._id , medRecord).success(function(data){
+		    	patient.medical_record.push(medRecord);
+			//});
+		}
+
+	  o.update = function(medRecord)
+		{
+			//return $http.put('/records/medical/update/'+ pRecord._id , medRecord).success(function(data){
+		    	patient.medical_record.push(data);
+			//});
+		}
+
+	  o.delete = function(patient_id, med_id) {
+		console.log('Deleting :'+med_id);
+		//return $http.delete('/records/medical/delete/'+patid+'/'+med_id);
+	  };
+	  return o;
+	}]);
+
 app.controller('ListCtrl', [
 	'$scope',
 	'patients_fac',
@@ -98,8 +125,9 @@ app.controller('ListCtrl', [
 app.controller('InfoCtrl', [
 	'$scope',
 	'patients_fac',
-	'records_fac',
-	function($scope, patients_fac,records_fac){
+	'physical_records_fac',
+	'medical_records_fac',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac){
 		$scope.init = function(patient_id) {
 			$scope.patient_id = patient_id;
 			console.log($scope.patient_id);
@@ -141,7 +169,7 @@ app.controller('InfoCtrl', [
 				temperature: Math.floor(Math.random()*5 + 35)
 			};
 			console.log(pRecord);
-			patients_fac.addPhysicalRecord($scope.patient, pRecord);
+			physical_records_fac.addPhysicalRecord($scope.patient, pRecord);
 		};
 
 		$scope.submitPhysicalRecord = function()
@@ -156,9 +184,9 @@ app.controller('InfoCtrl', [
 			};
 			console.log(pRecord);
 			if($scope.mode == 'create'){
-				patients_fac.addPhysicalRecord($scope.patient, pRecord);
+				physical_records_fac.addPhysicalRecord($scope.patient, pRecord);
 			}else if($scope.mode == 'edit'){
-				records_fac.updatePhysicalRecord(pRecord);
+				physical_records_fac.updatePhysicalRecord(pRecord);
 				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
 					if($scope.patient.physical_record[i]['_id'] == pRecord._id){
 						var date = $scope.patient.physical_record[i]['date'];
@@ -178,7 +206,7 @@ app.controller('InfoCtrl', [
 
 		$scope.removePhysicalRecord = function(patid, physid ){
 			if(confirm("Confirm na kub") ){
-				records_fac.deletePhysicalRecord(patid, physid);
+				physical_records_fac.deletePhysicalRecord(patid, physid);
 				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
 					if($scope.patient.physical_record[i]['_id'] == physid){
 						$scope.patient.physical_record.splice(i,1) ;
@@ -190,30 +218,71 @@ app.controller('InfoCtrl', [
 
 		// MEDICAL RECORD
 		$scope.showMedModal = false;
+		$scope.showAddDiseaseModal = false;
 		$scope.diseaseIdOptions = [ 'ICD10', 'SNOMED', 'DRG' ];
-		$scope.showMedicalRecordForm = function(mode,pRecord){
-			console.log($scope.showMedModal);
+		$scope.showMedicalRecordForm = function(mode,medRecord){
 			$scope.mode = mode;
-			console.log($scope.mode);
-			console.log(this);
-			console.log(pRecord);
+
 			if(mode == 'edit'){
-				/*$scope.id = pRecord._id;
-				$scope.weight = pRecord.weight;
-				$scope.height = pRecord.height;
-				$scope.blood_pressure = pRecord.blood_pressure;
-				$scope.pulse = pRecord.pulse;
-				$scope.temperature = pRecord.temperature;*/
+				$scope.medicalRecord = medRecord;
 			}else if(mode == 'create'){
-				/*$scope.weight = '';
-				$scope.height = '';
-				$scope.blood_pressure = '';
-				$scope.pulse = '';
-				$scope.temperature = '';*/
+				$scope.medicalRecord = {
+				    diseases: []
+				};
 			};
-			$scope.showMedModal = !$scope.showMedModal ;
-			console.log("after "+$scope.showMedModal);
+			$scope.showMedModal = !$scope.showMedModal;
 		}
+
+
+		$scope.showAddDisease = function(mode, disease)
+		{
+			$scope.addDiseaseMode = mode;
+			if(mode == 'edit')
+			{
+				$scope.disease = disease;
+			}
+			else if(mode == 'create')
+			{
+				$scope.disease = {};
+			}
+			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;
+		};
+
+
+		$scope.submitAddDisease = function()
+		{
+			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;
+			if($scope.addDiseaseMode == 'create')
+			{
+				$scope.medicalRecord.diseases.push($scope.disease);
+			}
+			else if($scope.addDiseaseMode == 'edit')
+			{
+				for(var i = 0; i < $scope.medicalRecord.diseases.length; i++)
+				{
+					if(i == idx)
+					{
+						var disease = $scope.medicalRecord.diseases[i];
+						disease.disease_id_type = $scope.disease.disease_id_type;
+						disease.disease_id = $scope.disease_id;
+						disease.name = $scope.disease.name;
+						break;
+					}
+				}
+			}
+		}
+
+		$scope.removeDisease = function(index)
+		{
+			for(var i = 0; i < $scope.medicalRecord.diseases.length; i++)
+			{
+				if(i == index) {
+					$scope.medicalRecord.diseases.splice(i,1) ;
+					break;
+				}
+			}
+		}
+
 		$scope.generateMedicalRecord = function()
 		{
 			/*var pRecord = {
@@ -229,33 +298,22 @@ app.controller('InfoCtrl', [
 
 		$scope.submitMedicalRecord = function()
 		{
-			/*var pRecord = {
-				_id: this.id,
-				weight: this.weight,
-				height: this.height,
-				blood_pressure: this.blood_pressure,
-				pulse: this.pulse,
-				temperature: this.temperature
-			};
-			console.log(pRecord);
+
 			if($scope.mode == 'create'){
-				patients_fac.addPhysicalRecord($scope.patient, pRecord);
-			}else if($scope.mode == 'edit'){
-				records_fac.updatePhysicalRecord(pRecord);
-				for(var i = 0 ; i < $scope.patient.physical_record.length ; i++ ){
-					if($scope.patient.physical_record[i]['_id'] == pRecord._id){
-						var date = $scope.patient.physical_record[i]['date'];
-						$scope.patient.physical_record[i] = pRecord;
-						$scope.patient.physical_record[i]['date'] = date;
+				medical_records_fac.add($scope.patient, $scope.medicalRecord);
+			}
+
+			else if($scope.mode == 'edit')
+			{
+				medical_records_fac.update($scope.medicalRecord);
+
+				for(var i = 0 ; i < $scope.patient.medical_record.length ; i++ ){
+					if($scope.patient.medical_record[i]['_id'] == $scope.medicalRecord._id){
+						$scope.patient.medical_record[i] = medicalRecord;
 					}
 				}
-				this.id = '';
-				this.weight = '';
-				this.height = '';
-				this.blood_pressure = '';
-				this.pulse = '';
-				this.temperature = '';
-			}*/
+			}
+
 			$scope.showMedModal = !$scope.showMedModal ;
 		};
 
