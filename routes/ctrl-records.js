@@ -10,6 +10,8 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
+var MedicalRecord = mongoose.model('MedicalRecord');
+var Disease = mongoose.model('Disease');
 
 // Get form to create new Physical Record
 router.get('/physical/create/:patid', function(req, res, next) {

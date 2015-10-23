@@ -9,6 +9,8 @@ var engine = require('ejs-locals');
 var mongoose = require('mongoose');
 require('./models/model-patients');
 require('./models/model-physicalrecords');
+require('./models/model-medicalrecords');
+require('./models/model-diseases');
 
 
 
