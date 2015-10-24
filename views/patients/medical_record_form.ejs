@@ -16,9 +16,6 @@
           <td>{{ disease.disease_id }}</td>
           <td>{{ disease.name }}</td>
           <td>
-              <span class="btn btn-info" ng-click="showAddDisease('edit', disease)">
-                <i class="fa fa-pencil" ></i>
-              </span>
               <span class="btn btn-danger" ng-click="removeDisease($index)">
                 <i class="fa fa-trash-o" ></i>
               </span>
@@ -38,17 +35,12 @@
 <modal title="Add disease" visible="showAddDiseaseModal">
   <form ng-submit="submitAddDisease()">
     <div class="form-group">
-      <label>ID Type</label>
-      <select class="form-control" ng-model="disease.disease_id_type">
-        <option value="">---Please select---</option>
-        <option  ng-repeat="option in diseaseIdOptions" value="{{option}}">{{option}}</option>
+      <label>ID Type:</label>
+      <select class="form-control" ng-model="selectedDiseaseIdType" data-ng-options="option as option for option in diseaseIdOptions" ng-change="getDiseaseList(selectedDiseaseIdType)">
       </select>
-        <label>Disease ID</label>
-        <input type="text" class="form-control" placeholder="Enter disease ID eg. A00" ng-model="disease.disease_id"></input>
-      <div class="form-group">
-        <label>Disease name</label>
-        <input type="text" class="form-control" placeholder="Enter disease name" ng-model="disease.name"></input>
-      </div>
+      <label>Disease:</label>
+      <select class="form-control"  ng-options="diseaseChoice as diseaseChoice.name for diseaseChoice in diseaseData" ng-model="selectedDisease" ng-change="selectDisease(selectedDisease)">
+      </select>
     </div>
     <button type="submit" id="submit" class="btn btn-primary">Submit</button>
   </form>

@@ -38,10 +38,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 var main_routes = require('./routes/ctrl-main');
 var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
+var diseases_routes = require('./routes/ctrl-diseases');
 
 app.use('/', main_routes);
 app.use('/records', records_routes);
 app.use('/patients', patients_routes);
+app.use('/diseases', diseases_routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -68,11 +68,12 @@ app.factory('medical_records_fac', ['$http', function($http){
 			// Get disease id only!
 			var newMedRecord = {};
 			angular.copy(medRecord, newMedRecord);
+			console.log(medRecord.diseases.length);
 			if(medRecord.diseases.length > 0) newMedRecord.diseases = [];
-			for(var i = 0; i < medRecord.diseases; i++)
+			for(var i = 0; i < medRecord.diseases.length; i++)
 			{
-				// FIX ME!
-				//newMedRecord.diseases.push(medRecord.disease[i]._id);
+				console.log(medRecord.diseases[i]._id);
+				newMedRecord.diseases.push(medRecord.diseases[i]._id);
 			}
 
 			return $http.post('/records/medical/insert/'+ patient._id , newMedRecord).success(function(data){
@@ -108,6 +109,21 @@ app.factory('medical_records_fac', ['$http', function($http){
 				patient.medical_record.splice(index,1);
 			});
 	  };
+
+		o.searchDisease = function(id_type, keyword, diseaseData)
+		{
+
+			return $http.get('/diseases/list/', keyword).success(function(data) {
+				diseaseData = data;
+			});
+		}
+
+		o.getDiseaseList = function(id_type, diseaseData)
+		{
+			return $http.get('/diseases/listByIdType/' + id_type).success(function(data) {
+				angular.copy(data, diseaseData);
+			});
+		}
 
 	  return o;
 	}]);
@@ -244,42 +260,38 @@ app.controller('InfoCtrl', [
 		}
 
 
-		$scope.showAddDisease = function(mode, disease)
+		$scope.showAddDisease = function()
 		{
-			$scope.addDiseaseMode = mode;
-			if(mode == 'edit')
-			{
-				$scope.disease = disease;
-			}
-			else if(mode == 'create')
-			{
-				$scope.disease = {};
-			}
+			$scope.selectedDiseaseIdType = $scope.diseaseIdOptions[0];
+			$scope.getDiseaseList($scope.selectedDiseaseIdType);
+			$scope.disease = {};
 			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;
 		};
 
 
+		//$scope.selectedDiseaseIdType = $scope.diseaseIdOptions[0];
+		$scope.diseaseData = [];
+		$scope.searchDisease = function(keyword)
+		{
+			medical_records_fac.searchDisease($scope.disease.disease_id_type, keyword, $scope.diseaseData);
+		}
+
+
+		$scope.getDiseaseList = function(selectedType)
+		{
+			console.log(selectedType);
+			medical_records_fac.getDiseaseList(selectedType, $scope.diseaseData);
+		}
+
 		$scope.submitAddDisease = function()
 		{
 			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;
-			if($scope.addDiseaseMode == 'create')
-			{
-				$scope.medicalRecord.diseases.push($scope.disease);
-			}
-			else if($scope.addDiseaseMode == 'edit')
-			{
-				for(var i = 0; i < $scope.medicalRecord.diseases.length; i++)
-				{
-					if(i == idx)
-					{
-						var disease = $scope.medicalRecord.diseases[i];
-						disease.disease_id_type = $scope.disease.disease_id_type;
-						disease.disease_id = $scope.disease_id;
-						disease.name = $scope.disease.name;
-						break;
-					}
-				}
-			}
+			$scope.medicalRecord.diseases.push($scope.disease);
+		}
+
+		$scope.selectDisease = function(selectedDisease)
+		{
+			$scope.disease = selectedDisease;
 		}
 
 		$scope.removeDisease = function(index)

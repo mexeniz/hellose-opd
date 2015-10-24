@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
 var MedicalRecord = mongoose.model('MedicalRecord');
+var Disease = mongoose.model('Disease');
 
 /* GET patients page. */
 router.get('/', function(req, res, next) {
@@ -52,7 +53,7 @@ router.get('/info/:patid', function(req, res, next) {
                       message: 'Patient not found!'
                   });
               }
-              res.json(patient) ;
+              res.json(patient);
           });
 
     // RESERVE FOR MEDICAL RECORDS
