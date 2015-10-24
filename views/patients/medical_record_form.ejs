@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-          <tr ng-repeat="disease in medicalRecord.diseases"> 
+          <tr ng-repeat="disease in medicalRecord.diseases">
           <td>{{ disease.disease_id_type }}</td>
           <td>{{ disease.disease_id }}</td>
           <td>{{ disease.name }}</td>
@@ -29,7 +29,7 @@
     <button type="button" class="btn btn-primary" ng-click="showAddDisease('create')">Add disease</button>
     <div class="form-group">
       <label>Symptoms:</label>
-      <textarea class="form-control" rows="5" ng-model="disease.symptoms"></textarea>
+      <textarea class="form-control" rows="5" ng-model="medicalRecord.symptoms"></textarea>
     </div>
     <button type="submit" id="submit" class="btn btn-primary">Submit</button>
   </form>
