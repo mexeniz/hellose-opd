@@ -53,7 +53,29 @@ router.get('/info/:patid', function(req, res, next) {
                       message: 'Patient not found!'
                   });
               }
-              res.json(patient);
+
+              var options = {
+                path: 'medical_record.diseases',
+                model: 'Disease'
+              };
+
+              if (err) return res.json(500);
+              
+              // Get disease info and return it
+              Patient.populate(patient, options, function (err, patient) {
+                if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+                }
+                if(!patient) {
+                    return res.json(404, {
+                        message: 'Patient not found!'
+                    });
+                }
+                res.json(patient);
+              });
+
           });
 
     // RESERVE FOR MEDICAL RECORDS

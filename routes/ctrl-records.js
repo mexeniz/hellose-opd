@@ -48,9 +48,14 @@ router.post('/medical/insert/:patient', function(req, res, next) {
       req.patient.medical_record.push(medicalRecord._id);
       req.patient.save(function(err, patient) {
 
-      // Return it
       if(err){ return next(err); }
-      res.json(medicalRecord);
+
+      MedicalRecord.populate(medicalRecord, 'diseases', function(err, medicalRecord) {
+        // Get disease info and return it
+        if(err){ return next(err); }
+        res.json(medicalRecord);
+      });
+      
     });
   });
 });
@@ -80,7 +85,7 @@ router.put('/physical/update/:physid', function(req, res, next) {
             if(!physicalrecord) {
                 return res.end('No such No such Physical Record');
             }
-            return res.json(physicalrecord);
+            res.json(physicalrecord);
         });
     });
 });
@@ -108,7 +113,12 @@ router.put('/medical/update/:medid', function(req, res, next) {
           if(!medicalrecord) {
               return res.end('No such a medical Record');
           }
-          return res.json(medicalrecord);
+
+          MedicalRecord.populate(medicalrecord, 'diseases', function(err, medicalrecord) {
+            // Get disease info and return it
+            if(err){ return next(err); }
+            res.json(medicalrecord);
+          });
       });
   });
 });

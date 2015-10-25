@@ -283,6 +283,19 @@ app.controller('InfoCtrl', [
 			medical_records_fac.getDiseaseList(selectedType, $scope.diseaseData);
 		}
 
+		$scope.getDiseaseText = function(diseaseList)
+		{
+			var diseaseText = '';
+			console.log(diseaseList);
+			for(var i = 0; i < diseaseList.length; i++)
+			{
+				var disease = diseaseList[i];
+
+				disease += disease.disease_id_type + '/' + disease.disease_id + '-' + disease.name + '</br>';
+			}
+			return diseaseText;
+		}
+
 		$scope.submitAddDisease = function()
 		{
 			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;

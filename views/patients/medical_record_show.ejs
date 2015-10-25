@@ -22,7 +22,7 @@
                 <tr ng-repeat="medical_record in patient.medical_record">
                 <td>{{ medical_record.date | date:'medium' }}</td>
                 <td>Dr.Johnny Bravo</td>
-                <td>{{ medical_record.diseases }}</td>
+                <td><div ng-repeat="disease in medical_record.diseases">[{{ disease.disease_id_type }}/{{ disease.disease_id }}]-{{ disease.name }}<br></div></td>
                 <td>{{ medical_record.symptoms }}</td>
                 <td>
                     <span class="btn btn-info" ng-click="showMedicalRecordForm('edit', medical_record)">
