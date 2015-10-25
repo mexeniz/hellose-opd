@@ -78,14 +78,6 @@ router.get('/info/:patid', function(req, res, next) {
 
           });
 
-    // RESERVE FOR MEDICAL RECORDS
-  /*req.patient.populate('physical_record', function(err, patient) {
-      if (err) { return next(err); }
-      req.patient.populate('medical_record', function(err, patient) {
-        if (err) { return next(err); }
-        res.json(patient);
-  });
-  });*/
 });
 
 

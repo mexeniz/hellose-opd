@@ -246,6 +246,7 @@ app.controller('InfoCtrl', [
 		$scope.showMedModal = false;
 		$scope.showAddDiseaseModal = false;
 		$scope.diseaseIdOptions = [ 'ICD10', 'SNOMED', 'DRG' ];
+
 		$scope.showMedicalRecordForm = function(mode,medRecord){
 			$scope.mode = mode;
 
@@ -259,7 +260,6 @@ app.controller('InfoCtrl', [
 			$scope.showMedModal = !$scope.showMedModal;
 		}
 
-
 		$scope.showAddDisease = function()
 		{
 			$scope.selectedDiseaseIdType = $scope.diseaseIdOptions[0];
@@ -268,8 +268,6 @@ app.controller('InfoCtrl', [
 			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;
 		};
 
-
-		//$scope.selectedDiseaseIdType = $scope.diseaseIdOptions[0];
 		$scope.diseaseData = [];
 		$scope.searchDisease = function(keyword)
 		{

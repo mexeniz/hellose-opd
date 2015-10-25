@@ -23,7 +23,11 @@
           </tr>
       </tbody>
     </table>
+    <div align="center" style="color: grey" ng-show="medicalRecord.diseases.length == 0">No disease added</div>
     <button type="button" class="btn btn-primary" ng-click="showAddDisease('create')">Add disease</button>
+
+    <hr>
+
     <div class="form-group">
       <label>Symptoms:</label>
       <textarea class="form-control" rows="5" ng-model="medicalRecord.symptoms"></textarea>
@@ -39,7 +43,7 @@
       <select class="form-control" ng-model="selectedDiseaseIdType" data-ng-options="option as option for option in diseaseIdOptions" ng-change="getDiseaseList(selectedDiseaseIdType)">
       </select>
       <label>Disease:</label>
-      <select class="form-control"  ng-options="diseaseChoice as diseaseChoice.name for diseaseChoice in diseaseData" ng-model="selectedDisease" ng-change="selectDisease(selectedDisease)">
+      <select class="form-control" ng-model="selectedDisease" ng-options="diseaseChoice as diseaseChoice.name for diseaseChoice in diseaseData" ng-change="selectDisease(selectedDisease)">
       </select>
     </div>
     <button type="submit" id="submit" class="btn btn-primary">Submit</button>
