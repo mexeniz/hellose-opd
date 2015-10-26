@@ -23,7 +23,7 @@ app.factory('patients_fac', ['$http', function($http){
 
 		o.getPatient = function(patient_id) {
 			return $http.get('/patients/info/' +patient_id);
-		}
+		};
 
 	  return o;
 	}]);
@@ -35,20 +35,19 @@ app.factory('physical_records_fac', ['$http', function($http){
 			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
 		    patient.physical_record.push(data);
 			});
-		}
-
+		};
 	  o.update = function(patient, pRecord)
 		{
 			return $http.put('/records/physical/update/'+ pRecord._id , pRecord).success(function(data){
 		    for(var i = 0; i < patient.physical_record.length; i++)
 				{
-					if(patient.physical_record[i]._id == data._id)
+					if(patient.physical_record[i]._id === data._id)
 					{
 						patient.physical_record[i] = data;
 					}
 				}
 			});
-		}
+		};
 
 	  o.delete = function(patient, pRecord, index) {
 			return $http.delete('/records/physical/delete/' + patient._id + '/' + pRecord._id).success(function() {
@@ -69,7 +68,7 @@ app.factory('medical_records_fac', ['$http', function($http){
 			var newMedRecord = {};
 			angular.copy(medRecord, newMedRecord);
 			console.log(medRecord.diseases.length);
-			if(medRecord.diseases.length > 0) newMedRecord.diseases = [];
+			if(medRecord.diseases.length > 0){newMedRecord.diseases = [];}
 			for(var i = 0; i < medRecord.diseases.length; i++)
 			{
 				console.log(medRecord.diseases[i]._id);
@@ -80,7 +79,7 @@ app.factory('medical_records_fac', ['$http', function($http){
 					// If succeeded, push it to display
 		    	patient.medical_record.push(data);
 			});
-		}
+		};
 
 	  o.update = function(patient, medRecord)
 		{
@@ -95,13 +94,13 @@ app.factory('medical_records_fac', ['$http', function($http){
 			return $http.put('/records/medical/update/'+ medRecord._id , newMedRecord).success(function(data){
 					for(var i = 0; i < patient.medical_record.length; i++)
 					{
-						if(patient.medical_record[i]._id == data._id)
+						if(patient.medical_record[i]._id === data._id)
 						{
 							patient.medical_record[i] = data;
 						}
 					}
 			});
-		}
+		};
 
 		o.delete = function(patient, medRecord, index) {
 			return $http.delete('/records/medical/delete/' + patient._id + '/' + medRecord._id).success(function() {
@@ -116,14 +115,14 @@ app.factory('medical_records_fac', ['$http', function($http){
 			return $http.get('/diseases/list/', keyword).success(function(data) {
 				diseaseData = data;
 			});
-		}
+		};
 
 		o.getDiseaseList = function(id_type, diseaseData)
 		{
 			return $http.get('/diseases/listByIdType/' + id_type).success(function(data) {
 				angular.copy(data, diseaseData);
 			});
-		}
+		};
 
 	  return o;
 	}]);
@@ -187,7 +186,7 @@ app.controller('InfoCtrl', [
 			patients_fac.getPatient($scope.patient_id).success(function(data){
 				$scope.patient = data;
 		    });
-		}
+		};
 
 		// PHYSICAL RECORD
 		$scope.showPhysModal = false;
@@ -195,18 +194,18 @@ app.controller('InfoCtrl', [
 
 			$scope.mode = mode;
 
-			if(mode == 'edit'){
+			if(mode === 'edit'){
 				$scope.physicalRecord = {};
 				angular.copy(pRecord, $scope.physicalRecord);
 			}
 
-			else if(mode == 'create'){
+			else if(mode === 'create'){
 				$scope.physicalRecord = {};
-			};
+			}
 
 			$scope.showPhysModal = !$scope.showPhysModal ;
 
-		}
+		};
 		$scope.generatePhysicalRecord = function()
 		{
 			var pRecord = {
@@ -223,11 +222,11 @@ app.controller('InfoCtrl', [
 		$scope.submitPhysicalRecord = function()
 		{
 
-			if($scope.mode == 'create'){
+			if($scope.mode === 'create'){
 				physical_records_fac.add($scope.patient, $scope.physicalRecord);
 			}
 
-			else if($scope.mode == 'edit')
+			else if($scope.mode === 'edit')
 			{
 				physical_records_fac.update($scope.patient, $scope.physicalRecord);
 			}
@@ -250,15 +249,15 @@ app.controller('InfoCtrl', [
 		$scope.showMedicalRecordForm = function(mode,medRecord){
 			$scope.mode = mode;
 
-			if(mode == 'edit'){
+			if(mode === 'edit'){
 				$scope.medicalRecord = {};
 				angular.copy(medRecord, $scope.medicalRecord);
-			}else if(mode == 'create'){
+			}else if(mode === 'create'){
 				$scope.medicalRecord = {};
 				$scope.medicalRecord.diseases = [];
-			};
+			}
 			$scope.showMedModal = !$scope.showMedModal;
-		}
+		};
 
 		$scope.showAddDisease = function()
 		{
@@ -272,14 +271,14 @@ app.controller('InfoCtrl', [
 		$scope.searchDisease = function(keyword)
 		{
 			medical_records_fac.searchDisease($scope.disease.disease_id_type, keyword, $scope.diseaseData);
-		}
+		};
 
 
 		$scope.getDiseaseList = function(selectedType)
 		{
 			console.log(selectedType);
 			medical_records_fac.getDiseaseList(selectedType, $scope.diseaseData);
-		}
+		};
 
 		$scope.getDiseaseText = function(diseaseList)
 		{
@@ -292,29 +291,29 @@ app.controller('InfoCtrl', [
 				disease += disease.disease_id_type + '/' + disease.disease_id + '-' + disease.name + '</br>';
 			}
 			return diseaseText;
-		}
+		};
 
 		$scope.submitAddDisease = function()
 		{
 			$scope.showAddDiseaseModal = !$scope.showAddDiseaseModal;
 			$scope.medicalRecord.diseases.push($scope.disease);
-		}
+		};
 
 		$scope.selectDisease = function(selectedDisease)
 		{
 			$scope.disease = selectedDisease;
-		}
+		};
 
 		$scope.removeDisease = function(index)
 		{
 			for(var i = 0; i < $scope.medicalRecord.diseases.length; i++)
 			{
-				if(i == index) {
+				if(i === index) {
 					$scope.medicalRecord.diseases.splice(i,1) ;
 					break;
 				}
 			}
-		}
+		};
 
 		$scope.generateMedicalRecord = function()
 		{
@@ -332,11 +331,11 @@ app.controller('InfoCtrl', [
 		$scope.submitMedicalRecord = function()
 		{
 
-			if($scope.mode == 'create'){
+			if($scope.mode === 'create'){
 				medical_records_fac.add($scope.patient, $scope.medicalRecord);
 			}
 
-			else if($scope.mode == 'edit')
+			else if($scope.mode === 'edit')
 			{
 				medical_records_fac.update($scope.patient, $scope.medicalRecord);
 			}
@@ -374,7 +373,7 @@ app.directive('modal', function () {
         scope.title = attrs.title;
 
         scope.$watch(attrs.visible, function(value){
-          if(value == true)
+          if(value === true)
             $(element).modal('show');
           else
             $(element).modal('hide');

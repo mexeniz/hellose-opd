@@ -11,5 +11,15 @@
   "boss": true,
   "eqnull": true,
   "node": true,
-  "esnext": true
+  "esnext": true,
+  "globals": { // Globals variables.
+        "jasmine": true,
+        "angular": true,
+        "browser": true,
+        "element": true,
+        "by":true,
+        "io":true,
+        "_":false,
+        "$":false
+    }
 }

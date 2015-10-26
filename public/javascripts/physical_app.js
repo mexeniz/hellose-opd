@@ -44,7 +44,7 @@ app.controller('LoginCtrl', [
 	'$location',
 	'$stateParams', 
 	function($scope , $location ,$stateParams){
-		$scope.title = "This is Title"
+		$scope.title = "This is Title";
 	 	console.log('login');
 	 $scope.loginSubmit = function() {
 	 	console.log('Submit');
