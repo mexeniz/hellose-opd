@@ -4,19 +4,19 @@
 //////////////////////////
 
 var gulp = require('gulp');
-var watch = require('gulp-watch');
+//var watch = require('gulp-watch');
 var nodemon =  require('gulp-nodemon');
 
-var src = {
-  js: '*.js'
-};
+//var src = {
+//  js: '*.js'
+//};
 
 gulp.task('default', function() {
 	nodemon(
-		{ script: 'bin/www'
-          , ext: 'js'}
+		{ script: 'bin/www', 
+		ext: 'js'}
     ).on('restart', function () {
-      	console.log('restarted!');
+      	console.log('restart finished due to changes');
 
     });
 });
