@@ -2,8 +2,7 @@
         <div class="col-md-12">
           <div class="panel panel-info" style=" color: black; width: auto ; font-size: 20px">
               <div class="panel-heading" style="background-color:#31708f ; color: white;">
-                <h3 class="panel-title" style="font-size: 30px">Prescription Record <button type="button" class="btn btn-primary" ng-click="showPhysicalRecordForm('create')">Create</button>
-                <button type="button" class="btn btn-info" ng-click="generatePhysicalRecord()">Generate</button>
+                <h3 class="panel-title" style="font-size: 30px">Prescription Record <button type="button" class="btn btn-primary" ng-click="showPresForm()">Create</button>
                 </h3>
               </div>
               <div class="panel-body">
@@ -17,10 +16,10 @@
               </tr>
             </thead>
             <tbody>
-                <tr>
-                <td>xx/xx/xx</td>
-                <td>Pending</td>
-                <td>Dr.Johnny Bravo</td>
+                <tr ng-repeat="pres in prescription_record">
+                <td>{{ pres.date }}</td>
+                <td>{{ pres.status }}</td>
+                <td>{{ pres.doctor }} {{ pres.med_dosage_list }}</td>
                 <td>
                     <span class="btn btn-info">
                       View Detail
@@ -35,7 +34,7 @@
                 </tr>
             </tbody>
           </table>
-          <div align="center" style="color: grey" ng-show="patient.physical_record.length == 0">No prescription record</div>
+          <div align="center" style="color: grey" ng-show="prescription_record.length == 0">No prescription record</div>
           </div>
         </div>
       </div>
