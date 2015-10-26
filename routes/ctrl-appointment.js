@@ -16,7 +16,6 @@ var mongoose = require('mongoose');
 var Appointment = mongoose.model('Appointment');
 
 //Get Request on the root of this controller
-
 router.get('/', function(req,res){
 	//Callback function on get finished
 	//Render index.ejs
