@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 
 var PrescriptionsSchema = new Schema({
     date: { type: Date, default: Date.now } ,
-    med_dosage_list: [ medicine: { type: mongoose.Schema.Types.ObjectId, ref: 'Medicine' }, dosage: 'String'],
+    med_dosage_list: [ medicine: { type: mongoose.Schema.Types.ObjectId, ref: 'Medicine' }, dosage: 'String', howTo: 'String'],
     status: 'String',
     patient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
     doctor: 'String',
