@@ -39,6 +39,7 @@ var main_routes = require('./routes/ctrl-main');
 var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
 var diseases_routes = require('./routes/ctrl-diseases');
+var prescription_routes = require('./routes/ctrl-prescriptions');
 
 app.use('/', main_routes);
 app.use('/records', records_routes);

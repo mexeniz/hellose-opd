@@ -15,3 +15,8 @@ router.get('/', function(req, res, next) {
 router.get('/home', function(req, res, next) {
   res.render('main/home');
 });
+
+router.get('/demo', function(req, res, next) {
+  res.render('pharmacist/prescription');
+});
+
