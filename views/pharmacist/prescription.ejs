@@ -1,7 +1,9 @@
 <!doctype html>
     <%- include ../include/header.ejs %>
-    <body>
+
+    <body ng-app="prescriptions" ng-controller="ListCtrl" >
     <%- include ../include/snap_header.ejs %>
+
     <div class="container" style="color: black; width: auto" >
         <h1>Prescription List</h1>
 
@@ -34,12 +36,12 @@
             </thead>
 
             <tbody>
-                <tr ng-repeat="prescription in presciptions">
+                <tr ng-repeat="prescription in prescriptions">
                     <td>{{ prescription.date }}</td>
                     <td>{{ prescription.patient_name }} {{ prescription.patient_lastname }}</td>
                     <td>{{ prescription.status }}</td>
                     <td>
-                        <span class="btn btn-primary" ng-click="showMedicalRecordForm('edit', medical_record)">
+                        <span class="btn btn-primary" ng-click="">
                             <i class="fa fa-list" ></i>
                         </span>
                     </td>
@@ -49,8 +51,9 @@
 
     </div>
 
-    <script src="/javascripts/pharmacist_app.js"></script>
     
     <%- include ../include/snap_footer.ejs %>
+
+    <script src="/javascripts/pharmacist_app.js"></script>
   </body>
 </html>
