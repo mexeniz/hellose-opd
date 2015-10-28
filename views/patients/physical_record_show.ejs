@@ -20,7 +20,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="physical_record in patient.physical_record">
+                <tr ng-repeat="physical_record in patient.physical_record | orderBy: 'date':true">
                 <td> {{ physical_record.date | date:'medium' }} </td>
                 <td> {{ physical_record.weight }}</td>
                 <td> {{ physical_record.height }}</td>

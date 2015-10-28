@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
 var MedicalRecord = mongoose.model('MedicalRecord');
+var Prescription = mongoose.model('Prescription');
 var Disease = mongoose.model('Disease');
 
 /* GET patients page. */
@@ -42,6 +43,7 @@ router.get('/info/:patid', function(req, res, next) {
     Patient.findOne({patient_id: id})
           .populate('physical_record')
           .populate('medical_record')
+          .populate('prescription_record')
           .exec(function(err, patient) {
               if(err) {
                 return res.json(500, {
@@ -58,22 +60,22 @@ router.get('/info/:patid', function(req, res, next) {
                 path: 'medical_record.diseases',
                 model: 'Disease'
               };
-
-              if (err) return res.json(500);
               
               // Get disease info and return it
               Patient.populate(patient, options, function (err, patient) {
-                if(err) {
-                return res.json(500, {
-                    message: 'Error getting patient.'
+                if(err) return next(err);
+
+                var options2 = {
+                  path: 'prescription_record.med_dosage_list.medicine',
+                  model: 'Medicine'
+                };
+
+                // Get medicine info
+                Patient.populate(patient, options2, function(err, patient) {
+                  if(err) return next(err);
+                  res.json(patient);
                 });
-                }
-                if(!patient) {
-                    return res.json(404, {
-                        message: 'Patient not found!'
-                    });
-                }
-                res.json(patient);
+                
               });
 
           });
