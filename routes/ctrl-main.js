@@ -16,6 +16,12 @@ router.get('/home', function(req, res, next) {
   res.render('main/home');
 });
 
-router.get('/prescriptions', function(req, res, next) {
-  res.render('pharmacist/prescription');
+/* GET import schedule page. */
+router.get('/import_schedule', function(req, res, next) {
+  res.render('mockup/import_schedule');
+});
+
+/* GET import schedule page. */
+router.get('/create_appointment', function(req, res, next) {
+  res.render('mockup/create_appointment');
 });
