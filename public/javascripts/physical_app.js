@@ -59,7 +59,6 @@ app.controller('MainCtrl', [
 	'$stateParams', 
 	function($scope , posts,$stateParams){
 	  $scope.test = 'Hello world!';
-
 }]);
 
 })();
