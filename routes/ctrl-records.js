@@ -10,6 +10,8 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
+var MedicalRecord = mongoose.model('MedicalRecord');
+var Disease = mongoose.model('Disease');
 
 // Get form to create new Physical Record
 router.get('/physical/create/:patid', function(req, res, next) {
@@ -36,26 +38,26 @@ router.post('/physical/insert/:patient', function(req, res, next) {
 
 // Insert new Medical Record
 router.post('/medical/insert/:patient', function(req, res, next) {
- // Do Something....
- /* var physicalRecord = new PhysicalRecord(req.body);
-  physicalRecord.save(function(err, physicalRecord){
-    if(err){ return next(err); }
-    req.patient.physical_record.push(physicalRecord._id);
-    req.patient.save(function(err, patient) {
+
+  var medicalRecord = new MedicalRecord(req.body);
+  console.log(medicalRecord);
+  // Save new medical record
+  medicalRecord.save(function(err, medicalRecord){
+      // Update patient's medical record
       if(err){ return next(err); }
-      res.json(physicalRecord);
+      req.patient.medical_record.push(medicalRecord._id);
+      req.patient.save(function(err, patient) {
+
+      if(err){ return next(err); }
+
+      MedicalRecord.populate(medicalRecord, 'diseases', function(err, medicalRecord) {
+        // Get disease info and return it
+        if(err){ return next(err); }
+        res.json(medicalRecord);
+      });
+      
     });
-  });*/
-});
-
-// Get form to edit the Physical Record
-router.get('/physical/edit/:physid', function(req, res, next) {
-    res.render('records/physical/edit' , { _id: req.params.physid});
-});
-
-// Get form to edit the Medical Record
-router.get('/medical/edit/:medid', function(req, res, next) {
-    res.render('records/medical/edit' , { _id: req.params.medid});
+  });
 });
 
 // Update the Physical Record
@@ -68,12 +70,14 @@ router.put('/physical/update/:physid', function(req, res, next) {
         if(!physicalrecord) {
             return res.end('No such Physical Record');
         }
+
         // Check If there are exist field.
         physicalrecord['weight'] = req.body['weight'] ? req.body['weight'] : physicalrecord['weight'];
         physicalrecord['height'] = req.body['height'] ? req.body['height'] : physicalrecord['height'];
         physicalrecord['blood_pressure'] = req.body['blood_pressure'] ? req.body['blood_pressure'] : physicalrecord['blood_pressure'];
         physicalrecord['pulse'] = req.body['pulse'] ? req.body['pulse'] : physicalrecord['pulse'];
         physicalrecord['temperature'] = req.body['temperature'] ? req.body['temperature'] : physicalrecord['temperature'];
+
         physicalrecord.save(function(err, physicalrecord){
             if(err) {
                 return res.send('500: Internal Server Error', 500);
@@ -81,14 +85,42 @@ router.put('/physical/update/:physid', function(req, res, next) {
             if(!physicalrecord) {
                 return res.end('No such No such Physical Record');
             }
-            return res.render('records/physical/edit', {physicalrecord: physicalrecord, flash: 'Saved.'});
+            res.json(physicalrecord);
         });
     });
 });
 
 // Update the Medical Record
 router.put('/medical/update/:medid', function(req, res, next) {
-    // Do Something..
+  var id = req.params.medid;
+  MedicalRecord.findOne({_id: id}, function(err, medicalrecord){
+      if(err) {
+          return res.send('500: Internal Server Error', 500);
+      }
+      if(!medicalrecord) {
+          return res.end('No such a medical Record');
+      }
+
+      medicalrecord.prescription = req.body['prescription'] ? req.body['prescription'] : medicalrecord['prescription'];
+      medicalrecord.symptoms = req.body['symptoms'] ? req.body['symptoms'] : medicalrecord['symptoms'];
+      medicalrecord.diseases = req.body['diseases'] ? req.body['diseases'] : medicalrecord['diseases'];
+      medicalrecord.doctor = req.body['doctor'] ? req.body['doctor'] : medicalrecord['doctor'];
+
+      medicalrecord.save(function(err, medicalrecord){
+          if(err) {
+              return res.send('500: Internal Server Error', 500);
+          }
+          if(!medicalrecord) {
+              return res.end('No such a medical Record');
+          }
+
+          MedicalRecord.populate(medicalrecord, 'diseases', function(err, medicalrecord) {
+            // Get disease info and return it
+            if(err){ return next(err); }
+            res.json(medicalrecord);
+          });
+      });
+  });
 });
 
 // Delete the Physical Record
@@ -102,11 +134,25 @@ router.delete('/physical/delete/:patid/:physid', function(req, res, next) {
             if(!physicalrecord) {
                 return res.end('No such physicalrecord');
             }
+
+            res.json({ message: 'Successfully deleted' });
+
         });
 });
 // Delete the Medical Record
 router.delete('/medical/delete/:patid/:medid', function(req, res, next) {
-    // Do Something..
+  var id = req.params.medid;
+  MedicalRecord.findOneAndRemove({_id: id}, function(err, medicalrecord){
+          if(err) {
+              return res.send('500: Internal Server Error', 500);
+          }
+          if(!medicalrecord) {
+              return res.end('No such a medical record');
+          }
+
+          res.json({ message: 'Successfully deleted' });
+
+      });
 });
 router.param('patient', function(req, res, next, id) {
   var query = Patient.findById(id);

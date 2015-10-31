@@ -1,0 +1,43 @@
+<div class="row" >
+        <div class="col-md-12">
+          <div class="panel panel-info" style=" color: black; width: auto ; font-size: 20px">
+              <div class="panel-heading" style="background-color:#31708f ; color: white;">
+
+                <h3 class="panel-title" style="font-size: 30px">Medical Record <button type="button" class="btn btn-primary" ng-click="showMedicalRecordForm('create')">Create</button>
+                <button type="button" class="btn btn-info" ng-click="generateMedicalRecord()">Generate</button>
+                </h3>
+              </div>
+              <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Doctor's name</th>
+                <th>Disease</th>
+                <th>Symptom</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="medical_record in patient.medical_record | orderBy: 'date':true">
+                <td>{{ medical_record.date | date:'medium' }}</td>
+                <td>Dr.Johnny Bravo</td>
+                <td><div ng-repeat="disease in medical_record.diseases">[{{ disease.disease_id_type }}/{{ disease.disease_id }}]-{{ disease.name }}<br></div></td>
+                <td>{{ medical_record.symptoms }}</td>
+                <td>
+                    <span class="btn btn-info" ng-click="showMedicalRecordForm('edit', medical_record)">
+                      <i class="fa fa-pencil" ></i>
+                    </span>
+                    <span class="btn btn-danger" ng-click="removeMedicalRecord(medical_record, $index)">
+                      <i class="fa fa-trash-o" ></i>
+                    </span>
+                </td>
+                </tr>
+
+            </tbody>
+          </table>
+          <div align="center" style="color: grey" ng-show="patient.medical_record.length == 0">No medical record</div>
+          </div>
+        </div>
+      </div>
+    </div>

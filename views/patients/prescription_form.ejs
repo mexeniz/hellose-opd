@@ -1,0 +1,54 @@
+<modal title="Prescription Form" visible="showPresModal">
+  <label>Medicines:</label>
+  <form ng-submit="submitPrescription()">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Dosage</th>
+          <th>How to</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr ng-repeat="med_dosage in prescription.med_dosage_list">
+          <td>{{ med_dosage.medicine.name }}</td>
+          <td>{{ med_dosage.dosage }}</td>
+          <td>{{ med_dosage.howTo }}</td>
+          <td>
+              <span class="btn btn-danger" ng-click="removeMedicine($index)">
+                <i class="fa fa-trash-o" ></i>
+              </span>
+          </td>
+          </tr>
+      </tbody>
+    </table>
+    <div align="center" style="color: grey" ng-show="prescription.med_dosage_list.length == 0">No medicine added</div>
+    <button type="button" class="btn btn-primary" ng-click="showAddMedicine()">Add medicine</button>
+
+    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+  </form>
+</modal>
+
+<modal title="Add medicine" visible="showAddMedicineModal">
+  <form ng-submit="submitAddMedicine()">
+    <div class="form-group col-md-12">
+      <div class="col-md-6">
+        <label>Medicine name</label>
+        <select class="form-control"  ng-options="medicine.name for medicine in medicineList track by medicine._id" ng-model="med_dosage.medicine">
+
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label>Dosage</label>
+        <input type="text" class="form-control" placeholder="Enter dosage" ng-model="med_dosage.dosage"></input>
+      </div>
+      
+      <div class="col-md-12">
+        <label>How to:</label>
+        <textarea class="form-control" rows="5" ng-model="med_dosage.howTo"></textarea>
+      </div>
+    </div>
+    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+  </form>
+</modal>

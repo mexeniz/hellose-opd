@@ -1,0 +1,51 @@
+<modal title="Medical Record Form" visible="showMedModal">
+  <label>Diseases:</label>
+  <form ng-submit="submitMedicalRecord()">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID Type</th>
+          <th>Disease ID</th>
+          <th>Disease Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr ng-repeat="disease in medicalRecord.diseases">
+          <td>{{ disease.disease_id_type }}</td>
+          <td>{{ disease.disease_id }}</td>
+          <td>{{ disease.name }}</td>
+          <td>
+              <span class="btn btn-danger" ng-click="removeDisease($index)">
+                <i class="fa fa-trash-o" ></i>
+              </span>
+          </td>
+          </tr>
+      </tbody>
+    </table>
+    <div align="center" style="color: grey" ng-show="medicalRecord.diseases.length == 0">No disease added</div>
+    <button type="button" class="btn btn-primary" ng-click="showAddDisease('create')">Add disease</button>
+
+    <hr>
+
+    <div class="form-group">
+      <label>Symptoms:</label>
+      <textarea class="form-control" rows="5" ng-model="medicalRecord.symptoms"></textarea>
+    </div>
+    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+  </form>
+</modal>
+
+<modal title="Add disease" visible="showAddDiseaseModal">
+  <form ng-submit="submitAddDisease()">
+    <div class="form-group">
+      <label>ID Type:</label>
+      <select class="form-control" ng-model="selectedDiseaseIdType" data-ng-options="option as option for option in diseaseIdOptions" ng-change="getDiseaseList(selectedDiseaseIdType)">
+      </select>
+      <label>Disease:</label>
+      <select class="form-control" ng-model="selectedDisease" ng-options="diseaseChoice as diseaseChoice.name for diseaseChoice in diseaseData" ng-change="selectDisease(selectedDisease)">
+      </select>
+    </div>
+    <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+  </form>
+</modal>

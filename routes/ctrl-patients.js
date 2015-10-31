@@ -5,6 +5,9 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
+var MedicalRecord = mongoose.model('MedicalRecord');
+var Prescription = mongoose.model('Prescription');
+var Disease = mongoose.model('Disease');
 
 /* GET patients page. */
 router.get('/', function(req, res, next) {
@@ -37,29 +40,46 @@ router.post('/insert', function(req, res, next) {
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
-    Patient.findOne({patient_id: id}, function(err, patient){
-          if(err) {
-              return res.json(500, {
-                  message: 'Error getting patient.'
+    Patient.findOne({patient_id: id})
+          .populate('physical_record')
+          .populate('medical_record')
+          .populate('prescription_record')
+          .exec(function(err, patient) {
+              if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+              }
+              if(!patient) {
+                  return res.json(404, {
+                      message: 'Patient not found!'
+                  });
+              }
+
+              var options = {
+                path: 'medical_record.diseases',
+                model: 'Disease'
+              };
+              
+              // Get disease info and return it
+              Patient.populate(patient, options, function (err, patient) {
+                if(err) return next(err);
+
+                var options2 = {
+                  path: 'prescription_record.med_dosage_list.medicine',
+                  model: 'Medicine'
+                };
+
+                // Get medicine info
+                Patient.populate(patient, options2, function(err, patient) {
+                  if(err) return next(err);
+                  res.json(patient);
+                });
+                
               });
-          }
-          if(!patient) {
-              return res.json(404, {
-                  message: 'No such patient.'
-              });
-          }
-          patient.populate('physical_record', function(err, p) {
-              res.json(p) ;
+
           });
-    });
-    // RESERVE FOR MEDICAL RECORDS
-  /*req.patient.populate('physical_record', function(err, patient) {
-      if (err) { return next(err); }
-      req.patient.populate('medical_record', function(err, patient) {
-        if (err) { return next(err); }
-        res.json(patient);
-  });
-  });*/
+
 });
 
 

@@ -34,13 +34,15 @@
                 <i class="fa fa-pencil"></i>
               </a>
             </td>
-            <td><span class="btn btn-danger"><i class="fa fa-trash-o" ng-click="removePatient({{ patient.patient_id }})"></i></span></td>
+            <td><span class="btn btn-danger"><i class="fa fa-trash-o" ng-click="removePatient(patient.patient_id)"></i></span></td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <%- include ../include/snap_footer.ejs %>
+
+    <script src="/javascripts/patients_app.js"></script>
 
   </body>
 </html>

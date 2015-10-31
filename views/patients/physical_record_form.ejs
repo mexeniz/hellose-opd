@@ -1,0 +1,26 @@
+<modal title="Physical Record Form" visible="showPhysModal">
+  <form ng-submit="submitPhysicalRecord()">
+    <input class="form-control hide" id="physId" ng-model="id"></input>
+    <div class="form-group">
+      <label for="weight">Weight</label>
+      <input type="text" class="form-control" id="weight" placeholder="Enter weight" ng-model="physicalRecord.weight"></input>
+    </div>
+    <div class="form-group">
+      <label for="height">Height</label>
+      <input type="text" class="form-control" id="height" placeholder="Enter height" ng-model="physicalRecord.height"></input>
+    </div>
+    <div class="form-group">
+      <label for="blood_pressure">Blood Pressure</label>
+      <input type="text" class="form-control" id="blood_pressure" placeholder="Enter blood pressure" ng-model="physicalRecord.blood_pressure"></input>
+    </div>
+    <div class="form-group">
+      <label for="pulse">Pulse</label>
+      <input type="text" class="form-control" id="pulse" placeholder="Enter pulse" ng-model="physicalRecord.pulse"></input>
+    </div>
+    <div class="form-group">
+      <label for="temperature">Temperature </label>
+      <input type="text" class="form-control" id="temperature" placeholder="Enter temperature celcius" ng-model="physicalRecord.temperature"></input>
+    </div>
+    <button type="submit" id="submit" class="btn btn-default">Submit</button>
+  </form>
+</modal>

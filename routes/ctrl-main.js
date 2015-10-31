@@ -15,3 +15,11 @@ router.get('/', function(req, res, next) {
 router.get('/home', function(req, res, next) {
   res.render('main/home');
 });
+
+/* GET register page. */
+router.get('/register', function(req, res, next) {
+  res.render('main/register');
+});
+router.get('/prescriptions', function(req, res, next) {
+  res.render('pharmacist/prescription');
+});

@@ -9,7 +9,10 @@ var engine = require('ejs-locals');
 var mongoose = require('mongoose');
 require('./models/model-patients');
 require('./models/model-physicalrecords');
-
+require('./models/model-medicalrecords');
+require('./models/model-diseases');
+require('./models/model-prescriptions');
+require('./models/model-medicines');
 
 
 var app = express();
@@ -36,10 +39,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 var main_routes = require('./routes/ctrl-main');
 var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
+var diseases_routes = require('./routes/ctrl-diseases');
+var prescriptions_routes = require('./routes/ctrl-prescriptions');
+var medicines_routes = require('./routes/ctrl-medicines');
 
 app.use('/', main_routes);
 app.use('/records', records_routes);
 app.use('/patients', patients_routes);
+app.use('/diseases', diseases_routes);
+app.use('/prescriptions', prescriptions_routes);
+app.use('/medicines', medicines_routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

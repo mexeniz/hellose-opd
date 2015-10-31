@@ -1,0 +1,46 @@
+<div class="row" >
+        <div class="col-md-12">
+          <div class="panel panel-info" style=" color: black; width: auto ; font-size: 20px">
+              <div class="panel-heading" style="background-color:#31708f ; color: white;">
+                <h3 class="panel-title" style="font-size: 30px">Physical Record <button type="button" class="btn btn-primary" ng-click="showPhysicalRecordForm('create')">Create</button>
+                <button type="button" class="btn btn-info" ng-click="generatePhysicalRecord()">Generate</button>
+                </h3>
+              </div>
+              <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Weight</th>
+                <th>Height</th>
+                <th>Blood pressure</th>
+                <th>Pulse</th>
+                <th>Temperature</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="physical_record in patient.physical_record | orderBy: 'date':true">
+                <td> {{ physical_record.date | date:'medium' }} </td>
+                <td> {{ physical_record.weight }}</td>
+                <td> {{ physical_record.height }}</td>
+                <td> {{ physical_record.blood_pressure }}</td>
+                <td> {{ physical_record.pulse }}</td>
+                <td> {{ physical_record.temperature }}</td>
+                <td>
+                    <span class="btn btn-info" ng-click="showPhysicalRecordForm('edit',physical_record)">
+                      <i class="fa fa-pencil" ></i>
+                    </span>
+                    <span class="btn btn-danger" ng-click="removePhysicalRecord(physical_record, $index)">
+                      <i class="fa fa-trash-o" ></i>
+                    </span>
+                </td>
+                </tr>
+
+            </tbody>
+          </table>
+          <div align="center" style="color: grey" ng-show="patient.physical_record.length == 0">No physical record</div>
+          </div>
+        </div>
+      </div>
+    </div>
