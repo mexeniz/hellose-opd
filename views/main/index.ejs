@@ -11,6 +11,51 @@
 
   </head>
   <body ng-app="main">
+        <ui-view></ui-view>
+    </div>
+
+    <!-- Template -->
+    <script type="text/ng-template" id="/login.html">
+      <div class="login-page">
+        <div class="img-container">
+          <div class="text-center pull-right photo">
+            <img src="/images/flat-avatar.png" class="user-avatar img-circle img-responsive" />
+              <h1>Hospital OPD System<br/> <span>Software Engineering</span><br /></h1>
+            </div>
+          </div>
+          
+          <div class="form-content">
+            <form role="form" class="bottom-75" ng-submit="loginSubmit()">
+            <div class="table-form">
+              <div class="form-groups">
+                <div class="form-group">
+                  <input type="text" class="form-control input-lg" id="" placeholder="EMAIL" ng-model="email">
+                </div>
+                <div class="form-group">
+                  <input type="password" class="form-control input-lg" id="" placeholder="PASSWORD" ng-model="password">
+                </div>
+              </div>
+              <!-- <a href="/#/home" class="btn btn-default login"><br><img src="images/arrow.png" alt=""></a> -->
+              <div class="button-container">
+                <button type="submit" class="btn btn-default login"><img src="images/arrow.png" alt=""></button>
+              </div> 
+            </div>
+            <div class="remember">
+              <label class="checkbox1" for="Option"> 
+                <input id="Option" type="checkbox" class="">
+                <span></span>
+              </label>
+              remember me
+              <span class="pass"> forgot password?</span>
+            </div>      
+            </form>
+          </div>      
+        </div>
+      </div>
+    </script>
+
+
+    <script type="text/ng-template" id="/home.html">
     <div class="">
       <div ui-view="" class="ng-scope">
           <div class="ui-base ng-scope">
@@ -30,7 +75,7 @@
                               <!-- MENU BAR --> 
                               
                               <ul class="snap-ul">
-                                <li class="active"><a href="/home">HOME</a></li>
+                                <li ng-class="{active: $state.includes('home')}" class="active"><a ui-sref="overview" href="#/home">HOME</a></li>
                                 <li><a href="patients/">PATIENTS</a></li>
                                 <li><a href="physical_records/">PHYSICAL RECORDS</a></li>
                                 <li><a href="medical_records/">MEDICAL RECORDS</a></li>
@@ -72,7 +117,7 @@
           </div>
         </div>
       </div>
-
+    </script>
     <!-- bower:js -->
     <script src="/lib/angular/angular.js"></script>
     <script src="/lib/angular-mocks/angular-mocks.js"></script>

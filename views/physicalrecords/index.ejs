@@ -1,0 +1,29 @@
+<h2>Physicalrecords</h2>
+<p>View physicalrecords or <a href="edit.html">add</a> a physicalrecord.</p>
+<% if (locals.flash) { %>
+    <p><%= flash %></p>
+<% } %>
+<ul>
+    <li class="header">
+        <span class="field">Date</span>
+        <span class="field">Weight</span>
+        <span class="field">Height</span>
+        <span class="field">Blood_pressure</span>
+        <span class="field">Pulse:</span>
+        <span class="field">Temperature</span>
+        <span class="field">Actions</span>
+    </li>
+    <% for(var i=0; i<physicalrecords.length; i++) {%>
+            <li class="row">
+                <span class="field"><%= physicalrecords[i]['date'] %></span>
+                <span class="field"><%= physicalrecords[i]['weight'] %></span>
+                <span class="field"><%= physicalrecords[i]['height'] %></span>
+                <span class="field"><%= physicalrecords[i]['blood_pressure'] %></span>
+                <span class="field"><%= physicalrecords[i]['pulse:'] %></span>
+                <span class="field"><%= physicalrecords[i]['temperature'] %></span>
+                <span class="field">
+                    <a href="<%= physicalrecords[i]._id %>" >physicalrecords</a>
+                </span>
+            </li>
+    <% } %>
+</ul>
