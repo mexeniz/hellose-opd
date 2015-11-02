@@ -11,8 +11,9 @@ app.controller('LoginCtrl', [
 		$scope.title = "This is Title"
 	 	console.log('login');
 	 $scope.loginSubmit = function() {
-	 	console.log("email : " + this.email + " pw : "+ this.password);
-		$window.location = "/home" ;
+	 	$http.post('/login', { username: $scope.username, password: $scope.password }).success(function(data) {
+	 		console.log(data);
+	 	});
 	};
 }]);
 
