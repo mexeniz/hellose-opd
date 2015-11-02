@@ -4,13 +4,12 @@
     <body>
 
     <%- include ../include/snap_header.ejs %>
-
-    <div class="container" style="color: black; width: auto" >
-      <div class="page-header">
-        <h1>Create Appointment</h1>
-      </div>
+    <br><br><br><br>
       <div class="col-md-6">
-        <form class="form" role="form">
+        <div class="panel panel-default" >
+          <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Create Appointment</h1></div>
+          <div class="panel-body">
+            <form class="form" role="form" style="color:black;">
               <div class="form-group">
                 <label>Symptoms/Causes:</label><br>
                 <textarea class="form-control" rows="5"></textarea>
@@ -35,10 +34,14 @@
                 </div>
               </div>
               
-              <button class="btn btn-primary">Next</button> 
+              <button class="btn btn-default" style="background:#18aa8d ; color:white;">Next</button> 
         </form>
-      </div>
-    </div>
+
+          </div>
+        </div>
+        
+        
+      
 
     <%- include ../include/snap_footer.ejs %>
 

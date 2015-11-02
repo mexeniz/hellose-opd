@@ -20,7 +20,6 @@ router.get('/home', function(req, res, next) {
 router.get('/import_schedule', function(req, res, next) {
   res.render('mockup/import_schedule');
 });
-
 /* GET import schedule page. */
 router.get('/create_appointment', function(req, res, next) {
   res.render('mockup/create_appointment');
@@ -28,4 +27,9 @@ router.get('/create_appointment', function(req, res, next) {
 
 router.get('/patientViewAppointment', function(req,res) {
 	res.render('mockup/patientViewAppointment');
+  });
+/* GET register page. */
+router.get('/register', function(req, res, next) {
+  res.render('main/register');
+
 });
