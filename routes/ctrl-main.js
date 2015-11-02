@@ -25,3 +25,7 @@ router.get('/import_schedule', function(req, res, next) {
 router.get('/create_appointment', function(req, res, next) {
   res.render('mockup/create_appointment');
 });
+
+router.get('/patientViewAppointment', function(req,res) {
+	res.render('mockup/patientViewAppointment');
+});
