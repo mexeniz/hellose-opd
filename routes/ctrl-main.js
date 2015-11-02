@@ -16,21 +16,15 @@ router.get('/home', function(req, res, next) {
   res.render('main/home');
 });
 
-<<<<<<< HEAD
 /* GET import schedule page. */
 router.get('/import_schedule', function(req, res, next) {
   res.render('mockup/import_schedule');
 });
-
 /* GET import schedule page. */
 router.get('/create_appointment', function(req, res, next) {
   res.render('mockup/create_appointment');
-=======
+  });
 /* GET register page. */
 router.get('/register', function(req, res, next) {
   res.render('main/register');
-});
-router.get('/prescriptions', function(req, res, next) {
-  res.render('pharmacist/prescription');
->>>>>>> Mma-rcl
 });
