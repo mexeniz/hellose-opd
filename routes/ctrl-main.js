@@ -23,6 +23,14 @@ router.get('/', function(req, res, next) {
 /* GET home page. */
 router.get('/home', isAuthenticated, function(req, res, next) {
 	console.log(req.user);
+	/*if(req.user.role !== 'doctor') 
+	{
+		res.render('error', {
+	      message: 'You are just a ' + req.user.role + '!',
+	      error: { status: 401 }
+	    });
+	    return;
+	}*/
   res.render('main/home');
 });
 
