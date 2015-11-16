@@ -47,9 +47,16 @@ app.controller('ListCtrl', [
 		  	}
 		};
 
+		$scope.medicineList = {};
+
 		$scope.showMedicineListModal = false;
-		$scope.showMedicineList = function() {
+		$scope.showMedicineList = function(prescription) {
 			$scope.showMedicineListModal = true;
+			angular.copy(prescription,$scope.medicineList);
+		};
+
+		$scope.completePrescription = function(prescription){
+			
 		};
 	}
 ]);

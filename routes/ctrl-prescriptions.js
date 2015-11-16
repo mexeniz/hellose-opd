@@ -60,3 +60,5 @@ router.delete('/delete/:pres_id', function(req, res, next) {
     res.json(result);
   });
 });
+
+// Complete Prescription
