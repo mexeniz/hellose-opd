@@ -7,21 +7,14 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
-
-// As with any middleware it is quintessential to call next()
-// if the user is authenticated
-var isAuthenticated = function (req, res, next) {
-  if (req.isAuthenticated())
-    return next();
-  res.redirect('/');
-}
+var Middleware = require('../middlewares/Middleware');
 
 /* GET login page. */
 router.get('/', function(req, res, next) {
   res.render('main/login');
 });
 /* GET home page. */
-router.get('/home', isAuthenticated, function(req, res, next) {
+router.get('/home', Middleware.isAuthenticated, function(req, res, next) {
 	console.log(req.user);
 	/*if(req.user.role !== 'doctor') 
 	{

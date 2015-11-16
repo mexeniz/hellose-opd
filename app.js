@@ -10,7 +10,6 @@ var flash = require('connect-flash');
 //DB Connection
 var mongoose = require('mongoose');
 var passport = require('passport');
-var ConnectRoles = require('connect-roles');
 
 // Models
 require('./models/model-patients');
@@ -23,7 +22,6 @@ require('./models/model-users');
 
 // Configs
 require('./config/passport');
-
 
 var app = express();
 
@@ -47,26 +45,9 @@ app.use(session({ cookie: { maxAge: 60000 }, secret: 'SECRET', resave: true,
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect-roles
-var user = new ConnectRoles({
-  failureHandler: function (req, res, action) {
-    // optional function to customise code that runs when
-    // user fails authorisation
-    var accept = req.headers.accept || '';
-    res.status(403);
-    if (~accept.indexOf('html')) {
-      res.render('access-denied', {action: action});
-    } else {
-      res.send('Access Denied - You don\'t have permission to: ' + action);
-    }
-  }
-});
-
 // Passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(user.middleware());
 
 
 //Routers
@@ -83,13 +64,6 @@ app.use('/patients', patients_routes);
 app.use('/diseases', diseases_routes);
 app.use('/prescriptions', prescriptions_routes);
 app.use('/medicines', medicines_routes);
-
-//anonymous users can only access the home page
-//returning false stops any more rules from being
-//considered
-user.use(function (req, action) {
-  if (!req.isAuthenticated()) return action === 'access login page';
-});
 
 
 // catch 404 and forward to error handler
