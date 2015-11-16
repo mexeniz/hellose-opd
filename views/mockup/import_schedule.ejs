@@ -1,0 +1,57 @@
+<!doctype html>
+    <%- include ../include/header.ejs %>
+
+    <body>
+
+    <%- include ../include/snap_header.ejs %>
+
+    <br><br><br><br>
+      <div class="col-md-6">
+        <div class="panel panel-default" >
+          <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Import Schedule</h1></div>
+          <div class="panel-body">
+            <form class="form-horizontal" style="color:black;">
+              <fieldset>
+
+              <!-- Select Basic -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="Department">Department</label>
+                <div class="col-md-4">
+                  <select id="DEpartment" name="DEpartment" class="form-control">
+                    <option value="1">Internal Medicine</option>
+                    <option value="2">Cardiology</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- File Button --> 
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="Schedule">Schedule</label>
+                <div class="col-md-4">
+                  <input id="Schedule" name="Schedule" class="input-file" type="file">
+                </div>
+              </div>
+
+              <!-- Button -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="import"></label>
+                <div class="col-md-4">
+                  <button id="import" name="import" class="btn btn-primary" style="background:#18aa8d ; color:white;">Import</button>
+                </div>
+              </div>
+
+              </fieldset>
+              </form>
+
+          </div>
+        </div>
+        
+        
+      </form>
+      
+    </div>
+
+    <%- include ../include/snap_footer.ejs %>
+
+  </body>
+</html>

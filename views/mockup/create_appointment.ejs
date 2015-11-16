@@ -1,0 +1,53 @@
+<!doctype html>
+    <%- include ../include/header.ejs %>
+
+    <body>
+
+    <%- include ../include/snap_header.ejs %>
+    <br><br><br><br>
+      <div class="col-md-6">
+        <div class="panel panel-default" >
+          <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Create Appointment</h1></div>
+          <div class="panel-body">
+            <form class="form" role="form" style="color:black;">
+              <div class="form-group">
+                <label>Symptoms/Causes:</label><br>
+                <textarea class="form-control" rows="5"></textarea>
+              </div>              
+              
+              <div class="form-group">
+                <label>Appointment criteria: </label>
+                <span class="btn-group" data-toggle="buttons-radio">
+                  <button class="btn active">Doctor</button>
+                  <button class="btn">Department</button>
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label>Select doctor: </label>
+                <div>
+                  <select data-placeholder="Choose a doctor..." class="chosen-select" style="width:350px;" tabindex="2">
+                    <option value=""></option>
+                    <option value="Dr.Karn">Dr. Karn GG - Computer Deparment</option>
+                    <option value="Dr.North">Dr. North Oppa - Computer Department</option>
+                  </select>
+                </div>
+              </div>
+              
+              <button class="btn btn-default" style="background:#18aa8d ; color:white;">Next</button> 
+        </form>
+
+          </div>
+        </div>
+        
+        
+      
+
+    <%- include ../include/snap_footer.ejs %>
+
+    <script type="text/javascript">
+    $(".chosen-select").chosen();
+    </script>
+
+  </body>
+</html>

@@ -127,6 +127,75 @@ app.factory('medical_records_fac', ['$http', function($http){
 	  return o;
 	}]);
 
+
+app.factory('prescription_records_fac', ['$http', function($http){
+	  	var o = {};
+	  	// Use Route! Connect to backend and retrieve data
+
+	  	o.add = function(patient, prescription)
+		{
+
+			return $http.post('/prescriptions/insert/'+ patient._id , prescription).success(function(data){
+					// If succeeded, push it to display
+		    	patient.prescription_record.push(data);
+			});
+		};
+
+	  	o.update = function(patient, prescription)
+		{
+
+			return $http.put('/prescriptions/update/'+ prescription._id , prescription).success(function(data){
+					for(var i = 0; i < patient.prescription_record.length; i++)
+					{
+						if(patient.prescription_record[i]._id === data._id)
+						{
+							patient.prescription_record[i] = data;
+						}
+					}
+			});
+		};
+
+		o.delete = function(patient, prescription) {
+			return $http.delete('/prescriptions/delete/' + prescription._id).success(function() {
+				// If succeeded, delete it from view
+				for(var i = 0; i < patient.prescription_record.length; i++)
+				{
+					if(patient.prescription_record[i]._id === prescription._id)
+					{
+						patient.prescription_record.splice(i, 1);
+					}
+				}
+			});
+	  	};
+
+
+	  return o;
+	}]);
+
+app.factory('medicines_fac', ['$http', function($http){
+	  var o = {
+	  	medicineList: []
+	  };
+
+		o.getMedicineList = function()
+		{
+			return $http.get('/medicines/all').success(function(data) {
+				angular.copy(data, o.medicineList);
+			});
+			/*var medicineList = [];
+			if(medicineList.length === 0) // Load medicine data from server if not loaded yet
+			{
+				medicineList = [ { _id: 'A', name: 'Yakult' },
+							{ _id: 'B', name: 'Brand' } ];
+			}
+			
+			angular.copy(medicineList, o.medicineList);*/
+
+		};
+
+	  return o;
+	}]);
+
 app.controller('ListCtrl', [
 	'$scope',
 	'patients_fac',
@@ -179,13 +248,22 @@ app.controller('InfoCtrl', [
 	'patients_fac',
 	'physical_records_fac',
 	'medical_records_fac',
-	function($scope, patients_fac, physical_records_fac, medical_records_fac){
+	'prescription_records_fac',
+	'medicines_fac',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac){
 		$scope.init = function(patient_id) {
+			// Get patient info
 			$scope.patient_id = patient_id;
-			console.log($scope.patient_id);
+			
 			patients_fac.getPatient($scope.patient_id).success(function(data){
 				$scope.patient = data;
+
+				// Get prescription record
+		    	//prescription_records_fac.getAllPrescriptions($scope.patient._id);
+
 		    });
+
+		    
 		};
 
 		// PHYSICAL RECORD
@@ -347,6 +425,98 @@ app.controller('InfoCtrl', [
 			if(confirm("Are you sure?") ){
 				medical_records_fac.delete($scope.patient, medRecord, index);
 			}
+		};
+
+
+		// PRESCRIPTION RECORD
+		$scope.prescription = {}; // Hold prescription form value (temp)
+
+		$scope.showPresModal = false;
+
+		$scope.showPresForm = function(mode, prescription) {
+			
+			$scope.mode = mode;
+
+			if(mode === 'create')
+			{
+				// Reset form
+				$scope.prescription = {};
+				$scope.prescription.med_dosage_list = [];
+			}
+			else if(mode === 'edit')
+			{
+				// Copy it to form
+				angular.copy(prescription, $scope.prescription);
+			}
+			else
+			{
+				console.error('showPresForm: mode ' + mode + " not found!");
+			}
+			
+
+			$scope.showPresModal = true;
+		};
+
+
+		$scope.med_dosage = {};
+		
+		$scope.showAddMedicineModal = false;
+
+		$scope.medicineList = medicines_fac.medicineList;
+		// Get medicine list
+		
+		$scope.showAddMedicine = function()
+		{
+			$scope.showAddMedicineModal = true;
+			medicines_fac.getMedicineList();
+			// Reset from
+			$scope.med_dosage = {};
+
+		};
+
+		$scope.submitAddMedicine = function() {
+			$scope.showAddMedicineModal = !$scope.showAddMedicineModal;
+			
+			// Add to prescription
+			$scope.prescription.med_dosage_list.push($scope.med_dosage);
+		};
+
+		$scope.removeMedicine = function(index) {
+			// Remove index th med_dosage
+			$scope.prescription.med_dosage_list.splice(index, 1);
+		};
+
+		$scope.submitPrescription = function() {
+			var mode = $scope.mode;
+			if(mode === 'create')
+			{
+				// Add patient id to prescription
+				$scope.prescription.patient = $scope.patient;
+
+				// Call factory to submit it to server
+				prescription_records_fac.add($scope.patient, $scope.prescription);
+
+			}
+			else if(mode === 'edit')
+			{
+				// Call factory to send updated prescription to server
+				prescription_records_fac.update($scope.patient, $scope.prescription);
+
+			}
+			else
+			{
+				console.error('submitPrescription: mode ' + mode + " not found!");
+			}
+
+			
+			$scope.showPresModal = !$scope.showPresModal;
+		};
+
+		$scope.removePrescription = function(prescription) {
+			if(confirm("Are you sure?")){
+				prescription_records_fac.delete($scope.patient, prescription);
+			}
+			
 		};
 
 	}

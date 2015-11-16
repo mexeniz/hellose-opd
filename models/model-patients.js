@@ -18,7 +18,8 @@ var PatientsSchema = new Schema({
     blood_type: 'String',
     tel_number: [{ type: String, min: 9, max: 10 }],
     physical_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PhysicalRecord' }],
-    medical_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MedicalRecord' }]
+    medical_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MedicalRecord' }],
+    prescription_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' }]
 });
 
 module.exports = mongoose.model('Patient', PatientsSchema);

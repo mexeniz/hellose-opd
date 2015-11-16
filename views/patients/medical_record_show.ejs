@@ -19,7 +19,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="medical_record in patient.medical_record">
+                <tr ng-repeat="medical_record in patient.medical_record | orderBy: 'date':true">
                 <td>{{ medical_record.date | date:'medium' }}</td>
                 <td>Dr.Johnny Bravo</td>
                 <td><div ng-repeat="disease in medical_record.diseases">[{{ disease.disease_id_type }}/{{ disease.disease_id }}]-{{ disease.name }}<br></div></td>
