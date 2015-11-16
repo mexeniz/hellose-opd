@@ -7,7 +7,7 @@ var PrescriptionControl = require('../controllers/PrescriptionControl');
 /*
  * Get prescription by patient
  */
-router.get('/:patient_id', function(req, res, next) {
+router.get('/patient/:patient_id', function(req, res, next) {
   var patientId = req.params.patient_id;
 
   PrescriptionControl.getPrescriptionByPatientId(patientId, function(err, result)

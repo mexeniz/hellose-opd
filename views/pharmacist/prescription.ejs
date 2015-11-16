@@ -35,10 +35,10 @@
             <tbody>
                 <tr ng-repeat="prescription in prescriptions | filter:search |  filter:statusFilter | orderBy:'date':true">
                     <td>{{ prescription.date }}</td>
-                    <td>{{ prescription.patient_name }} {{ prescription.patient_lastname }}</td>
+                    <td>{{ prescription.patient.firstname }} {{ prescription.patient.lastname }}</td>
                     <td>{{ prescription.status }}</td>
                     <td>
-                        <span class="btn btn-primary" ng-click="showMedicineList()">
+                        <span class="btn btn-primary" ng-click="showMedicineList(prescription)">
                             <i class="fa fa-list" ></i>
                         </span>
                     </td>

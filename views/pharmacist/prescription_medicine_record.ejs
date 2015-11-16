@@ -1,5 +1,5 @@
 <modal title="Medicine List" visible="showMedicineListModal">
-	<label>Doctor: </label>
+	<label>Doctor: {{prescription.doctor}}</label>
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -9,7 +9,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="a in [1,2,3]">
+			<tr ng-repeat="medicine in medicineList">
 				<td>{{a}}</td>
 				<td>{{a}}</td>
 				<td>{{a}}</td>
