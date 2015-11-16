@@ -4,6 +4,14 @@ var mongoose = require('mongoose');
 var Prescription = mongoose.model('Prescription');
 var Patient = mongoose.model('Patient');
 
+module.exports.getAllPrescriptions = function(callback)
+{
+	Prescription.find()
+		.populate('patient', 'firstname lastname')
+		.populate('med_dosage_list.medicine')
+		.exec(callback);
+};
+
 module.exports.getPrescriptionByPatientId = function(patientId, callback)
 {
 	var id = mongoose.Types.ObjectId(patientId);
@@ -30,10 +38,7 @@ module.exports.addPrescription = function(patientId, prescriptionData, callback)
 			patient.save(function(err, patient) {
 				if(err) { return callback(err); }
 				// Get medicine data
-				prescription.populate('med_dosage_list.medicine', function(err, pres) {
-					if(err) { return callback(err); }
-					callback(err, pres);
-				});
+				prescription.populate('med_dosage_list.medicine', callback);
 			});
 
 		});
@@ -58,10 +63,7 @@ module.exports.editPrescription = function(presId, newPres, callback)
 
 			pres.med_dosage_list = newPres.med_dosage_list;
 			// Populate new med dosage
-			pres.populate('med_dosage_list.medicine', function(err, pres) {
-				if(err) { return callback(err); }
-				callback(err, pres);
-			});
+			pres.populate('med_dosage_list.medicine', callback);
 		});
 
 	});

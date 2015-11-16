@@ -17,6 +17,16 @@ router.get('/:patient_id', function(req, res, next) {
     });
 });
 
+// Get all prescriptions
+router.get('/list', function(req, res, next){ 
+
+  PrescriptionControl.getAllPrescriptions(function(err, result) {
+    if(err) { next(err); }
+    res.json(result);
+  });
+
+});
+
 // Add new prescription
 router.post('/insert/:patient_id', function(req, res, next) {
   var prescriptionData = req.body;
