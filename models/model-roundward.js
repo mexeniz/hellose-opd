@@ -12,7 +12,7 @@ Schema = mongoose.Schema;
 
 //Create Appointment Schema
 var RoundwardSchema = new Schema({
-	date: {type:Date}, //Date YYYY-MM-DD
+	date: {type:Date, index: {unique: true, dropDups: true}}, //Date YYYY-MM-DD
 	time: {type:'String'} //Morning or Afternoon
 
 });

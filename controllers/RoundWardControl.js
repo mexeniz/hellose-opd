@@ -3,18 +3,56 @@
 var mongoose = require('mongoose');
 var Roundward = mongoose.model('Roundward');
 var User = mongoose.model('User');
+var Doctor = mongoose.model('Doctor');
 
-module.exports.addRoundWard = function (rwinfo,callback) {
+module.exports.addRoundWard = function(doctor_id,rwinfo,callback) {
  //Roundward Frontend need to pack field in the form correspond to 
  //schema's Attribute (name must be the same)
-  var roundward_new = new Roundward(rwinfo);
- //Save into Database
-  Roundward.save(function(err, roundward_new){
-    if(!err){ 
-    	callback(err,roundward_new);
-    }else{
-    	return callback(err); 
-	}
+
+ //Find Doctor to add the Roundward
+  Doctor.findOne({department:"cardiology"},function(err,thisDoctor){
+    if(err || !thisDoctor){ 
+      return callback(err,'NO DOC FOUND');
+    }else{ 
+      //Found Doctor
+      var roundward_entity = new Roundward(rwinfo);  //Create Roundward 
+      Roundward.findOne({date:roundward_entity.date},function(err2,result){
+        if(err2){
+          return callback(err2);
+        }else if(result){
+          //Already Exist ! : Add To Array
+          Doctor.findByIdAndUpdate(
+                    thisDoctor._id,
+                    { $addToSet: {"availableRoundward": result._id}},
+                    {  safe: true, upsert: true},
+             function(err4, model) {
+               if(err){
+                return callback(err4);
+               }
+                callback(err4,thisDoctor);
+          });
+        }else if(!result){
+          //New Roundward ! : Add To Array
+          roundward_entity.save(function(err3,res){
+            if(err3){
+              return callback(err3);
+            }else{
+              //Add To Array
+              Doctor.findByIdAndUpdate(
+                    thisDoctor._id,
+                    { $addToSet: {"availableRoundward": res._id}},
+                    {  safe: true, upsert: true},
+             function(err4, model) {
+               if(err){
+                return callback(err4);
+               }
+                callback(err4,thisDoctor);
+          });
+            }
+          });
+        }
+      });
+    }
   });
 };
 

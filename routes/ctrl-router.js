@@ -50,14 +50,15 @@ router.get('/patientView', function(req,res){
 ////////////////////////////////////////////
 
 router.post('/addRoundward', function(req,res,next){
-
-	RoundWardControl.addRoundward(req.body,function(err,result){
+	var temp = {date:req.body['date'],
+				time:req.body['time']};
+	var doctor_id = req.body['doctor_id'];
+	RoundWardControl.addRoundWard(doctor_id,temp,function(err,result){
 		if(err){
-			return next(err);
-		}else{
-			return res.json(result);
-		}	
-	});	
+			return next(err); 
+		}
+		return res.json(result);
+	});
 });
 router.post('/cancelRoundward', function(req,res,next){
 	var doctor_id = req.body.userid;

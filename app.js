@@ -13,6 +13,7 @@ var passport = require('passport');
 
 // Models
 require('./models/model-patients');
+require('./models/model-doctors');
 require('./models/model-physicalrecords');
 require('./models/model-medicalrecords');
 require('./models/model-diseases');

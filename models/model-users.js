@@ -43,5 +43,4 @@ UserSchema.methods.generateJWT = function() {
     exp: parseInt(exp.getTime() / 1000),
   }, 'SECRET');
 };
-
-mongoose.model('User', UserSchema);
+module.exports =mongoose.model('User', UserSchema);
