@@ -2,7 +2,7 @@
 <html class="no-js">
   <head>
     <meta charset="utf-8">
-    <title>Hello SE : Hospital OPD System</title>
+    <title>Hello SE : iDOC System</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="/lib/fontawesome/css/font-awesome.css" />
@@ -15,19 +15,19 @@
         <div class="img-container">
           <div class="text-center pull-right photo">
             <img src="/images/flat-avatar.png" class="user-avatar img-circle img-responsive" />
-              <h1>Hospital OPD System<br/> <span>Software Engineering</span><br /></h1>
+              <h1 center>iDOC System &nbsp;  &nbsp; &nbsp;  &nbsp;</h1>
             </div>
           </div>
           
           <div class="form-content">
-            <form role="form" class="bottom-75" ng-submit="loginSubmit()">
+            <form role="form" class="bottom-75" action="login" method="post">
             <div class="table-form">
               <div class="form-groups">
                 <div class="form-group">
-                  <input type="text" class="form-control input-lg" id="" placeholder="EMAIL" ng-model="email">
+                  <input type="text" class="form-control input-lg" id="" placeholder="USERNAME" name="username">
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control input-lg" id="" placeholder="PASSWORD" ng-model="password">
+                  <input type="password" class="form-control input-lg" id="" placeholder="PASSWORD" name="password">
                 </div>
               </div>
               <!-- <a href="/#/home" class="btn btn-default login"><br><img src="images/arrow.png" alt=""></a> -->
@@ -36,16 +36,28 @@
               </div> 
             </div>
             <div class="remember">
+              <div class="row">          
               <label class="checkbox1" for="Option"> 
-                <input id="Option" type="checkbox" class="">
-                <span></span>
-              </label>
-              remember me
-              <span class="pass"> forgot password?</span>
-            </div>      
+                          <input id="Option" type="checkbox" class="">
+                          <span></span>
+                        </label>
+                        remember me           
+                </div>
+            <div class="" "row"="">
+              <br></br>
+              <div class="col-md-6">
+                  <span class="btn btn-default-lg" style=" color : #fff ;background:orange ; border-color:orange;">Forgot password</span>
+                </div>        
+               <div class="col-md-4">
+                  <span ng-click="showRegister()" class="btn btn-default-lg" style=" color : #fff ; background:orange ; border-color:orange;">Register</span>
+              </div>
+            </div>
+          </div>      
             </form>
           </div>      
         </div>
+
+
       </div>
 
     <!-- bower:js -->
@@ -61,5 +73,6 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="/javascripts/main_app.js"></script>
     <!-- endbuild -->
+    
   </body>
 </html>

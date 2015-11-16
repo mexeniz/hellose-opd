@@ -1,0 +1,178 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello SE : Hospital OPD System</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/lib/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="/lib/angular-snap/angular-snap.css" />
+    <link rel="stylesheet" href="/styles/main.css">
+
+  </head>
+  <body ng-app="main">
+    <div class="">
+      <div ui-view="" class="ng-scope">
+          <div class="ui-base ng-scope">
+            <div ui-view="" class="ng-scope">
+              <div class="dashboard-page ng-scope">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-sm-12 col-md-12 main ng-scope" ui-view="">
+                      <div class="ng-scope">
+                        <div class="snap-drawers">
+                          <snap-drawer class="snap-drawer snap-drawer-left">
+                            <div class="snap-menu">
+                              <div class="sidebar-header text-center">
+                                <img src="images/flat-avatar.png" alt="" class="sidebar-img img-circle">
+                              </div>
+
+                              <!-- MENU BAR --> 
+                              
+                              <ul class="snap-ul">
+                                <li class="active"><a href="/register">REGISTER</a></li>
+                                <li><a href="/">LOG IN</a></li>
+                              </ul>
+                            </div>
+                          </snap-drawer></div>
+                        <snap-dragger>
+                        </snap-dragger>
+                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px); background-color: white; width:80%">
+                        <br><br><br><br>
+                        <div class="container">
+                          <div class="panel panel-default" >
+                            <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Register</h1></div>
+                            <div class="panel-body">
+                              <form class="form-horizontal" style="color:black;">
+                              <!-- Text input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="textinput">SSN</label>  
+                                <div class="col-md-4">
+                                <input id="textinput" name="textinput" type="text" placeholder="1234567890123" class="form-control input-md" required="">
+                                  
+                                </div>
+                              </div>
+                              <!-- Text input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Email">Email</label>  
+                                <div class="col-md-4">
+                                <input id="Email" name="Email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required="">
+                                  
+                                </div>
+                              </div>
+                              <!-- Password input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Password">Password</label>
+                                <div class="col-md-2">
+                                  <input id="Password" name="Password" type="password" placeholder="" class="form-control input-md" required="">
+                                </div>
+                              </div>
+                              <!-- Password input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Password">Repeat Password</label>
+                                <div class="col-md-2">
+                                  <input id="Password" name="Password" type="password" placeholder="" class="form-control input-md" required="">
+                                </div>
+                              </div>
+
+                              <!-- Text input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="textinput">Firstname</label>  
+                                <div class="col-md-4">
+                                <input id="textinput" name="textinput" type="text" placeholder="Luke" class="form-control input-md" required="">
+                                  
+                                </div>
+                              </div>
+
+                              <!-- Text input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="">Lastname</label>  
+                                <div class="col-md-4">
+                                <input id="" name="" type="text" placeholder="Skywalker" class="form-control input-md" required="">
+                                  
+                                </div>
+                              </div>
+
+                              <!-- Multiple Radios (inline) -->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Gender">Gender</label>
+                                <div class="col-md-4"> 
+                                  <label class="radio-inline" for="Gender-0">
+                                    <input type="radio" name="Gender" id="Gender-0" value="M" checked="checked">
+                                    Male
+                                  </label> 
+                                  <label class="radio-inline" for="Gender-1">
+                                    <input type="radio" name="Gender" id="Gender-1" value="F">
+                                    Female
+                                  </label>
+                                </div>
+                              </div>
+
+                              <!-- Select Basic -->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="BloodType">Blood Type</label>
+                                <div class="col-md-2">
+                                  <select id="BloodType" name="BloodType" class="form-control">
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                    <option value="O">O</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <!-- Text input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Tel">Tel.</label>  
+                                <div class="col-md-4">
+                                <input id="Tel" name="Tel" type="text" placeholder="012345678" class="form-control input-md" required="">
+                                  
+                                </div>
+                              </div>
+                              <!-- Textarea -->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Address">Address</label>
+                                <div class="col-md-4">                     
+                                  <textarea class="form-control" id="Address" name="Address"></textarea>
+                                </div>
+                              </div>
+                              <!-- Button -->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="singlebutton"></label>
+                                <div class="col-md-4">
+                                  <button id="singlebutton" name="singlebutton" class="btn btn-default-lg" style="background:#18aa8d ; color:white;">Register</button>
+                                  <input type="reset" id="ResetButton" name="ResetButton" class="btn btn-danger" value="Reset"></button>
+                                </div>
+                              </div>
+
+                              </fieldset>
+                            </form>
+                            </div>
+                          </div>
+                          
+                        </div>
+                        
+                    </snap-content> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- bower:js -->
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/lib/angular-mocks/angular-mocks.js"></script>
+    <script src="/lib/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="/lib/angular-animate/angular-animate.js"></script>
+    <script src="/lib/snapjs/snap.js"></script>
+    <script src="/lib/angular-snap/angular-snap.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/javascripts/main_app.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>
