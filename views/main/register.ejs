@@ -43,7 +43,7 @@
                           <div class="panel panel-default" >
                             <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Register</h1></div>
                             <div class="panel-body">
-                              <form class="form-horizontal" style="color:black;">
+                              <form class="form-horizontal" style="color:black;" method="post" action="/register">
                               <!-- Text input-->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="textinput">SSN</label>  
@@ -54,9 +54,9 @@
                               </div>
                               <!-- Text input-->
                               <div class="form-group">
-                                <label class="col-md-4 control-label" for="Email">Email</label>  
+                                <label class="col-md-4 control-label" for="Username">Username</label>  
                                 <div class="col-md-4">
-                                <input id="Email" name="email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required="">
+                                <input id="Username" name="username" type="text" placeholder="abcdefg" class="form-control input-md" required="">
                                   
                                 </div>
                               </div>
@@ -72,6 +72,15 @@
                                 <label class="col-md-4 control-label" for="Password">Repeat Password</label>
                                 <div class="col-md-2">
                                   <input id="Password" name="repeatPassword" type="password" placeholder="" class="form-control input-md" required="">
+                                </div>
+                              </div>
+
+                              <!-- Text input-->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="Email">Email</label>  
+                                <div class="col-md-4">
+                                <input id="Email" name="email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required="">
+                                  
                                 </div>
                               </div>
 

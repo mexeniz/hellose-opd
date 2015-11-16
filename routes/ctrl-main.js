@@ -11,19 +11,21 @@ var Middleware = require('../middlewares/Middleware');
 
 /* GET login page. */
 router.get('/', function(req, res, next) {
+  // If user has logged in, show homepage
+  if(req.user)
+  {
+    res.render('main/home');
+  }
+  // If not, show login page
   res.render('main/login');
 });
+
 /* GET home page. */
-router.get('/home', Middleware.isAuthenticated, function(req, res, next) {
-	console.log(req.user);
-	/*if(req.user.role !== 'doctor') 
-	{
-		res.render('error', {
-	      message: 'You are just a ' + req.user.role + '!',
-	      error: { status: 401 }
-	    });
-	    return;
-	}*/
+router.get('/home', function(req, res, next) {
+  // If user is not logged in, redirect to login page
+  if(!req.user) return res.redirect('/');
+
+  // If logged in, show homepage
   res.render('main/home');
 });
 
@@ -53,19 +55,19 @@ router.post('/login', passport.authenticate('login', {
 }));
 
 /* GET Registration Page */
-router.get('/signup', function(req, res){
-  res.render('main/testRegister',{message: req.flash('message')});
+router.get('/register', function(req, res){
+  res.render('main/register',{message: req.flash('message')});
 });
 
 /* Handle Registration POST */
-router.post('/signup', passport.authenticate('signup', {
+router.post('/register', passport.authenticate('register', {
   successRedirect: '/home',
-  failureRedirect: '/signup',
+  failureRedirect: '/register',
   failureFlash : true 
 }));
 
   /* Handle Logout */
-router.get('/signout', function(req, res) {
+router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
 });
