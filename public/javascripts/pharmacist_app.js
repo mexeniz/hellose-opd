@@ -15,6 +15,16 @@ app.factory('prescriptions_fac', ['$http', function($http){
 	    });
 	  };
 
+	  o.complete = function(prescription){
+	  	return $http.post('complete/' + prescription._id).success(function(){
+			for(var i = 0  ; i < o.prescriptions.length  ; i++){
+					if(prescription._id === o.prescriptions[i]._id){
+						o.prescriptions[i].status = 'Completed';
+					}
+				}
+	  	});
+	  };
+
 	  return o;
 	}]);
 
@@ -50,13 +60,17 @@ app.controller('ListCtrl', [
 		$scope.medicineList = {};
 
 		$scope.showMedicineListModal = false;
+
 		$scope.showMedicineList = function(prescription) {
 			$scope.showMedicineListModal = true;
 			angular.copy(prescription,$scope.medicineList);
 		};
 
 		$scope.completePrescription = function(prescription){
-			
+			// update in db
+			prescriptions_fac.complete(prescription);
+			// fix data in angular
+			$scope.showMedicineListModal = false;
 		};
 	}
 ]);

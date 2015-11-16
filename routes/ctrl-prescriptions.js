@@ -62,3 +62,11 @@ router.delete('/delete/:pres_id', function(req, res, next) {
 });
 
 // Complete Prescription
+router.post('/complete/:pres_id', function(req, res, next){
+  var presId = req.params.pres_id;
+
+  PrescriptionControl.completePrescription(presId, function(err, result){
+    if(err) { next(err); }
+    res.json(result);
+  });
+});

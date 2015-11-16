@@ -81,3 +81,19 @@ module.exports.removePrescription = function(presId, callback)
 
 	});
 };
+
+module.exports.completePrescription = function(presId, callback)
+{
+	Prescription.findById(presId, function (err, pres){
+		if(err) { return callback(err); }
+
+		// Change status to complete
+		pres.status = 'Completed';
+		pres.save(function(err, pres) {
+
+			if(err) { return callback(err); }
+			// Populate new med dosage
+			pres.populate('med_dosage_list.medicine', callback);
+		});
+	});
+};
