@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
  */
 
 var PatientsSchema = new Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     patient_id: {type : 'String' , maxlength: 8 , trim : true , unique : true, required : true, dropDups: true},
     ssn: {type : 'String' , maxlength: 13 , trim : true , unique : true, required : true, dropDups: true},
     address: 'String',
