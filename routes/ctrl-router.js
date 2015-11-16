@@ -11,9 +11,9 @@ var express =require('express');
 var router = express.Router();
 module.exports = router;
 
-//Model Defining
-var mongoose = require('mongoose');
-var Appointment = mongoose.model('Appointment');
+// //Model Defining
+// var mongoose = require('mongoose');
+// var Appointment = mongoose.model('Appointment');
 
 ////////////////////////////////////////////
 //Class Required
@@ -45,10 +45,68 @@ router.get('/patientView', function(req,res){
 	res.render('appointment/patientViewAppointment');
 });
 
+////////////////////////////////////////////
+// RoundwardControl Funtion Rounting 
+////////////////////////////////////////////
 
+router.post('/addRoundward', function(req,res,next){
 
+	RoundWardControl.addRoundward(req.body,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}	
+	});	
+});
+router.post('/cancelRoundward', function(req,res,next){
+	var doctor_id = req.body.userid;
+	var roundward_id = req.body.rwID;
+	RoundWardControl.cancelRoundward(doctor_id,roundward_id,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}
+	});
+	
+});
+router.post('/getAvailableDateTime', function(req,res,next){
+	var doctor_id = req.body.userid;
+	RoundWardControl.getAvailableDateTime(doctor_id,function(err,result) {
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}
+	});
+});
+router.get('/importRoundward', function(req,res,next){
+	//Use This Place (Router) to Split File
+	var longStream = req.body;
+	RoundWardControl.importRoundward(longStream,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}
+	});
+	//Render Here
+	
+});
+router.get('/showImportRoundWard/', function(req,res,next){
+	//Default Call => Return Months.Now
+	//RoundWardControl.showImportRoundWard(req);
+	res.render('appointment/import_schedule');
+});
 
+router.get('/showAddRoundWard/', function(req,res,next){
+	//Default Call => Return Months.Now
+	var doctor_id = req.body.userid;
+	RoundWardControl.showAddRoundWard(doctor_id,function(err,result){
 
+	});
+});
 
 
 
