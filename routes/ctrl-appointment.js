@@ -15,12 +15,26 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Appointment = mongoose.model('Appointment');
 
+
+
 //Get Request on the root of this controller
 router.get('/', function(req,res){
 	//Callback function on get finished
 	//Render index.ejs
 	res.render('appointment/index');
 });
+router.get('/create', function(req,res){
+	//Callback function on get finished
+	//Render Appointment Creation View
+	res.render('appointment/createAppointment');
+});
+
+router.get('/patientView', function(req,res){
+	//Callback function on get finished
+	//Render Appointment Creation View
+	res.render('appointment/patientViewAppointment');
+});
+
 
 //POST Function To Create New Entry
 router.post('/insert',function(req,res,next){
