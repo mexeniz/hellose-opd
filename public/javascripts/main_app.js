@@ -8,7 +8,6 @@ app.controller('LoginCtrl', [
 	'$stateParams', 
 	'$http',
 	function($scope , $window ,$stateParams,$http){
-
 	 	$scope.loginSubmit = function() {
 	 		console.log("email : " + this.email + " pw : "+ this.password);
 			$window.location = "/home" ;

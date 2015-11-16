@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello SE : Hospital OPD System</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/lib/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="/lib/angular-snap/angular-snap.css" />
+    <link rel="stylesheet" href="/styles/main.css">
+
+  </head>
+  <body>
+      <div class="login-page">
+        <div class="img-container">
+          <div class="text-center pull-right photo">
+            <img src="/images/flat-avatar.png" class="user-avatar img-circle img-responsive" />
+              <h1>Hospital OPD System<br/> <span>Software Engineering</span><br /></h1>
+            </div>
+          </div>
+          
+          <form role="form" action="signup" method="post">
+            <div class="form-group">
+              <label for="username">Username:</label>
+              <input class="form-control" id="username" name="username">
+            </div>
+            <div class="form-group">
+              <label for="password">Password:</label>
+              <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="submit" class="btn btn-default">Register</button>
+          </form>
+
+        </div>
+      </div>
+
+    <!-- bower:js -->
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/lib/angular-mocks/angular-mocks.js"></script>
+    <script src="/lib/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="/lib/angular-animate/angular-animate.js"></script>
+    <script src="/lib/snapjs/snap.js"></script>
+    <script src="/lib/angular-snap/angular-snap.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <!-- endbuild -->
+  </body>
+</html>
