@@ -76,10 +76,11 @@ app.directive('modal', function () {
         scope.title = attrs.title;
 
         scope.$watch(attrs.visible, function(value){
-          if(value === true)
-            $(element).modal('show');
-          else
-            $(element).modal('hide');
+        	if(value === true){
+        		$(element).modal('show');
+        	}else{
+        		$(element).modal('hide');
+        	}
         });
 
         $(element).on('shown.bs.modal', function(){
