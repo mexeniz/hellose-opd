@@ -12,7 +12,7 @@ var router = express.Router();
 module.exports = router;
 
 // //Model Defining
-// var mongoose = require('mongoose');
+var mongoose = require('mongoose');
 // var Appointment = mongoose.model('Appointment');
 
 ////////////////////////////////////////////
@@ -52,7 +52,7 @@ router.get('/patientView', function(req,res){
 router.post('/addRoundward', function(req,res,next){
 	var temp = {date:req.body['date'],
 				time:req.body['time']};
-	var doctor_id = req.body['doctor_id'];
+	var doctor_id = mongoose.Types.ObjectId(req.body['doctorid']);
 	RoundWardControl.addRoundWard(doctor_id,temp,function(err,result){
 		if(err){
 			return next(err); 
@@ -73,7 +73,7 @@ router.post('/cancelRoundward', function(req,res,next){
 	
 });
 router.post('/getAvailableDateTime', function(req,res,next){
-	var doctor_id = req.body.userid;
+	var doctor_id = req.body['doctorid'];
 	RoundWardControl.getAvailableDateTime(doctor_id,function(err,result) {
 		if(err){
 			return next(err);

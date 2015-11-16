@@ -5,18 +5,28 @@ var Roundward = mongoose.model('Roundward');
 var User = mongoose.model('User');
 var Doctor = mongoose.model('Doctor');
 
-module.exports.addRoundWard = function(doctor_id,rwinfo,callback) {
+/*
+TEST CASE 
+{
+    "date" : "2015-11-15",
+    "time" : "AM",
+    "doctorid": "564a17045e402488288fc596"
+}
+
+*/
+module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
  //Roundward Frontend need to pack field in the form correspond to 
  //schema's Attribute (name must be the same)
 
  //Find Doctor to add the Roundward
-  Doctor.findOne({department:"cardiology"},function(err,thisDoctor){
+  Doctor.findOne({userId:doctorid},function(err,thisDoctor){
     if(err || !thisDoctor){ 
       return callback(err,'NO DOC FOUND');
     }else{ 
       //Found Doctor
       var roundward_entity = new Roundward(rwinfo);  //Create Roundward 
-      Roundward.findOne({date:roundward_entity.date},function(err2,result){
+      Roundward.findOne({date:roundward_entity.date,time:roundward_entity.time},
+        function(err2,result){
         if(err2){
           return callback(err2);
         }else if(result){
