@@ -38,7 +38,7 @@
                     <td>{{ prescription.patient_name }} {{ prescription.patient_lastname }}</td>
                     <td>{{ prescription.status }}</td>
                     <td>
-                        <span class="btn btn-primary" ng-click="">
+                        <span class="btn btn-primary" ng-click="showMedicineList()">
                             <i class="fa fa-list" ></i>
                         </span>
                     </td>
@@ -46,8 +46,8 @@
             </tbody>
         </table>
 
+        <%- include prescription_medicine_record.ejs %>
     </div>
-
     
     <%- include ../include/snap_footer.ejs %>
 
