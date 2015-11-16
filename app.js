@@ -21,6 +21,8 @@ require('./models/model-prescriptions');
 require('./models/model-medicines');
 require('./models/model-users');
 
+require('./models/model-roundward');
+
 // Configs
 require('./config/passport');
 
@@ -55,7 +57,7 @@ var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
 var diseases_routes = require('./routes/ctrl-diseases');
 
-var appointment_routes = require('./routes/ctrl-appointment');
+var appointment_routes = require('./routes/ctrl-router');
 
 var prescriptions_routes = require('./routes/ctrl-prescriptions');
 var medicines_routes = require('./routes/ctrl-medicines');
