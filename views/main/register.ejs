@@ -1,127 +1,121 @@
 <!doctype html>
 <html class="no-js">
-  <head>
-    <meta charset="utf-8">
-    <title>Hello SE : Hospital OPD System</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="/lib/fontawesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="/lib/angular-snap/angular-snap.css" />
-    <link rel="stylesheet" href="/styles/main.css">
-
-  </head>
-  <body ng-app="main">
-    <div class="">
-      <div ui-view="" class="ng-scope">
-          <div class="ui-base ng-scope">
-            <div ui-view="" class="ng-scope">
-              <div class="dashboard-page ng-scope">
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-sm-12 col-md-12 main ng-scope" ui-view="">
-                      <div class="ng-scope">
-                        <div class="snap-drawers">
-                          <snap-drawer class="snap-drawer snap-drawer-left">
-                            <div class="snap-menu">
-                              <div class="sidebar-header text-center">
-                                <img src="images/flat-avatar.png" alt="" class="sidebar-img img-circle">
-                              </div>
-
-                              <!-- MENU BAR --> 
-                              
-                              <ul class="snap-ul">
-                                <li class="active"><a href="/register">REGISTER</a></li>
-                                <li><a href="/">LOG IN</a></li>
-                              </ul>
-                            </div>
-                          </snap-drawer></div>
-                        <snap-dragger>
-                        </snap-dragger>
-                        <snap-content snap-opt-tap-to-close="false" class="snap-content" style="transform: translate3d(266px, 0px, 0px); background-color: white; width:80%">
-                        <br><br><br><br>
+  <%- include ../include/header.ejs %>
+  <body ng-app="register_app" ng-controller="registerController">
+    <%- include ../include/snap_header.ejs %>
+                        <br>
                         <div class="container">
                           <div class="panel panel-default" >
                             <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Register</h1></div>
                             <div class="panel-body">
-                              <form class="form-horizontal" style="color:black;" method="post" action="/register">
-                              <!-- Text input-->
+                              <form name="regForm" novalidate class="form-horizontal" style="color:black;" >
+                              
+                              <!-- SSN -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="textinput">SSN</label>  
                                 <div class="col-md-4">
-                                <input id="textinput" name="ssn" type="text" placeholder="1234567890123" class="form-control input-md" required="">
-                                  
+                                  <input id="textinput" name="ssn" ng-model="ssn" type="text" placeholder="1234567890123" class="form-control input-md" required ng-minlength="13" ng-maxlength="13" ng-pattern="/^\d+$/">
+                                  <span style="color:red" ng-show="regForm.ssn.$dirty && regForm.ssn.$invalid">
+                                    <span ng-show="regForm.ssn.$error.required">SSN is required.</span>
+                                    <span ng-show="regForm.ssn.$error.minlength">SSN must be length of 13.</span>
+                                    <span ng-show="regForm.ssn.$error.maxlength">SSN must be length of 13.</span>
+                                    <span ng-show="regForm.ssn.$error.pattern">SSN must contain only numbers.</span>
+                                  </span>
                                 </div>
                               </div>
-                              <!-- Text input-->
+
+                              <!-- Username -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Username">Username</label>  
                                 <div class="col-md-4">
-                                <input id="Username" name="username" type="text" placeholder="abcdefg" class="form-control input-md" required="">
-                                  
+                                  <input id="Username" name="username" ng-model="username" type="text" placeholder="abcdefg" class="form-control input-md" required ng-minlength="6">
+                                  <span style="color:red" ng-show="regForm.username.$dirty && regForm.username.$invalid">
+                                    <span ng-show="regForm.username.$error.required">Username is required.</span>
+                                    <span ng-show="regForm.username.$error.minlength">Username must contain at least 6 characters.</span>
+                                  </span>
                                 </div>
                               </div>
-                              <!-- Password input-->
+                              <!-- Password -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Password">Password</label>
-                                <div class="col-md-2">
-                                  <input id="Password" name="password" type="password" placeholder="" class="form-control input-md" required="">
-                                </div>
-                              </div>
-                              <!-- Password input-->
-                              <div class="form-group">
-                                <label class="col-md-4 control-label" for="Password">Repeat Password</label>
-                                <div class="col-md-2">
-                                  <input id="Password" name="repeatPassword" type="password" placeholder="" class="form-control input-md" required="">
+                                <div class="col-md-4">
+                                  <input id="Password" name="password" ng-model="password" type="password" placeholder="" class="form-control input-md" required ng-minlength="6" ng-change="resetNotMatchAlert()">
+                                  <span style="color:red" ng-show="regForm.password.$dirty && regForm.password.$invalid">
+                                    <span ng-show="regForm.password.$error.required">Password is required.</span>
+                                    <span ng-show="regForm.password.$error.minlength">Password must contain at least 6 characters.</span>
+                                  </span>
                                 </div>
                               </div>
 
-                              <!-- Text input-->
+                              <!-- Repeat Password -->
+                              <div class="form-group">
+                                <label class="col-md-4 control-label" for="RepeatPassword">Repeat Password</label>
+                                <div class="col-md-4">
+                                  <input id="RepeatPassword" name="repeatPassword" ng-model="repeatPassword" type="password" placeholder="" class="form-control input-md" required ng-change="resetNotMatchAlert()">
+                                  <span style="color:red" ng-show="regForm.repeatPassword.$dirty && regForm.repeatPassword.$invalid">
+                                    <span ng-show="regForm.repeatPassword.$error.required">Re-Password is required.</span>
+                                    <span ng-show="regForm.repeatPassword.$error.pwMatch">Re-Password is not matched.</span>
+                                  </span>
+                                  <span style="color:red" ng-show="pwNotMatch">
+                                    <span ng-show="pwNotMatch">Re-Password is not matched.</span>
+                                  </span>
+                                </div>
+                              </div>
+
+                              <!-- Email-->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Email">Email</label>  
                                 <div class="col-md-4">
-                                <input id="Email" name="email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required="">
-                                  
+                                  <input id="Email" name="email" ng-model="email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
+                                  <span style="color:red" ng-show="regForm.email.$dirty && regForm.email.$invalid">
+                                    <span ng-show="regForm.email.$error.required">Email is required.</span>
+                                    <span ng-show="regForm.email.$error.pattern">This email is invalid.</span>
+                                  </span>
                                 </div>
                               </div>
 
-                              <!-- Text input-->
+                              <!-- Firstname -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="textinput">Firstname</label>  
                                 <div class="col-md-4">
-                                <input id="textinput" name="firstname" type="text" placeholder="Luke" class="form-control input-md" required="">
-                                  
+                                  <input id="textinput" name="firstname" ng-model="firstname" type="text" placeholder="Luke" class="form-control input-md" required>
+                                  <span style="color:red" ng-show="regForm.firstname.$dirty && regForm.firstname.$invalid">
+                                    <span ng-show="regForm.firstname.$error.required">Firstname is required.</span>
+                                  </span>
                                 </div>
                               </div>
 
-                              <!-- Text input-->
+                              <!-- Lastname -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="">Lastname</label>  
                                 <div class="col-md-4">
-                                <input id="" name="lastname" type="text" placeholder="Skywalker" class="form-control input-md" required="">
-                                  
+                                  <input id="" name="lastname" ng-model="lastname" type="text" placeholder="Skywalker" class="form-control input-md" required>
+                                  <span style="color:red" ng-show="regForm.lastname.$dirty && regForm.lastname.$invalid">
+                                    <span ng-show="regForm.lastname.$error.required">Lastname is required.</span>
+                                  </span>
                                 </div>
                               </div>
 
-                              <!-- Multiple Radios (inline) -->
+                              <!-- Gender -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Gender">Gender</label>
                                 <div class="col-md-4"> 
                                   <label class="radio-inline" for="Gender-0">
-                                    <input type="radio" name="gender" id="Gender-0" value="M" checked="checked">
+                                    <input type="radio" name="gender" ng-model="gender" id="Gender-0" value="M" checked="checked">
                                     Male
                                   </label> 
                                   <label class="radio-inline" for="Gender-1">
-                                    <input type="radio" name="gender" id="Gender-1" value="F">
+                                    <input type="radio" name="gender" ng-model="gender" id="Gender-1" value="F">
                                     Female
                                   </label>
                                 </div>
                               </div>
 
-                              <!-- Select Basic -->
+                              <!-- Blood type -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="BloodType">Blood Type</label>
                                 <div class="col-md-2">
-                                  <select id="BloodType" name="BloodType" class="form-control">
+                                  <select id="BloodType" name="blood_type" ng-model="blood_type" class="form-control">
                                     <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="AB">AB</option>
@@ -131,58 +125,58 @@
                                 </div>
                               </div>
 
-                              <!-- Text input-->
+                              <!-- Tel No. -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Tel">Tel.</label>  
                                 <div class="col-md-4">
-                                <input id="Tel" name="Tel" type="text" placeholder="012345678" class="form-control input-md" required="">
-                                  
+                                  <input id="Tel" name="telNum" ng-model="telNum" type="text" placeholder="012345678" class="form-control input-md" required ng-pattern="/^\d+$/">
+                                  <span style="color:red" ng-show="regForm.telNum.$dirty && regForm.telNum.$invalid">
+                                    <span ng-show="regForm.telNum.$error.required">Telephone number is required.</span>
+                                    <span ng-show="regForm.telNum.$error.pattern">Telephone number must contain only numbers</span>
+                                  </span>
                                 </div>
                               </div>
-                              <!-- Textarea -->
+                              <!-- Address -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Address">Address</label>
                                 <div class="col-md-4">                     
-                                  <textarea class="form-control" id="Address" name="Address"></textarea>
+                                  <textarea class="form-control" id="Address" name="address" ng-model="address" required></textarea>
+                                  <span style="color:red" ng-show="regForm.address.$dirty && regForm.address.$invalid">
+                                    <span ng-show="regForm.address.$error.required">Address is required.</span>
+                                  </span>
                                 </div>
                               </div>
-                              <!-- Button -->
+                              <!-- Register -->
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="singlebutton"></label>
                                 <div class="col-md-4">
-                                  <button id="singlebutton" name="singlebutton" class="btn btn-default-lg" style="background:#18aa8d ; color:white;">Register</button>
-                                  <input type="reset" id="ResetButton" name="ResetButton" class="btn btn-danger" value="Reset"></button>
+                                  <button id="registerBtn" name="registerBtn" class="btn btn-default-lg" style="background:#18aa8d ; color:white;" ng-disabled="regForm.$invalid" ng-click="checkRegister()" >Register</button>
+                                  <input type="reset" id="ResetButton" name="ResetButton" class="btn btn-danger" value="Reset">
                                 </div>
                               </div>
 
-                              </fieldset>
                             </form>
                             </div>
                           </div>
                           
                         </div>
-                        
-                    </snap-content> 
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                    
+    <%- include ../include/snap_footer.ejs %>
 
-    <!-- bower:js -->
-    <script src="/lib/angular/angular.js"></script>
-    <script src="/lib/angular-mocks/angular-mocks.js"></script>
-    <script src="/lib/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="/lib/angular-animate/angular-animate.js"></script>
-    <script src="/lib/snapjs/snap.js"></script>
-    <script src="/lib/angular-snap/angular-snap.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
+    <!-- Confirm register modal -->
+    <modal title="Confirm Registration" visible="showConfirmRegModal">
+      wtfffffffffffff
+    </modal>
+
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="/javascripts/main_app.js"></script>
+    <script src="/javascripts/register_app.js"></script>
     <!-- endbuild -->
+
+    
+    
+
+
+
   </body>
 </html>
