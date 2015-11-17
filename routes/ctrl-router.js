@@ -39,6 +39,12 @@ router.get('/create', function(req,res){
 	res.render('appointment/createAppointment');
 });
 
+router.get('/import', function(req,res){
+	//Callback function on get finished
+	//Render Appointment Creation View
+	res.render('appointment/import_schedule');
+});
+
 router.get('/patientView', function(req,res){
 	//Callback function on get finished
 	//Render Appointment Creation View

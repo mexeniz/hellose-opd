@@ -1,15 +1,19 @@
 <!doctype html>
     <%- include ../include/header.ejs %>
 
-    <body>
+    <body ng-app="appointment" ng-controller="ImportCtrl">
 
     <%- include ../include/snap_header.ejs %>
 
-    <br><br><br><br>
+    <div class="container" style="width: auto">
+      <h1 style="color : black">{{title}}</h1>
+    </div>
+
       <div class="col-md-6">
         <div class="panel panel-default" >
           <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Import Schedule</h1></div>
           <div class="panel-body">
+            
             <form class="form-horizontal" style="color:black;">
               <fieldset>
 
@@ -17,7 +21,7 @@
               <div class="form-group">
                 <label class="col-md-4 control-label" for="Department">Department</label>
                 <div class="col-md-4">
-                  <select id="DEpartment" name="DEpartment" class="form-control">
+                  <select id="Department" name="Department" class="form-control">
                     <option value="1">Internal Medicine</option>
                     <option value="2">Cardiology</option>
                   </select>
@@ -28,7 +32,18 @@
               <div class="form-group">
                 <label class="col-md-4 control-label" for="Schedule">Schedule</label>
                 <div class="col-md-4">
-                  <input id="Schedule" name="Schedule" class="input-file" type="file">
+                  <!-- <input id="Schedule" name="Schedule" class="input-file" type="file" ng-file-select="onFileSelect($files)"> -->
+                   <ng-csv-import 
+                    class="import"
+                    content="csv.content"
+                    header="csv.header" 
+                    header-visible="csv.headerVisible" 
+                    separator="csv.separator"
+                    separator-visible="csv.separatorVisible"
+                    result="csv.result"
+                    encoding="csv.encoding"
+                    encoding-visible="csv.encodingVisible"></ng-csv-import>
+
                 </div>
               </div>
 
@@ -36,12 +51,15 @@
               <div class="form-group">
                 <label class="col-md-4 control-label" for="import"></label>
                 <div class="col-md-4">
-                  <button id="import" name="import" class="btn btn-primary" style="background:#18aa8d ; color:white;">Import</button>
+                  <button id="import" name="import" class="btn btn-primary" style="background:#18aa8d ; color:white;" ng-click = "genMes()">Import</button>
                 </div>
               </div>
 
               </fieldset>
               </form>
+
+                 <h2>CSV</h2>
+                 <div class="content"><pre>{{ csv.content }}</pre></div>
 
           </div>
         </div>
@@ -50,8 +68,10 @@
       </form>
       
     </div>
-
+    
     <%- include ../include/snap_footer.ejs %>
-
+  <script type="text/javascript" src="/javascripts/appointment/appointment_app.js"></script>
+  
   </body>
 </html>
+

@@ -16,6 +16,7 @@
     "angular-ui-utils": "~0.1.1",
     "bootstrap": "~3",
     "chosen": "~1.4.2",
-    "fontawesome": "~4.2.0"
+    "fontawesome": "~4.2.0",
+    "angular-csv-import-tmp": "angular-csv-import#~0.0.27"
   }
 }

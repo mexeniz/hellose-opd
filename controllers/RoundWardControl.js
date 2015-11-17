@@ -99,15 +99,13 @@ module.exports.cancelRoundward = function (doctorId_input,rwId_input,callback) {
 
 module.exports.getAvailableDateTime = function (doctorId_input,callback) {
 	//Find Correspondent Doctor
-	User.findOne({userid : doctorId_input},function(err,thisDoctor){
-		if(!err){
-			callback(err,res.json(thisDoctor.availableRoundward));			
-		}else{
-			console.log("No Doctor with user_id = " + doctorId_input);
-			return callback(err);
-		}
-	});
-  
+	Doctor.findOne({userId : doctorId_input})
+  .populate('availableRoundward').exec(function(err,result){
+    if(err){
+      return callback(err);
+    }
+    callback(err,result.availableRoundward);
+  });  
 };
 
 module.exports.importRoundWard = function (longStream, callback) {
