@@ -16,20 +16,22 @@ module.exports.login = function(req, username, password, done) {
 					if(err) { return done(err); }
 					if(!patient)
 					{
+						console.log('User not found!');
 						return done(null, false, req.flash('message', 'User not found'));
 					}
 
 					// Populate User
-					patient.populate('userId', function(err, user) {
+					patient.populate('userId', function(err, patient) {
 						if(err) { return done(err); }
 
-						if(!user)
-						{
+						if(!patient.userId)
+						{	
+							console.log('User not found!');
 							return done(null, false, req.flash('message', 'User not found'));
 						}
 
 						// Check password
-						if(!user.validPassword(password))
+						if(!patient.userId.validPassword(password))
 						{
 							console.log('Invalid Password');
 							return done(null, false, 
@@ -38,7 +40,7 @@ module.exports.login = function(req, username, password, done) {
 
 						// User and password both match, return user from 
 						// done method which will be treated like success
-						return done(null, user);
+						return done(null, patient.userId);
 					});
 				});
 			}
@@ -75,11 +77,33 @@ module.exports.register = function(req, username, password, done) {
         }
         // already exists
         if (user) {
-          console.log('User already exists');
-          return done(null, false, 
-             req.flash('message','User Already Exists'));
+
+			// Check if old patient
+			Patient.findOne( { 'userId': user._id }, function(err, patient) {
+				// Found patient data
+				if(patient)
+				{
+					return done(null, false, 
+			 		req.flash('message','User Already Exists'));
+				}
+				else // Not found patient data
+				{
+					// Create new patient data
+					var newPatient = new Patient();
+				    newPatient.userId = newUser;
+				    newPatient.save(function(err) {
+				    	if (err){
+				          console.log('Error in Saving patient: '+err);  
+				          throw err;
+				        }
+				    	console.log('User Registration successful');    
+				    	return done(null, newUser);
+				    });
+				}
+			});
+
         } else {
-          // if there is no user with that email
+          // if there is no user data
           // create the user
           var newUser = new User();
           // set the user's local credentials
@@ -92,26 +116,47 @@ module.exports.register = function(req, username, password, done) {
  			newUser.lastname = req.body.lastname;
  			newUser.telNo = req.body.telNo;
  			newUser.address = req.body.address;
+ 			newUser.email = req.body.email;
  			newUser.isPatient = true;
 
-          // save the user
-          newUser.save(function(err) {
+          	// save the user
+          	newUser.save(function(err) {
             if (err){
               console.log('Error in Saving user: '+err);  
               throw err;  
             }
 
-            var newPatient = new Patient();
-            newPatient.userId = newUser;
-            newPatient.save(function(err) {
-            	if (err){
-	              console.log('Error in Saving patient: '+err);  
-	              throw err;
-	            }
-            	console.log('User Registration successful');    
-            	return done(null, newUser);
+            // Count all patient number
+            Patient.count({}, function(err, n) {
+            	if(err) {
+            		console.log('Error in Saving user: '+err);  
+              		throw err;  
+            	}
+
+            	// create patient data
+	            var newPatient = new Patient();
+	            newPatient.userId = newUser;
+
+	            // Get next patient id
+	            var pat_id = n + '';
+	            var size = 8;
+    			while (pat_id.length < size) {
+    				pat_id = '0' + pat_id;
+    			}
+
+	            newPatient.patient_id = pat_id;
+	            newPatient.blood_type = req.body.blood_type;
+
+            	// save patient data
+	            newPatient.save(function(err) {
+	            	if (err){
+		              console.log('Error in Saving patient: '+err);  
+		              throw err;
+		            }
+	            	console.log('User Registration successful');    
+	            	return done(null, newUser);
+	            });
             });
-            
           });
         }
       });
