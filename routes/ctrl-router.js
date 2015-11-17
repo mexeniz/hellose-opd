@@ -61,8 +61,8 @@ router.post('/addRoundward', function(req,res,next){
 	});
 });
 router.post('/cancelRoundward', function(req,res,next){
-	var doctor_id = req.body.userid;
-	var roundward_id = req.body.rwID;
+	var doctor_id = mongoose.Types.ObjectId(req.body['doctorid']);
+	var roundward_id = mongoose.Types.ObjectId(req.body['rwid']);
 	RoundWardControl.cancelRoundward(doctor_id,roundward_id,function(err,result){
 		if(err){
 			return next(err);

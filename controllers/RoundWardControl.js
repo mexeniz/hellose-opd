@@ -69,20 +69,21 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
 module.exports.cancelRoundward = function (doctorId_input,rwId_input,callback) {
   //Doctor Wants to CancelRoundward
   //Find Correspondent Doctor
-  User.findOne({userid : doctorId_input},function(err1,thisDoctor){
-  		if(!err1){
-  			Roundward.findOne({rwId : rwId_input},function(err2,thisRoundward){
-  				if(!err2){
+  Doctor.findOne({userId : doctorId_input},function(err1,thisDoctor){
+  		if(!err1 && thisDoctor){
+  			Roundward.findById(rwId_input,function(err2,thisRoundward){
+  				if(!err2&&thisRoundward){
   					// Delete Roundward From Doctor's Roundward Array List
-  					//thisDoctor.availableRoundward.remove({rwid:rwId_input});
-  					thisDoctor.availableRoundward.pull({rwid:thisRoundward._id},function(err3,result){
-  						if(!err3){
-  							return result;
-  						}else{
-  							console.log('cannot delete element from array');
-  							callback(err3);
-  						}
-  					});  					
+            Doctor.update({_id:thisDoctor._id},{$pull : {availableRoundward:thisRoundward._id}},
+              {},
+              function(err3,result){
+                if(err3 || !result){
+                  console.log('no doc found in order to update array');
+                  return callback(err3);
+                }else{
+                  callback(err3,thisDoctor);
+                }
+              });
   				}else{
   					console.log('Cannot Find Roundward with rwId = '+rwId_input);
   					callback(err2);
