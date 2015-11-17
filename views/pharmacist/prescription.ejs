@@ -10,16 +10,16 @@
         <form class="form-inline" role="form">
             <div class="form-group">
                 <label>Search: </label>
-                <input type="text" class="form-control" id="name" placeholder="Search..." ng-model="search">
+                <input type="text" class="form-control" id="name" placeholder="Search..." ng-model="fullnameFilterItem.store">
             </div>
             <div class="form-group">
                 <label>สถานะ: </label>
                 <select class="form-control" ng-model="statusFilterItem.store" ng-options="item.name for item in statusFilterOption.stores">
                 </select>
             </div>
-            <button type="submit" class="btn btn-info">
+            <!-- <button type="submit" class="btn btn-info">
                 <i class="fa fa-search" ></i>
-            </button>
+            </button> -->
         </form>
 
         <table class="table table-striped">
@@ -33,7 +33,7 @@
             </thead>
 
             <tbody>
-                <tr ng-repeat="prescription in prescriptions | filter:search |  filter:statusFilter | orderBy:'date':true">
+                <tr ng-repeat="prescription in prescriptions | filter:fullnameFilter |  filter:statusFilter | orderBy:'date':true">
                     <td>{{ prescription.date | date: 'medium' }}</td>
                     <td>{{ prescription.patient.firstname }} {{ prescription.patient.lastname }}</td>
                     <td  ng-class="{red: prescription.status === 'Pending', green: prescription.status !== 'Pending'}">{{ prescription.status }}</td>

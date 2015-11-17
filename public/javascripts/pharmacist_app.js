@@ -35,6 +35,17 @@ app.controller('ListCtrl', [
 		prescriptions_fac.getList();
 		$scope.prescriptions = prescriptions_fac.prescriptions;
 
+		// Custom Filter by Full Name
+		$scope.fullnameFilterItem = {
+			store : ''
+		};
+
+		$scope.fullnameFilter = function(data){
+			var fullname = (data.patient.firstname + " " + data.patient.lastname).toLowerCase();
+			return fullname.indexOf($scope.fullnameFilterItem.store.trim().toLowerCase()) !== -1;
+		};
+
+		// Custom Filter by Status
 		$scope.statusFilterOption = {
 			stores : [
 				{id : 0, name : 'All'},
@@ -57,6 +68,7 @@ app.controller('ListCtrl', [
 		  	}
 		};
 
+		// Medicine List Detail Modal
 		$scope.medicineList = {};
 
 		$scope.showMedicineListModal = false;
