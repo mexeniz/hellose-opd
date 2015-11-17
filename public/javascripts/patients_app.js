@@ -519,6 +519,17 @@ app.controller('InfoCtrl', [
 			
 		};
 
+		// Show Prescription Detail
+		$scope.medicineList = {};
+		$scope.pharmacistView = false;
+
+		$scope.showMedicineListModal = false;
+
+		$scope.showMedicineList = function(prescription) {
+			$scope.showMedicineListModal = true;
+			angular.copy(prescription,$scope.medicineList);
+		};
+
 	}
 ]);
 

@@ -60,6 +60,7 @@ app.controller('ListCtrl', [
 		$scope.medicineList = {};
 
 		$scope.showMedicineListModal = false;
+		$scope.pharmacistView = true;
 
 		$scope.showMedicineList = function(prescription) {
 			$scope.showMedicineListModal = true;
