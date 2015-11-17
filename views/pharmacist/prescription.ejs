@@ -1,5 +1,18 @@
 <!doctype html>
     <%- include ../include/header.ejs %>
+    <style type="text/css">
+    .red {
+        color: red; 
+    }
+
+    .green {
+        color: green;
+    }
+
+    .black {
+        color: black;
+    }
+    </style>
 
     <body ng-app="prescriptions" ng-controller="ListCtrl" >
     <%- include ../include/snap_header.ejs %>
@@ -36,7 +49,7 @@
                 <tr ng-repeat="prescription in prescriptions | filter:search |  filter:statusFilter | orderBy:'date':true">
                     <td>{{ prescription.date | date: 'medium' }}</td>
                     <td>{{ prescription.patient.firstname }} {{ prescription.patient.lastname }}</td>
-                    <td>{{ prescription.status }}</td>
+                    <td  ng-class="{red: prescription.status === 'Pending', green: prescription.status !== 'Pending'}">{{ prescription.status }}</td>
                     <td>
                         <span class="btn btn-primary" ng-click="showMedicineList(prescription)">
                             <i class="fa fa-list" ></i>
