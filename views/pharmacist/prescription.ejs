@@ -34,7 +34,7 @@
 
             <tbody>
                 <tr ng-repeat="prescription in prescriptions | filter:search |  filter:statusFilter | orderBy:'date':true">
-                    <td>{{ prescription.date }}</td>
+                    <td>{{ prescription.date | date: 'medium' }}</td>
                     <td>{{ prescription.patient.firstname }} {{ prescription.patient.lastname }}</td>
                     <td>{{ prescription.status }}</td>
                     <td>
