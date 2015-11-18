@@ -17,6 +17,6 @@
     "bootstrap": "~3",
     "chosen": "~1.4.2",
     "fontawesome": "~4.2.0",
-    "angular-csv-import-tmp": "angular-csv-import#~0.0.27"
+    "angular-csv-import": "angular-csv-import#~0.0.27"
   }
 }

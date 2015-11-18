@@ -88,16 +88,18 @@ router.post('/getAvailableDateTime', function(req,res,next){
 		}
 	});
 });
-router.get('/importRoundward', function(req,res,next){
+router.post('/importRoundward', function(req,res,next){
 	//Use This Place (Router) to Split File
 	var longStream = req.body;
-	RoundWardControl.importRoundward(longStream,function(err,result){
-		if(err){
-			return next(err);
-		}else{
-			return res.json(result);
-		}
-	});
+		console.log(longStream);
+		//return res.json(longStream);
+	// RoundWardControl.importRoundward(longStream,function(err,result){
+	// 	if(err){
+	// 		return next(err);
+	// 	}else{
+	// 		return res.json(result);
+	// 	}
+	// });
 	//Render Here
 	
 });

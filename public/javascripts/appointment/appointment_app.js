@@ -10,9 +10,24 @@ var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
 		  $scope.title = 'Appointment ตารางการนัดหมาย ';
 	}]);
 
+
+	app.factory('schedule_fac', ['$http', function($http){
+	  var o = {
+	  	schedule : []
+	  };
+	  
+	  o.create = function(schedule) {
+		  return $http.post('/appointment/importRoundward', schedule).success(function(data){
+		    o.schedule.push(data);
+		    console.log(o);
+			});
+	  };
+	  return o;
+	}]);
+
 	//Importing CSV Here
-	app.controller('ImportCtrl', [	'$scope', '$parse', 
-		function($scope,$parse){
+	app.controller('ImportCtrl', [	'$scope', '$parse', 'schedule_fac',
+		function($scope,$parse,schedule_fac){
 		  $scope.title = 'Importing ตารางการนัดหมาย ';
 		  $scope.csv = {
 		  		content: null,
@@ -29,8 +44,12 @@ var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
 		  		var months_input = 'jan';
 		  		var jsondata = {};
 		  		jsondata = {'month': months_input , data :$scope.csv.result };
-		  		console.log(jsondata);
+		  		//console.log(jsondata);
+		  		schedule_fac.create(jsondata);
 		  }
 		}]);
+
+	
+
 })();
 
