@@ -1,13 +1,20 @@
 <!doctype html>
 <html class="no-js">
   <%- include ../include/header.ejs %>
-  <body ng-app="register_app" ng-controller="registerController">
+  <body ng-app="register_app" ng-controller="registerController" ng-cloak>
     <%- include ../include/snap_header.ejs %>
                         <br>
                         <div class="container">
                           <div class="panel panel-default" >
                             <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Register</h1></div>
                             <div class="panel-body">
+                              <!-- message -->
+                              <div class="alert alert-danger alert-dismissible" role="alert" ng-show="regMessage" >
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                Registration failed! please try again.
+                              </div>
                               <form name="regForm" novalidate class="form-horizontal" style="color:black;" >
                               
                               <!-- SSN -->
@@ -165,7 +172,7 @@
 
     <!-- Confirm register modal -->
     <modal title="Confirm Registration" visible="showConfirmRegModal">
-      wtfffffffffffff
+      
       <button id="confirmRegBtn" name="confirmRegBtn" class="btn btn-default-lg" style="background:#18aa8d ; color:white;"  ng-click="confirmRegister()" >Register</button>
     </modal>
 

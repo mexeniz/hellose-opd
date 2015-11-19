@@ -13,7 +13,7 @@ app.controller('registerController', [
 			$window.location = "/home" ;
 		};
 
-		$scope.showConfirmRegModal = true;
+		$scope.showConfirmRegModal = false;
     $scope.pwNotMatch = false;
     $scope.regData = {};
     $scope.regData.blood_type = 'A';
@@ -36,8 +36,18 @@ app.controller('registerController', [
 
     $scope.confirmRegister = function()
     {
+      $scope.showConfirmRegModal = false;
       $http.post('/register', $scope.regData).success(function(data) {
         console.log(data);
+        if(data.status === 'success')
+        {
+          $scope.regMessage = 'Successfully registered!';
+          $window.location.href = "/home" ;
+        }
+        else
+        {
+          $scope.regMessage = 'Try again!';
+        }
       });
     };
 

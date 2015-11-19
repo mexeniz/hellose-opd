@@ -59,11 +59,26 @@ router.get('/register', function(req, res){
   res.render('main/register',{message: req.flash('message')});
 });
 
+
 /* Handle Registration POST */
-router.post('/register', passport.authenticate('register', {
-  successFlash: 'Yeah',
-  failureFlash: 'Noooooo'
-}));
+/*
+router.post('/register', passport.authenticate('register', function(err, user, info) {
+  if(err) { return next(err); }
+  if(!user) { return res.json('error'); }
+  res.json('success!');
+
+}));*/
+
+router.post('/register', function(req, res, next) {
+  passport.authenticate('register', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) { return res.json({status:'failed'}); }
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.json({status:'success'});
+    });
+  })(req, res, next);
+});
 
   /* Handle Logout */
 router.get('/logout', function(req, res) {

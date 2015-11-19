@@ -66,7 +66,7 @@ module.exports.login = function(req, username, password, done) {
 
 module.exports.register = function(req, username, password, done) {
 	var ssn = req.body.ssn;
-	console.log(ssn);
+
     var findOrCreateUser = function(){
       // find a user in Mongo with provided username or ssn
       User.findOne({ $or:[ { 'username': username }, { 'ssn': ssn } ] }, function(err, user) {
