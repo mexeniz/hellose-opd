@@ -15,16 +15,15 @@ app.controller('registerController', [
 
 		$scope.showConfirmRegModal = true;
     $scope.pwNotMatch = false;
-    $scope.blood_type = 'A';
-    $scope.gender = 'M';
+    $scope.regData = {};
+    $scope.regData.blood_type = 'A';
+    $scope.regData.gender = 'M';
 
     // Validate form and show modal
 		$scope.checkRegister = function(){
-      console.log('checking');
       if($scope.password !== $scope.repeatPassword)
       {
         $scope.pwNotMatch = true;
-        console.log('not match!');
         return;
       }
 			$scope.showConfirmRegModal = true;
@@ -35,7 +34,15 @@ app.controller('registerController', [
       $scope.pwNotMatch = false;
     };
 
+    $scope.confirmRegister = function()
+    {
+      $http.post('/register', $scope.regData).success(function(data) {
+        console.log(data);
+      });
+    };
+
 }]);
+
 
 app.directive('modal', function () {
     return {

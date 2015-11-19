@@ -14,7 +14,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="textinput">SSN</label>  
                                 <div class="col-md-4">
-                                  <input id="textinput" name="ssn" ng-model="ssn" type="text" placeholder="1234567890123" class="form-control input-md" required ng-minlength="13" ng-maxlength="13" ng-pattern="/^\d+$/">
+                                  <input id="textinput" name="ssn" ng-model="regData.ssn" type="text" placeholder="1234567890123" class="form-control input-md" required ng-minlength="13" ng-maxlength="13" ng-pattern="/^\d+$/">
                                   <span style="color:red" ng-show="regForm.ssn.$dirty && regForm.ssn.$invalid">
                                     <span ng-show="regForm.ssn.$error.required">SSN is required.</span>
                                     <span ng-show="regForm.ssn.$error.minlength">SSN must be length of 13.</span>
@@ -28,7 +28,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Username">Username</label>  
                                 <div class="col-md-4">
-                                  <input id="Username" name="username" ng-model="username" type="text" placeholder="abcdefg" class="form-control input-md" required ng-minlength="6">
+                                  <input id="Username" name="username" ng-model="regData.username" type="text" placeholder="abcdefg" class="form-control input-md" required ng-minlength="6">
                                   <span style="color:red" ng-show="regForm.username.$dirty && regForm.username.$invalid">
                                     <span ng-show="regForm.username.$error.required">Username is required.</span>
                                     <span ng-show="regForm.username.$error.minlength">Username must contain at least 6 characters.</span>
@@ -39,7 +39,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Password">Password</label>
                                 <div class="col-md-4">
-                                  <input id="Password" name="password" ng-model="password" type="password" placeholder="" class="form-control input-md" required ng-minlength="6" ng-change="resetNotMatchAlert()">
+                                  <input id="Password" name="password" ng-model="regData.password" type="password" placeholder="" class="form-control input-md" required ng-minlength="6" ng-change="resetNotMatchAlert()">
                                   <span style="color:red" ng-show="regForm.password.$dirty && regForm.password.$invalid">
                                     <span ng-show="regForm.password.$error.required">Password is required.</span>
                                     <span ng-show="regForm.password.$error.minlength">Password must contain at least 6 characters.</span>
@@ -51,7 +51,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="RepeatPassword">Repeat Password</label>
                                 <div class="col-md-4">
-                                  <input id="RepeatPassword" name="repeatPassword" ng-model="repeatPassword" type="password" placeholder="" class="form-control input-md" required ng-change="resetNotMatchAlert()">
+                                  <input id="RepeatPassword" name="repeatPassword" ng-model="regData.repeatPassword" type="password" placeholder="" class="form-control input-md" required ng-change="resetNotMatchAlert()">
                                   <span style="color:red" ng-show="regForm.repeatPassword.$dirty && regForm.repeatPassword.$invalid">
                                     <span ng-show="regForm.repeatPassword.$error.required">Re-Password is required.</span>
                                     <span ng-show="regForm.repeatPassword.$error.pwMatch">Re-Password is not matched.</span>
@@ -66,7 +66,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Email">Email</label>  
                                 <div class="col-md-4">
-                                  <input id="Email" name="email" ng-model="email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
+                                  <input id="Email" name="email" ng-model="regData.email" type="email" placeholder="l.skywalker@lucas.un" class="form-control input-md" required ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
                                   <span style="color:red" ng-show="regForm.email.$dirty && regForm.email.$invalid">
                                     <span ng-show="regForm.email.$error.required">Email is required.</span>
                                     <span ng-show="regForm.email.$error.pattern">This email is invalid.</span>
@@ -78,7 +78,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="textinput">Firstname</label>  
                                 <div class="col-md-4">
-                                  <input id="textinput" name="firstname" ng-model="firstname" type="text" placeholder="Luke" class="form-control input-md" required>
+                                  <input id="textinput" name="firstname" ng-model="regData.firstname" type="text" placeholder="Luke" class="form-control input-md" required>
                                   <span style="color:red" ng-show="regForm.firstname.$dirty && regForm.firstname.$invalid">
                                     <span ng-show="regForm.firstname.$error.required">Firstname is required.</span>
                                   </span>
@@ -89,7 +89,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="">Lastname</label>  
                                 <div class="col-md-4">
-                                  <input id="" name="lastname" ng-model="lastname" type="text" placeholder="Skywalker" class="form-control input-md" required>
+                                  <input id="" name="lastname" ng-model="regData.lastname" type="text" placeholder="Skywalker" class="form-control input-md" required>
                                   <span style="color:red" ng-show="regForm.lastname.$dirty && regForm.lastname.$invalid">
                                     <span ng-show="regForm.lastname.$error.required">Lastname is required.</span>
                                   </span>
@@ -101,11 +101,11 @@
                                 <label class="col-md-4 control-label" for="Gender">Gender</label>
                                 <div class="col-md-4"> 
                                   <label class="radio-inline" for="Gender-0">
-                                    <input type="radio" name="gender" ng-model="gender" id="Gender-0" value="M" checked="checked">
+                                    <input type="radio" name="gender" ng-model="regData.gender" id="Gender-0" value="M" checked="checked">
                                     Male
                                   </label> 
                                   <label class="radio-inline" for="Gender-1">
-                                    <input type="radio" name="gender" ng-model="gender" id="Gender-1" value="F">
+                                    <input type="radio" name="gender" ng-model="regData.gender" id="Gender-1" value="F">
                                     Female
                                   </label>
                                 </div>
@@ -115,7 +115,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="BloodType">Blood Type</label>
                                 <div class="col-md-2">
-                                  <select id="BloodType" name="blood_type" ng-model="blood_type" class="form-control">
+                                  <select id="BloodType" name="blood_type" ng-model="regData.blood_type" class="form-control">
                                     <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="AB">AB</option>
@@ -129,7 +129,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Tel">Tel.</label>  
                                 <div class="col-md-4">
-                                  <input id="Tel" name="telNum" ng-model="telNum" type="text" placeholder="012345678" class="form-control input-md" required ng-pattern="/^\d+$/">
+                                  <input id="Tel" name="telNum" ng-model="regData.telNum" type="text" placeholder="012345678" class="form-control input-md" required ng-pattern="/^\d+$/">
                                   <span style="color:red" ng-show="regForm.telNum.$dirty && regForm.telNum.$invalid">
                                     <span ng-show="regForm.telNum.$error.required">Telephone number is required.</span>
                                     <span ng-show="regForm.telNum.$error.pattern">Telephone number must contain only numbers</span>
@@ -140,7 +140,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Address">Address</label>
                                 <div class="col-md-4">                     
-                                  <textarea class="form-control" id="Address" name="address" ng-model="address" required></textarea>
+                                  <textarea class="form-control" id="Address" name="address" ng-model="regData.address" required></textarea>
                                   <span style="color:red" ng-show="regForm.address.$dirty && regForm.address.$invalid">
                                     <span ng-show="regForm.address.$error.required">Address is required.</span>
                                   </span>
@@ -166,6 +166,7 @@
     <!-- Confirm register modal -->
     <modal title="Confirm Registration" visible="showConfirmRegModal">
       wtfffffffffffff
+      <button id="confirmRegBtn" name="confirmRegBtn" class="btn btn-default-lg" style="background:#18aa8d ; color:white;"  ng-click="confirmRegister()" >Register</button>
     </modal>
 
 

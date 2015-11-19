@@ -61,9 +61,8 @@ router.get('/register', function(req, res){
 
 /* Handle Registration POST */
 router.post('/register', passport.authenticate('register', {
-  successRedirect: '/home',
-  failureRedirect: '/register',
-  failureFlash : true 
+  successFlash: 'Yeah',
+  failureFlash: 'Noooooo'
 }));
 
   /* Handle Logout */
