@@ -172,19 +172,52 @@
 
     <!-- Confirm register modal -->
     <modal title="Confirm Registration" visible="showConfirmRegModal">
-      
-      <button id="confirmRegBtn" name="confirmRegBtn" class="btn btn-default-lg" style="background:#18aa8d ; color:white;"  ng-click="confirmRegister()" >Register</button>
+      <table class="table">
+        <tr>
+          <td>SSN</td>
+          <td>{{ regData.ssn }}</td>
+        </tr>
+        <tr>
+          <td>Username</td>
+          <td>{{ regData.username }}</td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td>{{ regData.email }}</td>
+        </tr>
+        <tr>
+          <td>Firstname</td>
+          <td>{{ regData.firstname }}</td>
+        </tr>
+        <tr>
+          <td>Lastname</td>
+          <td>{{ regData.lastname }}</td>
+        </tr>
+        <tr>
+          <td>Gender</td>
+          <td>{{ regData.gender }}</td>
+        </tr>
+        <tr>
+          <td>Bloodtype</td>
+          <td>{{ regData.blood_type }}</td>
+        </tr>
+        <tr>
+          <td>Tel</td>
+          <td>{{ regData.telNum }}</td>
+        </tr>
+        <tr>
+          <td>Address</td>
+          <td style="width: 27em; word-wrap:break-word">{{ regData.address }}</td>
+        </tr>
+      </table>
+      <div style="text-align: center">
+        <button id="confirmRegBtn" name="confirmRegBtn" class="btn btn-default-lg" style="background:#18aa8d ; color:white;"  ng-click="confirmRegister()" >Register</button>
+      </div>
     </modal>
 
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="/javascripts/register_app.js"></script>
     <!-- endbuild -->
-
-    
-    
-
-
-
   </body>
 </html>

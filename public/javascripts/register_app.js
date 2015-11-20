@@ -75,8 +75,9 @@ app.directive('modal', function () {
         scope.title = attrs.title;
 
         scope.$watch(attrs.visible, function(value){
-          if(value === true)
+          if(value === true) {
             $(element).modal('show');
+          }
           else
             $(element).modal('hide');
         });
