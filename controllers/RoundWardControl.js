@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Roundward = mongoose.model('Roundward');
 var User = mongoose.model('User');
 var Doctor = mongoose.model('Doctor');
+var moment = require('moment');
 
 /*
 TEST CASE 
@@ -108,25 +109,157 @@ module.exports.getAvailableDateTime = function (doctorId_input,callback) {
   });  
 };
 
-module.exports.importRoundWard = function (longStream, callback) {
+module.exports.importRoundWard = function (startDate,data,callback) {
   //Read the CSVs and Put it into DATABASE
-  var myObj = req.body.roundward;
-  /*var temp = new Model({
-  	'date' : req.body['date'],
-  	'time' : req.body['time']
-  });*/
-	 myObj.split('\n');
-	 for (var i = 0; i < myObj.length; i++) {
-	 	var row = myobj[i].split(',');
-	 	var temp = new Roundward(row);
-	 	Roundward.save(temp, function(err,result){
-	 		if(err){
-	 			callback(err);
-	 		}else{
-	 			callback(err,result);
-	 		}
-	 	});
-	 };
+  var beginningMonth = startDate;
+  var endMonth = new Date(startDate.getFullYear(),startDate.getMonth()+1,0);
+data.forEach(function(e){
+  var my_stack = [];
+      User.findOne({firstname:e.docfirstname,lastname:e.doclastname},function(err,thisDoctor){
+        if(err){
+          return callback(err);
+        }else if(!thisDoctor){
+            console.log(' NO Doctor Found');
+        }else if(thisDoctor && !err){
+            //Script Goes Here
+          var a = moment(beginningMonth);
+          var b = moment(endMonth);
+          
+          for (var m = a; m.isBefore(b); m.add(1,'days')) {
+            var pack= {};
+            
+            switch(m.day()) {
+                case 0:         
+                    if(e.sun1 == '1'){
+                        //console.log('sunday morning'+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        pack = {};
+                        
+                    }
+                    if(e.sun2 == '1'){
+                        //console.log('sunday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    break;
+                case 1:     
+                    if(e.mon1 === '1'){
+                        //console.log('monday morning '+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    if(e.mon2 === '1'){
+                        //console.log('monday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    break;
+                case 2:
+                    if(e.tue1 == '1'){
+                        //console.log('tuesday morning '+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    if(e.tue2 == '1'){
+                        //console.log('tuesday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    break;
+                case 3:
+                    if(e.wed1 == '1'){
+                       // console.log('wednesday morning '+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    if(e.wed2 == '1'){
+                       // console.log('wednesday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    break;
+                case 4:
+                    if(e.thr1 == '1'){
+                       // console.log('thursday morning '+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    if(e.thr2 == '1'){
+                       // console.log('thursday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                   
+                    break;
+                case 5:
+                    if(e.fri1 == '1'){
+                        //console.log('friday morning '+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    if(e.fri2 == '1'){
+                       // console.log('friday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    break;
+                case 6:
+                    if(e.sat1 == '1'){
+                       // console.log('saturday morning '+m.date());
+                        pack.time = 'AM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    if(e.sat2 == '1'){
+                       // console.log('saturday afternoon '+m.date());
+                        pack.time = 'PM';
+                        pack.date = m.format('YYYY-MM-DD'); 
+                        my_stack.push(pack); pack = {};
+                        
+                    }
+                    break;
+                default:
+                    console.log('m.day Error');
+            }
+          }
+           console.log(my_stack);
+           my_stack.forEach(function(e){
+              module.exports.addRoundWard(thisDoctor._id,e,function(){
+                //Nothing
+              });
+           });
+        }
+      }).exec(function(){
+        console.log('Roundward entry added : '+ my_stack.length);
+        console.log('Endloop');
+      });
+  });
+  
   
 };
 

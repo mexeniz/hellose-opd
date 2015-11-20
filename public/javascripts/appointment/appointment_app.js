@@ -39,12 +39,15 @@ var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
 		    	encoding: 'ISO-8859-1',
 		    	encodingVisible: true,
 		  };
+		  $scope.year = 2015;
+		  $scope.month = 0;
 
 		  $scope.genMes = function(){
-		  		var months_input = 'jan';
+		  		var year_input = $scope.year;
+		  		var months_input = $scope.month;
 		  		var jsondata = {};
-		  		jsondata = {'month': months_input , data :$scope.csv.result };
-		  		//console.log(jsondata);
+		  		jsondata = {'month': months_input , 'year' : year_input , data :$scope.csv.result };
+		  		//Parse to Backend
 		  		schedule_fac.create(jsondata);
 		  }
 		}]);

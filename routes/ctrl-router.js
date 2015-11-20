@@ -7,9 +7,12 @@ router.METHOD(path, callback [, callback ...])
 
 //Include express engine
 var express =require('express');
+//inlucde momentjs 
+var moment = require('moment');
 //Create the router for this controller file
 var router = express.Router();
 module.exports = router;
+
 
 // //Model Defining
 var mongoose = require('mongoose');
@@ -91,15 +94,14 @@ router.post('/getAvailableDateTime', function(req,res,next){
 router.post('/importRoundward', function(req,res,next){
 	//Use This Place (Router) to Split File
 	var longStream = req.body;
-		console.log(longStream);
-		//return res.json(longStream);
-	// RoundWardControl.importRoundward(longStream,function(err,result){
-	// 	if(err){
-	// 		return next(err);
-	// 	}else{
-	// 		return res.json(result);
-	// 	}
-	// });
+	var startDate = new Date(longStream.year,longStream.month);
+	RoundWardControl.importRoundWard(startDate,longStream.data,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}
+	});
 	//Render Here
 	
 });
