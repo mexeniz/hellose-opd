@@ -34,7 +34,7 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
           //Already Exist ! : Add To Array
           Doctor.findByIdAndUpdate(
                     thisDoctor._id,
-                    { $addToSet: {"availableRoundward": result._id}},
+                    { $addToSet: {"onDutyRoundward": result._id}},
                     {  safe: true, upsert: true},
              function(err4, model) {
                if(err){
@@ -51,7 +51,7 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
               //Add To Array
               Doctor.findByIdAndUpdate(
                     thisDoctor._id,
-                    { $addToSet: {"availableRoundward": res._id}},
+                    { $addToSet: {"onDutyRoundward": res._id}},
                     {  safe: true, upsert: true},
              function(err4, model) {
                if(err){
@@ -124,10 +124,8 @@ data.forEach(function(e){
             //Script Goes Here
           var a = moment(beginningMonth);
           var b = moment(endMonth);
-          
           for (var m = a; m.isBefore(b); m.add(1,'days')) {
             var pack= {};
-            
             switch(m.day()) {
                 case 0:         
                     if(e.sun1 == '1'){
@@ -136,7 +134,6 @@ data.forEach(function(e){
                         pack.date = m.format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         pack = {};
-                        
                     }
                     if(e.sun2 == '1'){
                         //console.log('sunday afternoon '+m.date());

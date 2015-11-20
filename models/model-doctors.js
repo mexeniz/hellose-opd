@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
 var DoctorsSchema = new Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     department: String,
-    availableRoundward: [{type: mongoose.Schema.Types.ObjectId, ref: 'Roundward', dropDups: true}]
+    onDutyRoundward: [{type: mongoose.Schema.Types.ObjectId, ref: 'Roundward', dropDups: true}]
 });
 
 module.exports = mongoose.model('Doctor', DoctorsSchema);
