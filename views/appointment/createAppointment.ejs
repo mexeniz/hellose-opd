@@ -4,8 +4,8 @@
     <body>
 
     <%- include ../include/snap_header.ejs %>
-    <br><br><br><br>
-      <div class="col-md-6">
+    <br>
+      <div class="container">
         <div class="panel panel-default" >
           <div class="panel-heading" style="background:#18aa8d ; color:white;"><h1>Create Appointment</h1></div>
           <div class="panel-body">
@@ -17,9 +17,9 @@
               
               <div class="form-group">
                 <label>Appointment criteria: </label>
-                <span class="btn-group" data-toggle="buttons-radio">
-                  <button class="btn active">Doctor</button>
-                  <button class="btn">Department</button>
+                <span class="btn-group" data-toggle="buttons">
+                  <button type="radio" class="btn">Doctor</button>
+                  <button type="radio" class="btn">Department</button>
                 </span>
               </div>
 
