@@ -28,6 +28,11 @@ router.get('/home', Middleware.isAuthenticated, function(req, res, next) {
 });
 
 /* GET import schedule page. */
+router.get('/test', function(req, res, next) {
+  res.render('material/index');
+});
+
+/* GET import schedule page. */
 router.get('/import_schedule', function(req, res, next) {
   res.render('mockup/import_schedule');
 });
