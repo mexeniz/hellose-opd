@@ -15,8 +15,155 @@
 
 <!-- Content -->
 <md-content flex layout-padding>
-  <h1>ยินดีต้อนรับ</h1>
-  <p>
-    เย้ๆๆๆๆ
-  </p>
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab label="ข้อมูลส่วนตัว">
+        <md-content class="md-padding">
+          <div class="h1-th">ข้อมูลส่วนตัว</div>
+
+          <md-list>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">ชื่อจริง-นามสกุล</div>
+                <div class="h2-th">อาชัญ สุนทรอารมณ์</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">เพศ</div>
+                <div class="h2-th">ชาย</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">รหัสประจำตัวประชาชน</div>
+                <div class="h2-th">1111111222233</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">วันเกิด</div>
+                <div class="h2-th">25/12/2536</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">อายุ</div>
+                <div class="h2-th">21 ปี</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">หมู่เลือด</div>
+                <div class="h2-th">A</div>
+              </div>
+            </md-list-item>          
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">เบอร์โทรศัพท์</div>
+                <div class="h2-th">0831231234</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">ที่อยู่</div>
+                <div class="h2-th">1031 หมู่บ้านสินธร ถนนแฮปปี้แลนด์ แขวงคลองจั่น เขตบางกะปิ กรุงเทพ 10240</div>
+              </div>
+            </md-list-item>
+
+
+           </md-list>
+          
+        </md-content>
+      </md-tab>
+      <md-tab label="ข้อมูลทางการแพทย์">
+        <md-content class="md-padding">
+          <div class="h1-th">ข้อมูลทางการแพทย์</div>
+
+          <table style="width:100%">
+            <tr>
+              <td>วันที่</td>
+              <td>น้ำหนัก</td> 
+              <td>ส่วนสูง</td>
+              <td>ความดันโลหิต(บน)</td>
+              <td>ความดันโลหิต(ล่าง)</td>
+              <td>อัตราการเต้นหัวใจ</td>
+              <td>อุณหภูมิร่างกาย</td>
+            </tr>
+            <tr>
+              <td>20/5/58</td>
+              <td>53</td> 
+              <td>170</td>
+              <td>120</td>
+              <td>80</td>
+              <td>60</td>
+              <td>36</td>
+            </tr>
+          </table>
+          
+        </md-content>
+      </md-tab>
+      <md-tab label="ประวัติการรักษา">
+        <md-content class="md-padding">
+          <div class="h1-th">ประวัติการรักษา</div>
+          <md-list>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">หมู่เลือด</div>
+                <div class="h2-th">A</div>
+              </div>
+            </md-list-item>
+
+            <md-divider></md-divider>
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">ยาที่แพ้</div>
+                <div class="h2-th">พารา ยาคูล ยาหม่อง</div>
+              </div>
+            </md-list-item>
+
+           </md-list>
+        </md-content>
+      </md-tab>
+      <md-tab label="ประวัติการรับยา">
+        <md-content class="md-padding">
+          <div class="h1-th">ประวัติการรับยา</div>
+          <md-list>
+
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons">menu</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">ยาที่แพ้</div>
+                <div class="h2-th">พารา ยาคูล ยาหม่อง</div>
+              </div>
+            </md-list-item>
+
+           </md-list>
+        </md-content>
+      </md-tab>
+      
+    </md-tabs>
 </md-content>
