@@ -99,53 +99,92 @@
       </md-tab>
       <md-tab label="ข้อมูลทางการแพทย์">
         <md-content class="md-padding">
-          <div class="h1-th">ข้อมูลทางการแพทย์</div>
+          <div class="h1-th">ข้อมูลทางกายภาพ</div>
 
-          <table style="width:100%">
-            <tr>
-              <td>วันที่</td>
-              <td>น้ำหนัก</td> 
-              <td>ส่วนสูง</td>
-              <td>ความดันโลหิต(บน)</td>
-              <td>ความดันโลหิต(ล่าง)</td>
-              <td>อัตราการเต้นหัวใจ</td>
-              <td>อุณหภูมิร่างกาย</td>
-            </tr>
-            <tr>
-              <td>20/5/58</td>
-              <td>53</td> 
-              <td>170</td>
-              <td>120</td>
-              <td>80</td>
-              <td>60</td>
-              <td>36</td>
-            </tr>
-          </table>
+          <md-data-table-container>
+            <table md-data-table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>น้ำหนัก</th>
+                  <th>ส่วนสูง</th>
+                  <th>ความดันโลหิต(บน)</th>
+                  <th>ความดันโลหิต(ล่าง)</th>
+                  <th>อัตราการเต้นหัวใจ</th>
+                  <th>อุณหภูมิร่างกาย</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>53</td>
+                  <td>170</td>
+                  <td>120</td>
+                  <td>80</td>
+                  <td>60</td>
+                  <td>36</td>
+                </tr>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>53</td>
+                  <td>170</td>
+                  <td>120</td>
+                  <td>80</td>
+                  <td>60</td>
+                  <td>36</td>
+                </tr>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>53</td>
+                  <td>170</td>
+                  <td>120</td>
+                  <td>80</td>
+                  <td>60</td>
+                  <td>36</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-data-table-container>
           
         </md-content>
       </md-tab>
       <md-tab label="ประวัติการรักษา">
         <md-content class="md-padding">
           <div class="h1-th">ประวัติการรักษา</div>
-          <md-list>
-            <md-list-item class="md-2-line">
-              <md-icon md-font-library="material-icons">menu</md-icon>
-              <div class="md-list-item-text">
-                <div class="h3-th">หมู่เลือด</div>
-                <div class="h2-th">A</div>
-              </div>
-            </md-list-item>
 
-            <md-divider></md-divider>
-            <md-list-item class="md-2-line">
-              <md-icon md-font-library="material-icons">menu</md-icon>
-              <div class="md-list-item-text">
-                <div class="h3-th">ยาที่แพ้</div>
-                <div class="h2-th">พารา ยาคูล ยาหม่อง</div>
-              </div>
-            </md-list-item>
+           <md-data-table-container>
+            <table md-data-table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>แพทย์</th>
+                  <th>โรค</th>
+                  <th>อาการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>ติวเตอร์</td>
+                  <td>กระเพาะ</td>
+                  <td>คนไข้ปวดท้องสัสๆ</td>
+                </tr>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>ติวเตอร์</td>
+                  <td>กระเพาะ</td>
+                  <td>คนไข้ปวดท้องสัสๆ</td>
+                </tr>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>ติวเตอร์</td>
+                  <td>กระเพาะ</td>
+                  <td>คนไข้ปวดท้องสัสๆ</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-data-table-container>
 
-           </md-list>
         </md-content>
       </md-tab>
       <md-tab label="ประวัติการรับยา">
@@ -160,6 +199,35 @@
                 <div class="h2-th">พารา ยาคูล ยาหม่อง</div>
               </div>
             </md-list-item>
+
+          <md-data-table-container>
+            <table md-data-table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>สถานะ</th>
+                  <th>แพทย์ผู้จ่าย</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>รอการจ่าย</td>
+                  <td>ติวเตอร์</td>
+                </tr>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>รอการจ่าย</td>
+                  <td>ติวเตอร์</td>
+                </tr>
+                <tr>
+                  <td>20/5/58</td>
+                  <td>รอการจ่าย</td>
+                  <td>ติวเตอร์</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-data-table-container>
 
            </md-list>
         </md-content>
