@@ -53,23 +53,23 @@ app.use(passport.session());
 
 //Routers
 var main_routes = require('./routes/ctrl-main');
-var records_routes = require('./routes/ctrl-records');
+/*var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
 var diseases_routes = require('./routes/ctrl-diseases');
 
 var appointment_routes = require('./routes/ctrl-router');
 
 var prescriptions_routes = require('./routes/ctrl-prescriptions');
-var medicines_routes = require('./routes/ctrl-medicines');
+var medicines_routes = require('./routes/ctrl-medicines');*/
 
 
 app.use('/', main_routes);
-app.use('/records', records_routes);
+/*app.use('/records', records_routes);
 app.use('/patients', patients_routes);
 app.use('/diseases', diseases_routes);
 app.use('/appointment', appointment_routes);
 app.use('/prescriptions', prescriptions_routes);
-app.use('/medicines', medicines_routes);
+app.use('/medicines', medicines_routes);*/
 
 
 // catch 404 and forward to error handler
