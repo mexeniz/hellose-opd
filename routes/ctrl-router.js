@@ -118,7 +118,17 @@ router.get('/showAddRoundWard/', function(req,res,next){
 
 	});
 });
-
+router.post('/chooseDate/', function(req,res,next){
+	//Default Call => Return Months.Now
+	//RoundWardControl.showImportRoundWard(req);
+	res.render('appointment/chooseDate' , data);
+});
+router.get('/chooseDate/', function(req,res,next){
+	//Default Call => Return Months.Now
+	//RoundWardControl.showImportRoundWard(req);
+	var data = [1,2,3,4] ;
+	res.render('appointment/chooseDate' , data);
+});
 
 
 

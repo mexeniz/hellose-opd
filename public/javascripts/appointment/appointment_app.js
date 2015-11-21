@@ -51,7 +51,17 @@ var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
 		  		schedule_fac.create(jsondata);
 		  }
 		}]);
-
+	app.controller('CreateCtrl', [	'$scope', 
+		function($scope){
+		  $scope.getAvailableDate = function(){
+		  	if($scope.department == null){
+		  		console.log("aaaa");	
+		  	}
+		  	else {
+		  		console.log($scope.symptoms +" " + $scope.department + " " + $scope.doctor);
+		  	}
+		  };
+	}]);
 	
 
 })();
