@@ -27,20 +27,22 @@ router.get('/home', Middleware.isAuthenticated, function(req, res, next) {
   res.render('main/home');
 });
 
-/* GET import schedule page. */
 router.get('/test', function(req, res, next) {
-  res.render('material/index');
+  res.render('material/home');
+});
+
+router.get('/test/profile', function(req, res, next) {
+  res.render('material/view_profile');
 });
 router.get('/calendar', function(req, res, next) {
   res.render('material/calendar');
 });
+router.get('/create_appointment', function(req, res, next) {
+  res.render('material/create_appointment');
+});
 /* GET import schedule page. */
 router.get('/import_schedule', function(req, res, next) {
   res.render('mockup/import_schedule');
-});
-/* GET import schedule page. */
-router.get('/create_appointment', function(req, res, next) {
-  res.render('mockup/create_appointment');
 });
 
 router.get('/patientViewAppointment', function(req,res) {
