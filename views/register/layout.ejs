@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <title>iDOC Appointment</title>
+
+    <% include ../templates/header %>
+
+  </head>
+
+  <body ng-app="register_app" ng-controller="menuCtrl" layout="row" ng-cloak >
+
+     <md-sidenav class="md-sidenav-left md-whiteframe-z2" layout="column" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+      <md-toolbar>
+        <h1 class="md-toolbar-tools">iDOC System</h1>
+      </md-toolbar>
+      <!-- Menu list -->
+
+      <md-list>
+        <md-list-item md-ink-ripple class="md-clickable" href="/patients">
+          <md-icon md-font-library="material-icons">home</md-icon>
+          <p>Homepage</p>
+        </md-list-item>
+        
+      </md-list>
+     </md-sidenav>
+
+    <%- body %>
+      
+     </md-content>
+
+
+    <% include ../templates/footer %>
+    
+    <!-- Include patient_app.js -->
+    <script type="text/javascript" src="/javascripts/register_app.js"></script>
+
+  </body>
+</html>

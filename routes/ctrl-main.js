@@ -50,7 +50,7 @@ router.get('/patientViewAppointment', function(req,res) {
   });
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-  res.render('main/register');
+  res.render('register/register');
 
 });
 
