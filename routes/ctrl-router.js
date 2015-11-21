@@ -12,7 +12,7 @@ var moment = require('moment');
 //Create the router for this controller file
 var router = express.Router();
 module.exports = router;
-
+var Promise = require('promise');
 
 // //Model Defining
 var mongoose = require('mongoose');
@@ -34,6 +34,7 @@ var AppointmentControl = require('../controllers/AppointmentControl.js');
 router.get('/', function(req,res){ //Default Route
 	//Callback function on get finished
 	//Render index.ejs
+	console.log(req.user);
 	res.render('appointment/index');
 });
 router.get('/create', function(req,res){
@@ -59,10 +60,10 @@ router.get('/patientView', function(req,res){
 ////////////////////////////////////////////
 
 router.post('/addRoundward', function(req,res,next){
-	var temp = {date:req.body['date'],
+	var roundward = {date:req.body['date'],
 				time:req.body['time']};
-	var doctor_id = mongoose.Types.ObjectId(req.body['doctorid']);
-	RoundWardControl.addRoundWard(doctor_id,temp,function(err,result){
+	var doctor_id = mongoose.Types.ObjectId(req.body['doctorid']); //GetFromSession
+	RoundWardControl.addRoundWard(doctor_id,roundward,function(err,result){
 		if(err){
 			return next(err); 
 		}
@@ -79,15 +80,20 @@ router.post('/cancelRoundward', function(req,res,next){
 			return res.json(result);
 		}
 	});
-	
 });
 router.post('/getAvailableDateTime', function(req,res,next){
-	var doctor_id = req.body['doctorid'];
-	RoundWardControl.getAvailableDateTime(doctor_id,function(err,result) {
+	var doctor_id = req.body['doctor_id'];
+	var month = req.body['month'];
+	RoundWardControl.getAvailableDateTime(doctor_id,month,function(err,result) {
 		if(err){
 			return next(err);
 		}else{
-			return res.json(result);
+			var returning = {
+				'doctor_id' : doctor_id,
+				'month' : month,
+				'data': result
+			};
+			return res.json(returning);
 		}
 	});
 });
@@ -102,8 +108,6 @@ router.post('/importRoundward', function(req,res,next){
 			return res.json(result);
 		}
 	});
-	//Render Here
-	
 });
 router.get('/showImportRoundWard/', function(req,res,next){
 	//Default Call => Return Months.Now
@@ -119,101 +123,75 @@ router.get('/showAddRoundWard/', function(req,res,next){
 	});
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+router.post('/gen/', function(req,res,next){
+	console.log("test");
+	AppointmentControl.generate();
+});
 
 
 ////////////////////////////////////////////
+// AppointmentControl Funtion Rounting 
+////////////////////////////////////////////
 
-// //POST Function To Create New Entry
-// router.post('/insert',function(req,res,next){
-// 	//Since Everything in appointment are packed in req.body
-// 	var appointment = new Appointment(req.body);
-// 	//Save Things in to Database via mongoose api
-// 	Appointment.save(function(err, appointment) {
-// 		//onError do nothing and return error msg 
-// 		if(err){
-// 			return next(err);
-// 		}
-// 		//onSuccess Return itself in json packed formatted
-// 		res.json(appointment);
-// 	});
+router.post('/createAppointment/',function(req,res,next){
+	/*	Find Doctor From Name and lastname (Provided From Backend)
+	appInfo 
+		///DOCTOR SEARCH    {firstname,lastname}
+		ROUNDWARD SEARCH {date,time}
+		patient 		 {id}*/
+	var appInfo = {
+		//firstname : req.body['docfirstname'],
+		//lastname : req.body['doclastname'],
+		doctor_id : mongoose.Types.ObjectId(req.body['doctor_id']),
+		patientid : 12345678, 
+		date : req.body['date'],
+		time : req.body['time'],
+		slot : req.body['slot'],
+		status : req.body['status']
+	};
 
-// });
+	AppointmentControl.createAppointment(appInfo,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			console.log('success');
+		}
+	});
+});
 
-// //GET Function to fetch All list  
-// router.get('/getAll',function(req,res,next) {
-// 	//Populate Everything
-// 	Appointment.find(function(err,appointment){
-// 		if(err){
-// 			return next(err);
-// 		}
-	
-// 	});
+router.post('/getEarliestDateTime/',function (req,res,next) {
+
+	var user_doctor = {
+		//firstname : req.body['docfirstname'],
+		//lastname : req.body['doclastname']
+		"id" : req.body['doctor_id']
+	};
+	AppointmentControl.getEarliestDateTime(user_doctor,req.body['amount'],function(err,result) {
+		if(err){
+			console.log(err);
+			//return next(err);
+		} else if ( !err  && result ){
+			console.log('SUCCESS');
+			return res.json('success');
+		}
+	});
+});
 
 
-// });
+router.post('/getEarliestDateTime/',function (req,res,next) {
+
+	var user_doctor = {
+		//firstname : req.body['docfirstname'],
+		//lastname : req.body['doclastname']
+		"id" : req.body['doctor_id']
+	};
+	AppointmentControl.getEarliestDateTime(user_doctor,req.body['amount'],function(err,result) {
+		if(err){
+			console.log(err);
+			//return next(err);
+		} else if ( !err  && result ){
+			console.log('SUCCESS');
+			return res.json('success');
+		}
+	});
+});

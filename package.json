@@ -21,6 +21,7 @@
     "morgan": "~1.6.1",
     "passport": "^0.3.0",
     "passport-local": "^1.0.0",
+    "promise": "^7.0.4",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {

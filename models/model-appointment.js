@@ -15,8 +15,8 @@ var AppointmentSchema = new Schema({
 	patient: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
 	doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
 	roundWard: { type: mongoose.Schema.Types.ObjectId, ref: 'RoundWard' },
-	date: Date,
-	time: String
+	slot: Number,
+	status: String
 });
 
 module.exports = mongoose.model('Appointment', AppointmentSchema);

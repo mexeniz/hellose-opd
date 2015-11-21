@@ -5,6 +5,7 @@ var Roundward = mongoose.model('Roundward');
 var User = mongoose.model('User');
 var Doctor = mongoose.model('Doctor');
 var moment = require('moment');
+var Appointment = mongoose.model('Appointment');
 
 /*
 TEST CASE 
@@ -98,15 +99,56 @@ module.exports.cancelRoundward = function (doctorId_input,rwId_input,callback) {
  
 };
 
-module.exports.getAvailableDateTime = function (doctorId_input,callback) {
+//Find Available time for single Doctor
+module.exports.getAvailableDateTime = function (doctor_id,month,callback) {
 	//Find Correspondent Doctor
-	Doctor.findOne({userId : doctorId_input})
-  .populate('availableRoundward').exec(function(err,result){
-    if(err){
-      return callback(err);
-    }
-    callback(err,result.availableRoundward);
-  });  
+  console.log(doctor_id);
+  console.log(month);
+  var roundward_return = [];
+  var roundward = [];
+	Doctor.findOne({'_id' : mongoose.Types.ObjectId(doctor_id)})
+  .populate('onDutyRoundward')
+  .exec(function(err,result){
+    result.onDutyRoundward.forEach(function(e,index){
+      var daypack = {
+        day : e.date.getDate() ,
+        month :  e.date.getMonth()+1 ,
+        year : e.date.getFullYear(),
+      };
+      //Specific Month
+      //with the roundward of that doctor_id
+      if(month===daypack.month){
+        var busySlot = [];
+        var freeSlot_query = [];
+          Appointment.find({roundWard : e._id })
+          .then(function(appointment){
+                appointment.forEach(function(app){
+                  busySlot.push(app.slot);
+                });
+              
+              //console.log(busySlot);
+              for(var a = 0 ; a < 15 ; a++){
+                  if(busySlot.indexOf(a) === -1){
+                    freeSlot_query.push(a);
+                  }
+              }
+              //PACKED DATA HERE 
+              var single_roundward = {
+                date : daypack,
+                time : e.time,
+                freeSlot : freeSlot_query
+              };
+              roundward_return.push(single_roundward);
+              
+        }).then(function(){
+          roundward = roundward_return;
+          return callback(null,roundward);
+        });
+      }
+    });
+    //END FOREACH (Synchronous)
+  });
+    //End EXEC
 };
 
 module.exports.importRoundWard = function (startDate,data,callback) {
