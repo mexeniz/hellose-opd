@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" >
   <head>
-    <title>Angular Material - Starter App</title>
+    <title>iDOC System</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -92,43 +92,57 @@
       </md-toolbar>
 
       <!-- Content -->
-      <md-content flex layout-padding>
-      <form ng-submit="submit()" name="userForm">
-        <h1 class="md-title">Enter Symptoms/Causes</h1>
-         <div layout="row">
-          <md-input-container flex="80">
-            <md-input-container class="md-block">
-            <label>Symptoms/Causes</label>
-            <textarea ng-model="symptoms" columns="1" md-maxlength="150" rows="5"></textarea>
-          </md-input-container>
-          <br>
-        <h1 class="md-title">Choose Department and Doctor</h1>
-        <div layout="row">
-          <md-input-container flex="40">
-          <label>Department</label>
-            <md-select ng-model="department">
-              <md-option ng-repeat="dep in departmentList" value="{{dep.id}}">
-                {{dep.name}}
-              </md-option>
-            </md-select>
-          </md-input-container>
-          </div>
+      <md-content class="md-padding">
+    <md-card>
+      <md-card-content>
           <div layout="row">
-          <md-input-container flex="50">
-            <label>Doctor</label>
-            <md-select ng-model="doctor">
-              <md-option ng-repeat="doc in doctorList" value="{{doc.id}}">
-                {{doc.name}}  - {{doc.department}}
-              </md-option>
-            </md-select>
-          </md-input-container>
+            <div flex>
+            <h2 >The earliest available date :</h2>
+           </div>
+           <div flex>
+            <h2 >Tue 12 Jan 2015 , 9.50 - 10.00 </h2>
           </div>
-        </div>
-        <md-content layout="row" layout-align="center center">
-        <md-button type="submit" class="md-raised md-primary">Next</md-button>
-        </md-content>
-      </form>
-      </md-content>
+         </div>
+        <h2 class="md-title">Choose another date</h2>
+        <calendar-md md-accent flex layout layout-fill
+        calendar-direction="direction"
+        on-prev-month="prevMonth"
+        on-next-month="nextMonth"
+        on-day-click="dayClick"
+       title-format="'MMMM y'"
+       ng-model='selectedDate'
+       week-starts-on="firstDayOfWeek"
+       data-start-month=""
+       data-start-year=""
+       tooltips="tooltips"
+        day-format="dayFormat"
+       day-label-format="'EEE'"
+       day-label-tooltip-format="'EEEE'"
+       day-tooltip-format="'fullDate'"
+        day-content="setDayContent"
+       disable-future-selection="false">
+        </calendar-md>
+      </md-card-content>
+      <md-card-content >
+      <div layout="column" >
+          <h1 >Selected Value: {{ selectedDate }}</h1>
+      </div>
+      <md-input-container>
+        <md-icon md-font-library="material-icons" class="material-icons">date_range</md-icon>
+        <label>Choose time slot</label>
+        <md-select ng-model="slot">
+          <md-option ng-repeat="s in availableSlot" value="{{s.id}}">
+            {{s.time}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      </md-card-content>
+      <md-card-actions layout="row" layout-align="center center">
+        <md-button type="submit" class="md-raised md-primary">Submit</md-button>
+      </md-card-actions>
+    </md-card>
+    </md-content>
+      
       
      </md-content>
 
@@ -145,11 +159,12 @@
     <script src="./bower_components_material/angular-animate/angular-animate.js"></script>
     <script src="./bower_components_material/angular-aria/angular-aria.js"></script>
     <script type="text/javascript" src="./bower_components_material/angular-material/angular-material.js"></script>
-
+    <script src="./bower_components_material/angular-sanitize/angular-sanitize.js"></script>
+    <script src="./bower_components_material/material-calendar/angular-material-calendar.js"></script>
     <script type="text/javascript">
 
           angular
-              .module('starterApp', ['ngMaterial'])
+              .module('starterApp', ['ngMaterial' , "materialCalendar"])
               .config(function($mdThemingProvider, $mdIconProvider){
 
                   /*$mdIconProvider
@@ -168,28 +183,55 @@
 
 
               })
-              .controller('menuCtrl', function($scope, $mdSidenav) {
+              .controller('menuCtrl', function($scope, $mdSidenav , $filter, $http, $q) {
                 $scope.toggleNav = function(compId)
                 {
                   $mdSidenav(compId).toggle();
                 };
-                $scope.departmentList = [
-                  {id:"10",name:"Comp"},
-                  {id:"11",name:"Elec"},
-                  {id:"12",name:"Chem"},
-                  {id:"13",name:"Civil"},
-                  {id:"14",name:"Mech"},
-                ];
-                $scope.doctorList = [
-                  {id:"1",name:"Santa",department:"Comp"},
-                  {id:"2",name:"Gale",department:"Elec"},
-                  {id:"2",name:"Kirk",department:"Mech"},
-                  {id:"3",name:"Tutor",department:"Mech"},
-                  {id:"4",name:"Mma",department:"Mech"},
-                ];
-                $scope.submit = function(){
-                    console.log($scope.department + $scope.symptoms);
-                };
+                $scope.dayFormat = "d";
+                
+          $scope.selectedDate = null;
+          $scope.availableSlot =[
+            {id:"1",time:"9.30-9.40"},
+            {id:"2",time:"9.40-9.50"},
+            {id:"3",time:"9.50-10.00"},
+            {id:"4",time:"10.00-10.10"},
+            {id:"5",time:"10.10-10.20"},
+            {id:"6",time:"10.20-10.30"},
+            {id:"7",time:"10.30-10.40"}
+          ];
+          $scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+          $scope.setDirection = function(direction) {
+            $scope.direction = direction;
+            $scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
+          };
+
+        $scope.dayClick = function(date) {
+          $scope.msg = "You clicked " + date;
+          console.log($scope.msg);
+        };
+
+        $scope.prevMonth = function(data) {
+          $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+        };
+
+        $scope.nextMonth = function(data) {
+          $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+        };
+
+        $scope.tooltips = true;
+        $scope.setDayContent = function(date) {
+        var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+                "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+               "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
+        // To select a single date, make sure the ngModel is not an array.
+            if (dateList.indexOf(date+"") > -1){
+              return "<i class='material-icons'>assignment_turned_in</i>";
+              }
+            else{
+              return "<p></p>";
+            }
+        };
               });
 
 
