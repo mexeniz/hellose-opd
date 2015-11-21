@@ -27,9 +27,12 @@ router.get('/home', Middleware.isAuthenticated, function(req, res, next) {
   res.render('main/home');
 });
 
-/* GET import schedule page. */
 router.get('/test', function(req, res, next) {
   res.render('material/home');
+});
+
+router.get('/test/profile', function(req, res, next) {
+  res.render('material/view_profile');
 });
 
 /* GET import schedule page. */
