@@ -1,5 +1,24 @@
 (function(){
-var app = angular.module('patients', ['ui.router']) ;
+var app = angular.module('patients', ['ui.router', 'ngMaterial']) ;
+
+// Angular Material Config
+app.config(function($mdThemingProvider, $mdIconProvider){
+
+                      $mdThemingProvider.theme('default')
+                          .primaryPalette('teal')
+                          .accentPalette('cyan')
+                          .warnPalette('pink');
+
+              });
+
+// Side menu controller
+app.controller('menuCtrl', function($scope, $mdSidenav) {
+                $scope.toggleNav = function(compId)
+                {
+                  $mdSidenav(compId).toggle();
+                };
+              });
+
 
 app.factory('patients_fac', ['$http', function($http){
 	  var o = {

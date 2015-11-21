@@ -29,7 +29,7 @@ router.get('/home', Middleware.isAuthenticated, function(req, res, next) {
 
 /* GET import schedule page. */
 router.get('/test', function(req, res, next) {
-  res.render('material/index');
+  res.render('material/home');
 });
 
 /* GET import schedule page. */
