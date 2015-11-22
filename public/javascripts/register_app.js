@@ -25,12 +25,14 @@ app.controller('menuCtrl', function($scope, $mdSidenav) {
                 };
               });
 
+
+
 app.controller('registerCtrl', [
   '$scope',
   '$window',
   '$stateParams', 
-  '$http',
-  function($scope , $window ,$stateParams,$http){
+  '$http', '$mdDialog',
+  function($scope , $window ,$stateParams,$http,$mdDialog){
     $scope.loginSubmit = function() {
       console.log("email : " + this.email + " pw : "+ this.password);
       $window.location = "/home" ;
@@ -44,13 +46,50 @@ app.controller('registerCtrl', [
     $scope.regData.gender = 'M';
 
     // Validate form and show modal
-    $scope.checkRegister = function(){
-      if($scope.password !== $scope.repeatPassword)
+    $scope.checkRegister = function(ev){
+      console.log("check!");
+      if($scope.regData.password !== $scope.regData.repeatPassword)
       {
+        console.log("not Match");
         $scope.pwNotMatch = true;
         return;
       }
-      $scope.showConfirmRegModal = true;
+      var confirmCtrl = function($scope, regData) {
+          $scope.regData = regData ;
+          $scope.cancel = function() {
+            $mdDialog.cancel();
+          };
+          $scope.confirmRegister = function()
+          {
+            $scope.showConfirmRegModal = false;
+            $http.post('/register', $scope.regData).success(function(data) {
+              console.log(data);
+              if(data.status === 'success')
+              {
+                $scope.regMessage = 'Successfully registered!';
+                $window.location.href = "/home" ;
+              }
+              else
+              {
+                $scope.regMessage = 'Try again!';
+              }
+            });
+          };
+        };
+      $mdDialog.show({
+        locals:{regData: $scope.regData},
+        controller: confirmCtrl,
+        templateUrl: '/dialog/confirmRegister.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose:true
+      })
+      .then(function(answer) {
+        //Do something after close dialog
+        //Switch to another page
+      }, function() {
+      });
+
     };
 
     $scope.resetNotMatchAlert = function()
@@ -58,23 +97,7 @@ app.controller('registerCtrl', [
       $scope.pwNotMatch = false;
     };
 
-    $scope.confirmRegister = function()
-    {
-      $scope.showConfirmRegModal = false;
-      $http.post('/register', $scope.regData).success(function(data) {
-        console.log(data);
-        if(data.status === 'success')
-        {
-          $scope.regMessage = 'Successfully registered!';
-          $window.location.href = "/home" ;
-        }
-        else
-        {
-          $scope.regMessage = 'Try again!';
-        }
-      });
-    };
-
+    
 }]);
 
 app.directive('pwCheck', [function () {

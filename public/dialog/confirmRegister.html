@@ -1,0 +1,99 @@
+
+
+<md-dialog aria-label="Confirm Register"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Confirm Register</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+      <!-- Content -->
+      <md-content  flex layout-padding>
+      <md-card flex = "100">
+        <md-card-content>
+        <md-content layout-padding class="autoScroll">
+          <md-input-container md-no-float class="md-block" flex="60" >
+            <label>Username</label>
+            <md-icon md-font-library="material-icons" class="material-icons">account_box</md-icon>
+            <input ng-model="regData.username" type="text"  disabled>
+          </md-input-container>
+          <div layout layout-sm="column">
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>Firstname</label>
+            <md-icon md-font-library="material-icons" class="material-icons">face</md-icon>
+            <input ng-model="regData.firstname" type="text" disabled>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>Lastname</label>
+            <input ng-model="regData.lastname" type="text" disabled>
+          </md-input-container>
+          </div>
+          <div layout layout-sm="column">
+            <md-input-container class="md-icon-float md-block" flex="65"  >
+              <label>SSN</label>
+              <md-icon md-font-library="material-icons" class="material-icons">accessibility</md-icon>
+              <input ng-model="regData.ssn" type="text" disabled>
+            </md-input-container>
+            <md-datepicker ng-model="regData.birthdate" md-placeholder="Birthdate" flex="35" disabled></md-datepicker>
+          </div>
+          <div layout layout-sm="column">
+          <md-input-container class="md-icon-float md-block" flex="65"  >
+            <md-icon md-font-library="material-icons" class="material-icons">mail_outline</md-icon>
+            <!-- Use floating label instead of placeholder -->
+            <label>Email</label>
+            <input ng-model="regData.email" type="email" disabled>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="35" >
+            <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
+            <!-- Use floating label instead of placeholder -->
+            <label>Tel</label>
+            <input ng-model="regData.tel_number" type="text" disabled>
+          </md-input-container>
+          </div>
+          <div layout layout-sm="column">
+          <md-input-container style="margin-right: 10px;" flex = "40" >
+            <label>Gender</label>
+            <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
+            <md-select ng-model="regData.gender">
+              <md-option ng-repeat="gender in genderList" value="{{regData.gender}}" disabled>{{regData.gender}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container style="margin-right: 10px;" flex = "40" >
+            <md-icon md-font-library="material-icons" class="material-icons">local_hospital</md-icon>
+            <label>Blood Type</label>
+            <md-select ng-model="regData.blood_type">
+              <md-option ng-repeat="blood in bloodList" value="{{regData.blood_type}}" disabled>{{regData.blood_type}}</md-option>
+            </md-select>
+          </md-input-container>
+          </div>
+          <md-input-container class="md-block" flex = "100" >
+          <md-icon md-font-library="material-icons" class="material-icons">place</md-icon>
+          <label>Address</label>
+          <textarea ng-model="regData.address" columns="1" md-maxlength="150" rows="5" disabled></textarea>
+        </md-input-container>   
+          </md-card > 
+        </md-content>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button class="md-raised md-primary" ng-click="answer('confirm')">
+        Confirm
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
+
+
+      
+      
+
+
+
