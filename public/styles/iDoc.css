@@ -22,3 +22,18 @@
 h1, h2, h3 {
   font-family: 'Roboto', 'TH-Sarabun New';
 }
+
+.h1-th {
+  font-family: 'TH-Sarabun New';
+  font-size: 300%;
+}
+
+.h2-th {
+  font-family: 'TH-Sarabun New';
+  font-size: 200%;
+}
+
+.h3-th {
+  font-family: 'TH-Sarabun New';
+  font-size: 150%;
+}

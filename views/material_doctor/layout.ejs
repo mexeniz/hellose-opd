@@ -7,7 +7,7 @@
 
   </head>
 
-  <body ng-app="patients" ng-controller="menuCtrl" layout="row" ng-cloak >
+  <body ng-app="doctor" ng-controller="menuCtrl" layout="row" ng-cloak >
 
      <md-sidenav class="md-sidenav-left md-whiteframe-z2" layout="column" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
       <md-toolbar>
@@ -34,7 +34,7 @@
 
         <md-list-item md-ink-ripple class="md-clickable" href="/patients">
           <md-icon md-font-library="material-icons">assignment_ind</md-icon>
-          <p>Make Appointment</p>
+          <p>View roundward table</p>
         </md-list-item>
 
         <md-list-item md-ink-ripple class="md-clickable" href="/logout">
@@ -45,11 +45,11 @@
      </md-sidenav>
 
     <%- body %>
-
+    
     <% include ../templates/footer %>
     
     <!-- Include patient_app.js -->
-    <script type="text/javascript" src="/javascripts/patients_app.js"></script>
+    <script type="text/javascript" src="/javascripts/doctor_app.js"></script>
 
   </body>
 </html>
