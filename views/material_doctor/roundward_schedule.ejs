@@ -59,7 +59,7 @@
               <tr ng-repeat="rw in selectedRoundward">
                 <td>{{ rw.time == 'AM' ? 'เช้า' : 'บ่าย' }}</td>
                 <td>{{ rw.time == 'AM' ? '9.30 - 12.00' : '13.00 - 15.30' }}</td>
-                <td><md-button class="md-warn md-raised" href="#"><md-icon md-font-library="material-icons">delete</md-icon>ยกเลิกรอบออกตรวจ</md-button></td>
+                <td><md-button class="md-warn md-raised" ng-disabled="loadingCount > 0" ng-click="showCancelDialog($event, rw)"><md-icon md-font-library="material-icons">delete</md-icon>ยกเลิกรอบออกตรวจ</md-button></td>
               </tr>
             </tbody>
           </table>
@@ -68,7 +68,7 @@
           ไม่มีรอบออกตรวจ
         </div>
 
-        <md-button class="md-primary md-raised" ng-hide="selectedRoundward.length == 2" ng-click="showAddDialog($event)"><md-icon md-font-library="material-icons">create</md-icon>เพิ่มรอบออกตรวจ</md-button>
+        <md-button class="md-primary md-raised" ng-hide="selectedRoundward.length == 2" ng-disabled="loadingCount > 0" ng-click="showAddDialog($event)"><md-icon md-font-library="material-icons">create</md-icon>เพิ่มรอบออกตรวจ</md-button>
 
       </div>
 

@@ -1,0 +1,23 @@
+<md-dialog aria-label="ยะเลิกรอบออกตรวจ"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>ยกเลิกรอบออกตรวจ</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; " class="md-padding">
+      <!-- Content -->
+      ยืนยันการยกเลิกรอบตรวจวันที่ {{ rwInfo.date | date:'dd-MM-yyyy' }} ช่วง {{ rwInfo.time == 'AM' ? 'เช้า' : 'บ่าย' }}
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button class="md-raised md-warn" ng-click="confirm()">
+        ยืนยัน
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

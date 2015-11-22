@@ -304,6 +304,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 	o.addRoundward = function(date, time, callback)
 	{
 		var rwInfo = {
+			_id: o.roundwardList.length + 1,
 			date: date,
 			time: time
 		};
@@ -320,6 +321,28 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 			o.roundwardList.push(rwInfo);
 			o.roundwardCache[getKey(rwInfo.date, rwInfo.time)] = rwInfo;
 			callback(date);
+		},2000);
+	};
+
+	o.cancelRoundward = function(rwId, callback)
+	{
+		$timeout(function() {
+			
+
+			for(var i in o.roundwardList)
+			{
+				var rw = o.roundwardList[i];
+				if(rw._id === rwId)
+				{
+					console.log('deleted roundward id = ' + rwId);
+					o.roundwardList.splice(i, 1);
+					o.roundwardCache[getKey(rw.date, rw.time)] = null;
+					callback(rw);
+					return;
+				}
+			}
+
+			
 		},2000);
 	};
 
@@ -732,6 +755,7 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
 	$scope.loadingCount = 0;
 
 	$scope.selectedRoundward = [];
+	$scope.canceledRoundward = null;
 
 	$scope.setCalendar = function()
 	{
@@ -768,6 +792,8 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
       $scope.selectedRoundward = [];
       if(rwAM) { $scope.selectedRoundward.push(rwAM); }
       if(rwPM) { $scope.selectedRoundward.push(rwPM); }
+
+      console.log($scope.selectedRoundward);
       
     };
 
@@ -795,6 +821,27 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
     	$scope.dayClick(date);
     };
 
+    $scope.successCancelRoundward = function(rwInfo)
+    {
+    	var rwAM = roundward_fac.getRoundwardCache(rwInfo.date, 'AM');
+      	var rwPM = roundward_fac.getRoundwardCache(rwInfo.date, 'PM');
+
+      	console.log(rwAM);
+      	console.log(rwPM);
+
+      	if(rwAM || rwPM)
+      	{
+      		CalendarData.setDayContent(rwInfo.date, "<i class='material-icons'>event</i>");
+      	}
+      	else
+      	{
+      		CalendarData.setDayContent(rwInfo.date, "<p></p>");
+      	}
+    	
+    	$scope.loadingCount--;
+    	$scope.dayClick(rwInfo.date);
+    };
+
     var addDialogCtrl = function ($scope, $mdDialog, rwTimes) {
 
 		$scope.rwTimes = rwTimes;
@@ -809,6 +856,18 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
 	  };
 	  $scope.answer = function(selected) {
 	    $mdDialog.hide(selected);
+	  };
+	};
+
+	var cancelDialogCtrl = function ($scope, $mdDialog, rwInfo) {
+
+		$scope.rwInfo = rwInfo;
+
+	  $scope.cancel = function() {
+	    $mdDialog.cancel();
+	  };
+	  $scope.confirm = function() {
+	    $mdDialog.hide();
 	  };
 	};
 
@@ -852,6 +911,26 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
 	      roundward_fac.addRoundward($scope.showDate, time, $scope.successAddRoundward);
 
 	    }, function() {
+
+	    });
+	};
+
+	$scope.showCancelDialog = function(ev, rwInfo) {
+		console.log(rwInfo);
+		$scope.canceledRoundward = rwInfo;
+		$mdDialog.show({
+		  controller: cancelDialogCtrl,
+		  locals: { 'rwInfo': rwInfo },
+		  templateUrl: '/dialog/cancelRoundward.html',
+		  parent: angular.element(document.body),
+		  targetEvent: ev,
+		  clickOutsideToClose:true
+		})
+	    .then(function() {
+
+	      $scope.loadingCount++;
+	      	console.log($scope.canceledRoundward);
+	      roundward_fac.cancelRoundward($scope.canceledRoundward._id, $scope.successCancelRoundward);
 
 	    });
 	};
