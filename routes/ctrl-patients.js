@@ -26,7 +26,8 @@ router.get('/store', function(req, res, next) {
 
 // Information for each patient
 router.get('/:patid', function(req, res, next) {
-  res.render("patients/info", { patient_id: req.params.patid});
+  //res.render("patients/info", { patient_id: req.params.patid});
+  res.render("material_patient/view_profile", { patient_id: req.params.patid});
 });
 
 router.post('/insert', function(req, res, next) {

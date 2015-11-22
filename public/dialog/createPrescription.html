@@ -1,0 +1,82 @@
+
+
+<md-dialog aria-label="Confirm Register"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>รายละเอียดการจ่ายยา</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:1200px;max-height:1000px;width:800px;height:600px; ">
+    <md-card >
+        <md-card-content>
+      <div layout layout-sm="column">
+          <md-input-container style="margin-right: 10px;" flex = "60">
+            <label>ชื่อยา</label>
+            <md-icon md-font-library="material-icons" class="material-icons">adb</md-icon>
+            <md-select ng-model="addedMedicine.medicine">
+              <md-option ng-repeat="m in medicine" value="{{m}}">{{m}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="40" >
+            <!-- Use floating label instead of placeholder -->
+            <label>ปริมาณ</label>
+            <input ng-model="addedMedicine.dosage" type="text" >
+          </md-input-container> 
+      </div>
+      <md-input-container class="md-block" flex = "100">
+            <md-icon md-font-library="material-icons" class="material-icons">colorize</md-icon>
+            <label>วิธีใช้</label>
+            <textarea ng-model="addedMedicine.howTo" columns="1" md-maxlength="100" rows="5"></textarea>
+          </md-input-container>
+          <md-content layout="row" layout-align="end center">
+            <md-button class="md-raised md-primary" ng-click="addMedicine()">เพิ่ม</md-button>           
+          </md-content> 
+        </md-card-content>
+      </md-card>
+      <md-content  flex layout-padding>
+          <md-data-table-container>
+            <table md-data-table>
+              <thead>
+                <tr>
+                  <th>ชื่อยา</th>
+                  <th>ปริมาณ</th>
+                  <th>วิธีใช้</th>
+                  <th>จัดการ</th>
+                </tr>
+              </thead>
+              <tbody ng-repeat="m in prescription.med_dosage_list">
+                <tr>
+                  <td>{{m.medicine}}</td>
+                  <td>{{m.dosage}}</td>
+                  <td>{{m.howTo}}</td>
+                  <td>
+                    <md-button class="md-fab md-mini md-warn" ng-click="removeMedicine($index)">
+                      <md-icon md-font-library="material-icons">delete</md-icon>
+                    </md-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </md-data-table-container>
+      </md-content>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-content layout="row" layout-align="end center">
+        <md-button class="md-raised md-primary" ng-click="submitPrescription()">ยืนยัน</md-button>           
+      </md-content> 
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
+
+
+      
+      
+
+
+
