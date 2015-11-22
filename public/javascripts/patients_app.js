@@ -270,7 +270,8 @@ app.controller('InfoCtrl', [
 	'prescription_records_fac',
 	'medicines_fac',
 	'$mdDialog',
-	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$mdDialog){
+	'$http',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$mdDialog,$http){
       	$scope.bloodList = ["A","B","AB","O"];
 		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
 		$scope.init = function(patient_id) {
@@ -567,16 +568,60 @@ app.controller('InfoCtrl', [
 
 		// Show Prescription Detail
 		$scope.medicineList = {};
-		$scope.pharmacistView = false;
+		$scope.prescriptionList = [
+			{_id:"01",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
+			{_id:"02",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
+			{_id:"03",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
+			{_id:"04",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"},{name:"Para",dosage:"10",howTo:"Eat"}]}
+		];
 
-		$scope.showMedicineListModal = false;
+		$scope.showPresDetail = function(ev,prescription){
+			console.log(prescription);
 
-		$scope.showMedicineList = function(prescription) {
-			$scope.showMedicineListModal = true;
-			angular.copy(prescription,$scope.medicineList);
+
+		      var detailCtrl = function($scope,prescription,prescriptionList){
+		      	$scope.prescriptionList = prescriptionList;
+		      	console.log($scope.prescriptionList);
+		      	$scope.prescription =prescription ;
+		         $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.completePrescription = function(prescription){
+				// update in db
+				/*$http.post('complete/' + prescription._id).success(function(){
+					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
+							if(prescription._id === $scope.prescriptionList[i]._id){
+								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
+							}
+						}
+			  		});
+				};*/
+					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
+							if(prescription._id === $scope.prescriptionList[i]._id){
+								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
+							}
+						}
+						$mdDialog.cancel();
+		      	};
+		      };
+			$mdDialog.show({
+	        locals:{prescription : prescription , prescriptionList : $scope.prescriptionList},
+	        controller: detailCtrl,
+	        templateUrl: '/dialog/prescriptionDetail.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(answer) {
+	        //Do something after close dialog
+	        //Switch to another page
+	      }, function() {
+	      });
+		
+
 		};
-
 	}
+	
 ]);
 app.controller('symptomCtrl', function($scope, $mdSidenav) {
                 $scope.departmentList = [
