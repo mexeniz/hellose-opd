@@ -215,6 +215,49 @@ app.factory('medicines_fac', ['$http', function($http){
 	  return o;
 	}]);
 
+app.factory('appointment_fac', ['$http', function($http){
+	var o = {
+		appointmentList: [],
+		busyDate: []
+	};
+
+	o.getCalendar = function(month)
+	{
+		var bd = [];
+		angular.copy(bd, o.busyDate);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+	};
+
+	o.getAppointmentListByDate = function(date)
+	{
+		console.log('appointment_fac getAppointmentListByDate ' + date);
+		var appList = [
+			{
+				_id: 0, time: '9.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 1, time: '10.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 2, time: '11.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 3, time: '12.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 4, time: '13.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			}
+		];
+
+		angular.copy(appList, o.appointmentList);
+	};
+
+  	return o;
+}]);
+
 app.controller('ListCtrl', [
 	'$scope',
 	'patients_fac',
@@ -559,19 +602,20 @@ app.controller('symptomCtrl', function($scope, $mdSidenav) {
                     console.log($scope.department + $scope.symptoms);
                 };
              });
-app.controller('calendarCtrl', function($scope) {
+app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', function($scope, $filter, appointment_fac) {
 	$scope.dayFormat = "d";
 	$scope.selectedDate = null;
-	$scope.availableSlot =[
-		{id:"1",time:"9.30-9.40"},
-		{id:"2",time:"9.40-9.50"},
-		{id:"3",time:"9.50-10.00"},
-		{id:"4",time:"10.00-10.10"},
-		{id:"5",time:"10.10-10.20"},
-		{id:"6",time:"10.20-10.30"},
-		{id:"7",time:"10.30-10.40"}
-	];
+	$scope.tooltips = true;
+
 	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+	$scope.appointmentList = appointment_fac.appointmentList;
+	$scope.busyDate = appointment_fac.busyDate;
+
+	$scope.init = function()
+	{
+		appointment_fac.getCalendar(11);
+	};
+
 	$scope.setDirection = function(direction) {
 		$scope.direction = direction;
 		$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
@@ -579,31 +623,35 @@ app.controller('calendarCtrl', function($scope) {
 
     $scope.dayClick = function(date) {
       $scope.msg = "You clicked " + date;
-      console.log($scope.msg);
+      $scope.selectedDate = date;
+      appointment_fac.getAppointmentListByDate(date);
     };
 
     $scope.prevMonth = function(data) {
       $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+      appointment_fac.getCalendar(data.month);
     };
 
     $scope.nextMonth = function(data) {
       $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+      appointment_fac.getCalendar(data.month);
     };
 
-    $scope.tooltips = true;
+    
     $scope.setDayContent = function(date) {
-    	var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-            "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-           "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
-    	// To select a single date, make sure the ngModel is not an array.
-        if (dateList.indexOf(date+"") > -1){
+    	var d = $filter("date")(date, "d");
+        if ($scope.busyDate.indexOf(parseInt(d)) > -1){
+
           return "<i class='material-icons'>assignment_turned_in</i>";
           }
         else{
           return "<p></p>";
         }
     };
-});
+
+}]);
+
+
 app.directive('modal', function () {
     return {
       template: '<div class="modal fade">' +
