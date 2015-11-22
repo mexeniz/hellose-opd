@@ -28,7 +28,7 @@
 </md-toolbar>
 
 <!-- Content -->
-<md-content ng-controller="InfoCtrl" flex layout-padding>
+<md-content ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')" flex layout-padding>
     <md-tabs md-dynamic-height md-border-bottom>
       <md-tab label="ข้อมูลส่วนตัว">
         <md-content class="md-padding">
@@ -42,16 +42,22 @@
               <md-icon md-font-library="material-icons" class="material-icons">face</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">ชื่อจริง-นามสกุล</div>
-                <div class="h2-th">อาชัญ สุนทรอารมณ์</div>
+                <div class="h2-th">{{patient.firstname}}  {{patient.lastname}}</div>
               </div>
             </md-list-item>
-
+            <md-list-item class="md-2-line">
+              <md-icon md-font-library="material-icons" class="material-icons">assignment_ind</md-icon>
+              <div class="md-list-item-text">
+                <div class="h3-th">รหัสผู้ป่วย</div>
+                <div class="h2-th">{{patient.patient_id}}</div>
+              </div>
+            </md-list-item>
             <md-divider></md-divider>
             <md-list-item class="md-2-line">
               <md-icon md-font-library="material-icons" class="material-icons">accessibility</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">รหัสประจำตัวประชาชน</div>
-                <div class="h2-th">1111111222233</div>
+                <div class="h2-th">{{patient.ssn}}</div>
               </div>
             </md-list-item>
 
@@ -60,7 +66,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">เพศ</div>
-                <div class="h2-th">ชาย</div>
+                <div class="h2-th">{{patient.gender}}</div>
               </div>
             </md-list-item>
 
@@ -69,7 +75,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">cake</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">อายุ</div>
-                <div class="h2-th">21 ปี</div>
+                <div class="h2-th">{{patient.age}}</div>
               </div>
             </md-list-item>
             
@@ -78,7 +84,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">local_hospital</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">หมู่เลือด</div>
-                <div class="h2-th">A</div>
+                <div class="h2-th">{{patient.blood_type}}</div>
               </div>
             </md-list-item>          
 
@@ -87,7 +93,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">today</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">วันเกิด</div>
-                <div class="h2-th">25/12/2536</div>
+                <div class="h2-th">{{patient.birthdate}}</div>
               </div>
             </md-list-item>
 
@@ -96,7 +102,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">เบอร์โทรศัพท์</div>
-                <div class="h2-th">0831231234</div>
+                <div class="h2-th">{{patient.tel_number}}</div>
               </div>
             </md-list-item>
 
@@ -105,7 +111,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">mail_outline</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">อีเมลล์</div>
-                <div class="h2-th">c3piano@bargay.com</div>
+                <div class="h2-th">{{patient.email}}</div>
               </div>
             </md-list-item>
 
@@ -114,7 +120,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">place</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">ที่อยู่</div>
-                <div class="h2-th">1031 หมู่บ้านสินธร ถนนแฮปปี้แลนด์ แขวงคลองจั่น เขตบางกะปิ กรุงเทพ 10240</div>
+                <div class="h2-th">{{patient.address}}</div>
               </div>
             </md-list-item>
 
@@ -125,8 +131,11 @@
       </md-tab>
       <md-tab label="ข้อมูลทางการแพทย์">
         <md-content class="md-padding">
-          <div class="h1-th">ข้อมูลทางกายภาพ</div>
-
+          <div class="h1-th">ข้อมูลทางกายภาพ
+          <md-button class="md-fab md-primary" ng-click="showPhysicalRecordForm($event,'create',{})">
+            <md-icon md-font-library="material-icons">add</md-icon>
+          </md-button></div>
+          <br>
           <md-data-table-container>
             <table md-data-table>
               <thead>
@@ -134,39 +143,28 @@
                   <th>วันที่</th>
                   <th>น้ำหนัก</th>
                   <th>ส่วนสูง</th>
-                  <th>ความดันโลหิต(บน)</th>
-                  <th>ความดันโลหิต(ล่าง)</th>
+                  <th>ความดันโลหิต</th>
                   <th>อัตราการเต้นหัวใจ</th>
                   <th>อุณหภูมิร่างกาย</th>
+                  <th>การจัดการ</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody ng-repeat="physicalRecord in physicalRecordList">
                 <tr>
-                  <td>20/5/58</td>
-                  <td>53</td>
-                  <td>170</td>
-                  <td>120</td>
-                  <td>80</td>
-                  <td>60</td>
-                  <td>36</td>
-                </tr>
-                <tr>
-                  <td>20/5/58</td>
-                  <td>53</td>
-                  <td>170</td>
-                  <td>120</td>
-                  <td>80</td>
-                  <td>60</td>
-                  <td>36</td>
-                </tr>
-                <tr>
-                  <td>20/5/58</td>
-                  <td>53</td>
-                  <td>170</td>
-                  <td>120</td>
-                  <td>80</td>
-                  <td>60</td>
-                  <td>36</td>
+                  <td>{{physicalRecord.date}}</td>
+                  <td>{{physicalRecord.weight}}</td>
+                  <td>{{physicalRecord.height}}</td>
+                  <td>{{physicalRecord.blood_pressure}}</td>
+                  <td>{{physicalRecord.pulse}}</td>
+                  <td>{{physicalRecord.temperature}}</td>
+                  <td>
+                    <md-button class="md-fab md-mini md-primary" ng-click="showPhysicalRecordForm($event,'edit',physicalRecord)">
+                      <md-icon md-font-library="material-icons">mode_edit</md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-mini md-warn"  ng-click="removePhysicalRecord(physicalRecord, $index)">
+                      <md-icon md-font-library="material-icons">delete</md-icon>
+                    </md-button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -176,8 +174,11 @@
       </md-tab>
       <md-tab label="ประวัติการรักษา">
         <md-content class="md-padding">
-          <div class="h1-th">ประวัติการรักษา</div>
-
+          <div class="h1-th">ประวัติการรักษา
+          <md-button class="md-fab md-primary" ng-click="showMedicalRecordForm($event,'create',{})">
+            <md-icon md-font-library="material-icons">add</md-icon>
+          </md-button></div>
+          <br>
            <md-data-table-container>
             <table md-data-table>
               <thead>
@@ -186,26 +187,23 @@
                   <th>แพทย์</th>
                   <th>โรค</th>
                   <th>อาการ</th>
+                  <th>การจัดการ</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody ng-repeat="medicalRecord in medicalRecordList">
                 <tr>
-                  <td>20/5/58</td>
-                  <td>ติวเตอร์</td>
-                  <td>กระเพาะ</td>
-                  <td>คนไข้ปวดท้องสัสๆ</td>
-                </tr>
-                <tr>
-                  <td>20/5/58</td>
-                  <td>ติวเตอร์</td>
-                  <td>กระเพาะ</td>
-                  <td>คนไข้ปวดท้องสัสๆ</td>
-                </tr>
-                <tr>
-                  <td>20/5/58</td>
-                  <td>ติวเตอร์</td>
-                  <td>กระเพาะ</td>
-                  <td>คนไข้ปวดท้องสัสๆ</td>
+                  <td>{{medicalRecord.date}}</td>
+                  <td>{{medicalRecord.doctor}}</td>
+                  <td>{{medicalRecord.diseases}}</td>
+                  <td>{{medicalRecord.symptoms}}</td>
+                  <td>
+                    <md-button class="md-fab md-mini md-primary" ng-click="showMedicalRecordForm($event,'edit',medicalRecord)">
+                      <md-icon md-font-library="material-icons">mode_edit</md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-mini md-warn" ng-click="removeMedicalRecord(medicalRecord, $index)">
+                      <md-icon md-font-library="material-icons">delete</md-icon>
+                    </md-button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -215,7 +213,10 @@
       </md-tab>
       <md-tab label="ประวัติการรับยา">
         <md-content class="md-padding">
-          <div class="h1-th">ประวัติการรับยา</div>
+          <div class="h1-th">ประวัติการรับยา
+          <md-button class="md-fab md-primary" ng-click="showPrescription($event)">
+            <md-icon md-font-library="material-icons">add</md-icon>
+          </md-button></div>
           <md-list>
 
             <md-list-item class="md-2-line">
