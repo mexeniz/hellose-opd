@@ -21,9 +21,9 @@
     <md-button class="md-icon-button" ng-click="toggleNav('left')" hide-gt-md aria-label="Menu">
       <md-icon md-font-library="material-icons">menu</md-icon>
     </md-button>
-    <h2>
-      <span>Profile</span>
-    </h2>
+    <h1 class="title">
+      <span>ประวัติผู้ป่วย</span>
+    </h1>
   </div>
 </md-toolbar>
 
@@ -217,16 +217,22 @@
           <md-button class="md-fab md-primary" ng-click="showPrescription($event)">
             <md-icon md-font-library="material-icons">add</md-icon>
           </md-button></div>
-          <md-list>
 
-            <md-list-item class="md-2-line">
-              <md-icon md-font-library="material-icons">adb</md-icon>
-              <div class="md-list-item-text">
-                <div class="h3-th">ยาที่แพ้</div>
-                <div class="h2-th">พารา ยาคูล ยาหม่อง</div>
-              </div>
-            </md-list-item>
-
+          <md-card >
+            <md-card-content flex="50">
+              <md-list>
+                <md-list-item class="md-2-line">
+                  <md-icon md-font-library="material-icons">adb</md-icon>
+                  <div class="md-list-item-text">
+                    <div class="h3-th">ยาที่แพ้</div>
+                    <span class="h2-th" ng-repeat="al in allergy" >
+                      {{al+"   "}} 
+                     </span>
+                  </div>
+                </md-list-item>
+              </md-list>
+            </md-card-content>
+          </md-card>
           <md-data-table-container>
             <table md-data-table>
               <thead>

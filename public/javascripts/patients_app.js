@@ -293,7 +293,7 @@ app.controller('InfoCtrl', [
 	      	$scope.cancel = function() {
 		         $mdDialog.cancel();
 		    };
-		      	$scope.patient = {} ;
+		      	$scope.patient = patient;
 		      	$scope.patient.gender = "M";
 		      	$scope.patient.blood_type = "A";
 		      	$scope.bloodList = ["A","B","AB","O"];
@@ -641,7 +641,7 @@ app.controller('InfoCtrl', [
 		/////////////////////////////
 		// Prescription Detail Tab //
 		/////////////////////////////
-
+		$scope.allergy = ['Yakult' , 'Amphet' , 'Wappa' ];
 		$scope.medicineList = {};
 		/*$scope.prescriptionList = [
 			{_id:"01",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
@@ -649,7 +649,50 @@ app.controller('InfoCtrl', [
 			{_id:"03",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
 			{_id:"04",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"},{name:"Para",dosage:"10",howTo:"Eat"}]}
 		];*/
-
+		$scope.showPrescription = function(ev){
+		   var createPrescriptionCtrl = function($scope){
+		   		$scope.addedMedicine = {};
+		      	$scope.prescription = { med_dosage_list :[]} ;
+				$scope.medicine = ['A', 'B', 'AB', 'O'];
+		         $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.submitPrescription = function(prescription){
+				// update in db
+				/*$http.post('complete/' + prescription._id).success(function(){
+					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
+							if(prescription._id === $scope.prescriptionList[i]._id){
+								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
+							}
+						}
+			  		});
+				};*/
+					console.log($scope.prescription) ;
+					$mdDialog.cancel();
+		      	};
+		      	$scope.addMedicine = function(){
+		   			$scope.prescription.med_dosage_list.push($scope.addedMedicine);
+		   			$scope.addedMedicine = {};
+		      	};
+		      	$scope.removeMedicine = function(index){
+		      		if(confirm("Are you sure?") ){
+						$scope.prescription.med_dosage_list.splice(index,1) ;
+		      		}
+		      	};
+		     };
+			$mdDialog.show({
+	        controller: createPrescriptionCtrl,
+	        templateUrl: '/dialog/createPrescription.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(answer) {
+	        //Do something after close dialog
+	        //Switch to another page
+	      }, function() {
+	      });
+	  	}
 		$scope.showPresDetail = function(ev,prescription){
 		   var detailCtrl = function($scope,prescription,prescriptionList){
 		      	$scope.prescriptionList = prescriptionList;
