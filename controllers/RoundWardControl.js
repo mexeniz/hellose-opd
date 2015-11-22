@@ -10,6 +10,7 @@ var Appointment = mongoose.model('Appointment');
 /*
 TEST CASE 
 {
+  //USE userId For Query Everything
     "date" : "2015-11-15",
     "time" : "AM",
     "doctorid(user._id)": "564a17045e402488288fc596"
@@ -21,6 +22,7 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
  //schema's Attribute (name must be the same)
 
  //Find Doctor to add the Roundward
+
   Doctor.findOne({userId:mongoose.Types.ObjectId(userId)},function(err,thisDoctor){
     if(err || !thisDoctor){ 
       return callback(err,'NO DOC FOUND');
@@ -137,11 +139,11 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
 //Find Available time for single Doctor
 module.exports.getAvailableDateTime = function (doctor_id,month,year,callback) {
 	//Find Correspondent Doctor
-  console.log(doctor_id);
-  console.log(month);
+  //console.log(doctor_id);
+  //console.log(month);
   var roundward_return = [];
   var roundward = [];
-	Doctor.findOne({'_id' : mongoose.Types.ObjectId(doctor_id)})
+	Doctor.findOne({'userId' : mongoose.Types.ObjectId(doctor_id)})
   .populate('onDutyRoundward')
   .exec(function(err,result){
     result.onDutyRoundward.forEach(function(e,index){
@@ -167,24 +169,31 @@ module.exports.getAvailableDateTime = function (doctor_id,month,year,callback) {
                     freeSlot_query.push(a);
                   }
               }
-              //PACKED DATA HERE 
-              var single_roundward = {
-                date : daypack,
-                time : e.time,
-                freeSlot : freeSlot_query,
-                doctorid : doctor_id
-              };
-              roundward_return.push(single_roundward);
-              
+              if(freeSlot_query.length > 0 && (new Date(daypack.year,daypack.month,daypack.day) >= new Date())){
+                //PACKED DATA HERE 
+                var single_roundward = {
+                  date : daypack,
+                  time : e.time,
+                  freeSlot : freeSlot_query,
+                  doctorid : doctor_id
+                };
+                roundward_return.push(single_roundward);
+              }
         }).then(function(){
           roundward = roundward_return;
+          var comp = function (a,b){
+            if(a.date.year !== b.date.year)return a.date.year < b.date.year?-1:1;
+            if(a.date.month !== b.date.month)return a.date.month < b.date.month?-1:1;
+            if(a.date.day !== b.date.day)return a.date.day < b.date.day?-1:1;
+            if(a.time !== b.time)return a.time === 'AM'?-1:1;
+            return a.freeSlot[0] < b.freeSlot[0]?-1:1;
+          };
+          roundward.sort(comp);
           return callback(null,roundward);
         });
       }
     });
-    //END FOREACH (Synchronous)
   });
-    //End EXEC
 };
 
 module.exports.getDepartmentFreeMonth = function(month,year,department,callback){
@@ -203,7 +212,7 @@ module.exports.getDepartmentFreeMonth = function(month,year,department,callback)
   function getAvailTime(doctor, month,year) {
     return new Promise(
       function (resolve, reject) {
-        module.exports.getAvailableDateTime(doctor._id, month, year,
+        module.exports.getAvailableDateTime(doctor.userId, month, year,
           function (err, result) {
             resolve(result);
           });
@@ -229,13 +238,24 @@ module.exports.getDepartmentFreeMonth = function(month,year,department,callback)
         var doctorAvailableTimes = arguments;
         for (var i = 0; i < doctorAvailableTimes.length; ++i) {
           var doctorTimes = doctorAvailableTimes[i];
-          //console.log(doctors[i]);
-          returning.push(doctorTimes);
+          // returning.push(doctorTimes);
+          for(var j = 0;j < doctorTimes.length; ++j){
+            returning = returning.concat(doctorTimes[j]);
+          }
         }
-
       })
     .then(
+
       function finished() {
+        var comp = function (a,b){
+            if(a.date.year !== b.date.year)return a.date.year < b.date.year?-1:1;
+            if(a.date.month !== b.date.month)return a.date.month < b.date.month?-1:1;
+            if(a.date.day !== b.date.day)return a.date.day < b.date.day?-1:1;
+            if(a.time !== b.time)return a.time === 'AM'?-1:1;
+            if(a.freeSlot[0] !== b.freeSlot[0])return a.freeSlot[0] < b.freeSlot[0]?-1:1;
+            return Math.random() < 0.5?-1:1;
+          };
+          returning.sort(comp);
         return callback(null,returning);
       });
 };
@@ -386,21 +406,6 @@ data.forEach(function(e){
         console.log('Roundward entry added : '+ my_stack.length);
         console.log('Endloop');
       });
-  });
-  
-  
+  });  
 };
 
-module.exports.showImportRoundWard = function (req, res, next) {
-	//Before Render Query 
-	//For Staff import Excel Tables
-	//No Populate
-	//Nothing Here :D 
-
-};
-
-module.exports.showAddRoundWard = function (doctorId_input,callback) {
-  	//Before Render Query 
-  	//For Doctor Create Appointment for his/her own patient
-    
-};

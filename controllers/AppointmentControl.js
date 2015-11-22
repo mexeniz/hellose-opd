@@ -6,6 +6,7 @@ var Appointment = mongoose.model('Appointment');
 var User = mongoose.model('User');
 var Doctor = mongoose.model('Doctor');
 var RoundWardControl = require('./RoundWardControl.js');
+var Patient = mongoose.model('Patient');
 
 module.exports.generate = function(){
 	var data = {
@@ -19,22 +20,6 @@ module.exports.generate = function(){
 	var appointment = new Appointment(data);
 	appointment.save(function(err,result){
 	});
-};
-
-//CONFLICT WITH RoundwardControl.js
-module.exports.getEarliestDateTime = function(doctorIdentity, amount , callback)
-{
-	var busy = [];
-	Doctor.findById(mongoose.Types.ObjectId("564ec7d6324f8c3524d153f6")).exec()
-	.then(function(thisDoctor){
-		if(thisDoctor ===null){
-			return callback("NO DOC FOUND");
-		}
-		busy = thisDoctor.onDutyRoundward;
-	}).then(function(){
-		console.log(busy);
-	});
-	
 };
 
 module.exports.checkAppointment = function(patientId, selectedType, doctorId, department, symptom)
@@ -51,28 +36,57 @@ module.exports.createAppointment = function(appInfo, callback){
 			-patientid  //From  User's Session  (REQ.USER._ID)
 			-slot // Slot to CreateAppointment - Valid and always Free 
 			(only freeslot choice is shown , so input is freeslot)
-			-status //Archan said that give it a field 
+			-status //{ok,canceled}
+			-date time
 	*/
 	//Find Correspondent Doctor to add the Appointment with
 	var thisDoctor;
 	var packed = {};
+	//console.log(appInfo);
+	//FIND THE ROUNDWARD FIRST 
+	var promise = Roundward.findOne({'date':appInfo.date , 'time': appInfo.time}).exec();
 
-	User.findOne({firstname:appInfo.doctor_id, lastname: appInfo.lastname}).exec()
+	promise.then(function(roundward){
+		if(roundward === null){
+			//No Roundward = no doctor = no appointment can be made
+			callback('no roundward');
+			throw new Error('no roundward');
+		}else{
+		//Have Roundward
+			return Appointment.findOne({'roundWard' : roundward._id,'slot':appInfo.slot}).exec();
+		}
+	})
+	.then(function(appointments){
+		console.log(appointments);
+		if(appointments === null){
+			return User.findOne({'_id':appInfo.doctor_id}).exec();
+		}else{
+			//There already have the appointment in the slot and roundward
+			callback('no slot');
+			throw new Error('no slot');
+		}
+	})
 	.then(function(thisDoctorFromDb){
 		thisDoctor = thisDoctorFromDb;
 		return Roundward.findOne({date: appInfo.date,time:appInfo.time}).exec();
 	})
-	.exec(function(roundward){
-		packed.roundward = roundward._id;
+	.then(function(roundward){
+		packed.roundWard = roundward._id;
 		packed.doctor = thisDoctor._id;
-		packed.patient = appInfo.patientid;
 		packed.slot = appInfo.slot;
 		packed.status = appInfo.status;
-		//WE GOT DATA
-		var appointment = new Appointment(packed);
-		appointment.save(function(err,result){
+		return Patient.findOne({'userId':appInfo.patientid}).exec()
+	}).then(function(patient){
+		packed.patient = patient._id;
+		var appointment_input = new Appointment(packed);
+		appointment_input.save(function(err,result){
+			if(err){
+				return callback(err);
+			}
+			callback(null,result);
 		});
-	});	
+
+	});
 };
 
 module.exports.updateAppointments = function(date, time)
@@ -82,13 +96,19 @@ module.exports.updateAppointments = function(date, time)
 
 module.exports.cancelAppointment = function(appId)
 {
+	//Function
+	var appointmentFind_promise = Appointment.findOne({_id:appId}).exec();
+	//Flow Here
+	appointmentFind_promise.then(function(appointment){
+		appointment.status = 'canceled'
+	});
 
 };
 
 module.exports.editAppointment = function(appInfo)
 {
 	var app = new Appointment(appInfo);
-	app.save(function(err, data) {
+	app.update(function(err, data) {
 		if(err) { callback(err); }
 		// Send SMS
 		callback(err, data);

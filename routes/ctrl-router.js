@@ -70,6 +70,8 @@ router.post('/addRoundward', function(req,res,next){
 		return res.json(result);
 	});
 });
+
+//DELETE ROUNDWARD FROM A SINGLE DOCTOR
 router.post('/cancelRoundward', function(req,res,next){
 	var userId = '564d48fab16f9a802283f450'; //GetFromSession
 	var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
@@ -82,15 +84,17 @@ router.post('/cancelRoundward', function(req,res,next){
 	});
 });
 
-//Fetch Single Doctor whom Available that month  
+//GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
+//BUSY ROUNDWARD WILL NOT BE FETCHED
 router.post('/getAvailableDateTime', function(req,res,next){
-	var doctor_id = req.body['doctor_id'];
+	var doctor_id = req.body['doctorid'];
 	var month = req.body['month'];
 	var year = req.body['year'];
+
 	RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
 		if(err){
 			return next(err);
-		}else{
+		}else{		
 			var returning = {
 				'doctor_id' : doctor_id,
 				'month' : month,
@@ -102,7 +106,7 @@ router.post('/getAvailableDateTime', function(req,res,next){
 });
 
 
-
+//GET MONTHLY ROUNDWARD OF THE ENTIRE DEPARTMENT
 router.post('/getDepartmentFreeMonth',function(req,res,next){
 	//Query Free Slot in a Month with Every Doctor in that Department
 	var month = req.body['month'];
@@ -117,6 +121,7 @@ router.post('/getDepartmentFreeMonth',function(req,res,next){
 	});
 });
 
+//GET MONTHLY ROUNDWARD OF A DOCTOR
 router.post('/getRoundward',function(req,res,next){
 	var month = req.body['month'];
 	var year = req.body['year'];
@@ -131,7 +136,7 @@ router.post('/getRoundward',function(req,res,next){
 
 });
 
-
+//IMPORT ROUNDWARD FROM A CSV FILE
 router.post('/importRoundward', function(req,res,next){
 	//Use This Place (Router) to Split File
 	var longStream = req.body;
@@ -152,10 +157,7 @@ router.get('/showImportRoundWard/', function(req,res,next){
 
 router.get('/showAddRoundWard/', function(req,res,next){
 	//Default Call => Return Months.Now
-	var doctor_id = req.body.userid;
-	RoundWardControl.showAddRoundWard(doctor_id,function(err,result){
-
-	});
+	//RENDER ADD ROUNDWARD PAGE
 });
 
 router.post('/gen/', function(req,res,next){
@@ -183,8 +185,9 @@ router.post('/createAppointment/',function(req,res,next){
 	var appInfo = {
 		//firstname : req.body['docfirstname'],
 		//lastname : req.body['doclastname'],
-		doctor_id : mongoose.Types.ObjectId(req.body['doctor_id']),
-		patientid : 12345678, 
+		//doctor_id : req.user.id
+		doctor_id : mongoose.Types.ObjectId(req.body['doctorid']),
+		patientid : mongoose.Types.ObjectId(req.body['patientid']) , 
 		date : req.body['date'],
 		time : req.body['time'],
 		slot : req.body['slot'],
@@ -193,46 +196,12 @@ router.post('/createAppointment/',function(req,res,next){
 
 	AppointmentControl.createAppointment(appInfo,function(err,result){
 		if(err){
+			console.log(err);
 			return next(err);
 		}else{
 			console.log('success');
+			return res.json(result);
 		}
 	});
 });
 
-router.post('/getEarliestDateTime/',function (req,res,next) {
-
-	var user_doctor = {
-		//firstname : req.body['docfirstname'],
-		//lastname : req.body['doclastname']
-		"id" : req.body['doctor_id']
-	};
-	AppointmentControl.getEarliestDateTime(user_doctor,req.body['amount'],function(err,result) {
-		if(err){
-			console.log(err);
-			//return next(err);
-		} else if ( !err  && result ){
-			console.log('SUCCESS');
-			return res.json('success');
-		}
-	});
-});
-
-
-router.post('/getEarliestDateTime/',function (req,res,next) {
-
-	var user_doctor = {
-		//firstname : req.body['docfirstname'],
-		//lastname : req.body['doclastname']
-		"id" : req.body['doctor_id']
-	};
-	AppointmentControl.getEarliestDateTime(user_doctor,req.body['amount'],function(err,result) {
-		if(err){
-			console.log(err);
-			//return next(err);
-		} else if ( !err  && result ){
-			console.log('SUCCESS');
-			return res.json('success');
-		}
-	});
-});
