@@ -51,4 +51,12 @@ app.factory('appointment_fac', ['$http', function($http){
 		};
 
 	  return appointment_obj;
-	}]);
+	}
+	appointment_obj.getAvailableDate = function(data) {
+		//"date" (2nd param) will be packed in REQ.BODY  (ctrl-appointment)
+		//then Find The Correspondent Entry and packed back in "data"
+		return $http.post('/appointment/availableDate/',data)
+		.success(function(data) {
+		});
+	};
+	]);

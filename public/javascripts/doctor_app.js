@@ -272,14 +272,34 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 	o.getCalendar = function(month, year, callback)
 	{
 		console.log('Getting calendar ' + year + ' ' + month);
-		var rwList = [
+		/*var rwList = [
 			{_id: 0, date: new Date(year, month, 1, 0, 0, 0, 0), time: 'AM'},
 			{_id: 1, date: new Date(year, month, 2, 0, 0, 0, 0), time: 'AM'},
 			{_id: 2, date: new Date(year, month, 3, 0, 0, 0, 0), time: 'PM'},
 			{_id: 3, date: new Date(year, month, 4, 0, 0, 0, 0), time: 'AM'},
 			{_id: 4, date: new Date(year, month, 4, 0, 0, 0, 0), time: 'PM'}
-		];
-		$timeout(function() {
+		];*/
+		
+
+		$http.post('/appointment/getRoundward', { month: month, year: year }).success(function(rwList){
+			
+			for(var i in rwList)
+			{
+				var roundward = rwList[i];
+				roundward.date = new Date(roundward.date);
+				var key = getKey(roundward.date, roundward.time);
+				o.roundwardCache[key] = roundward;
+			}
+
+			angular.copy(rwList, o.roundwardList);
+			
+
+
+			console.log(o.roundwardList);
+			callback();
+		});
+
+		/*$timeout(function() {
 			angular.copy(rwList, o.roundwardList);
 			
 			for(var i in rwList)
@@ -291,7 +311,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 
 			console.log(o.roundwardList);
 			callback();
-		},2000);
+		},2000);*/
 		
 	};
 
@@ -303,30 +323,51 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 
 	o.addRoundward = function(date, time, callback)
 	{
-		var rwInfo = {
+		/*var rwInfo = {
 			_id: o.roundwardList.length + 1,
 			date: date,
 			time: time
-		};
-		/*$http.post('/roundward/add', rwInfo).success(function(data)
+		};*/
+		$http.post('/appointment/addRoundward', { date: date, time: time }).success(function(data)
 		{
+			data.date = new Date(data.date);
+			console.log('added roundward');
+			console.log(data);
 			o.roundwardList.push(data);
 			o.roundwardCache[getKey(data.date, data.time)] = data;
-			callback();
-		});*/
+			callback(data.date);
+		});
 
-		$timeout(function() {
+		/*$timeout(function() {
 			console.log('added roundward');
 			console.log(rwInfo);
 			o.roundwardList.push(rwInfo);
 			o.roundwardCache[getKey(rwInfo.date, rwInfo.time)] = rwInfo;
 			callback(date);
-		},2000);
+		},2000);*/
 	};
 
 	o.cancelRoundward = function(rwId, callback)
 	{
-		$timeout(function() {
+
+		$http.post('/appointment/cancelRoundward', { rwId: rwId }).success(function(data)
+		{
+			for(var i in o.roundwardList)
+			{
+				var rw = o.roundwardList[i];
+				if(rw._id === rwId)
+				{
+					console.log('deleted roundward id = ' + rwId);
+					o.roundwardList.splice(i, 1);
+					o.roundwardCache[getKey(rw.date, rw.time)] = null;
+					callback(rw);
+					return;
+				}
+			}
+
+		});
+
+		/*$timeout(function() {
 			
 
 			for(var i in o.roundwardList)
@@ -343,7 +384,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 			}
 
 			
-		},2000);
+		},2000);*/
 	};
 
   	return o;

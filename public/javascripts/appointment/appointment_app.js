@@ -3,31 +3,7 @@
 //Angular Extension : ui.router
 (function(){
 
-var app = angular.module('appointment', ['ui.router','ngCsvImport','ngMaterial' , "materialCalendar"]) ;
-	app.config(function($mdThemingProvider, $mdIconProvider){
-
-                  /*$mdIconProvider
-                      .defaultIconSet("./assets/svg/avatars.svg", 128)
-                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-                      .icon("share"      , "./assets/svg/share.svg"       , 24)
-                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
-                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
-                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
-                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);*/
-
-                      $mdThemingProvider.theme('default')
-                          .primaryPalette('teal')
-                          .accentPalette('red')
-                          .warnPalette('pink');
-
-
-              });
-	app.controller('menuCtrl', function($scope, $mdSidenav) {
-                $scope.toggleNav = function(compId)
-                {
-                  $mdSidenav(compId).toggle();
-                };
-              });
+var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
 	
 	app.controller('AppointmentCtrl', [	'$scope', 
 		function($scope){
@@ -63,17 +39,30 @@ var app = angular.module('appointment', ['ui.router','ngCsvImport','ngMaterial' 
 		    	encoding: 'ISO-8859-1',
 		    	encodingVisible: true,
 		  };
+		  $scope.year = 2015;
+		  $scope.month = 0;
 
 		  $scope.genMes = function(){
-		  		var months_input = 'jan';
+		  		var year_input = $scope.year;
+		  		var months_input = $scope.month;
 		  		var jsondata = {};
-		  		jsondata = {'month': months_input , data :$scope.csv.result };
-		  		//console.log(jsondata);
+		  		jsondata = {'month': months_input , 'year' : year_input , data :$scope.csv.result };
+		  		//Parse to Backend
 		  		schedule_fac.create(jsondata);
 		  }
 		}]);
-
-    
+	app.controller('CreateCtrl', [	'$scope', 
+		function($scope){
+		  $scope.getAvailableDate = function(){
+		  	if($scope.department == null){
+		  		console.log("aaaa");	
+		  	}
+		  	else {
+		  		console.log($scope.symptoms +" " + $scope.department + " " + $scope.doctor);
+		  	}
+		  };
+	}]);
 	
 
 })();
+
