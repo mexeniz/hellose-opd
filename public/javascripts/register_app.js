@@ -1,15 +1,6 @@
 (function(){
 var app = angular.module('register_app', ['ui.router','ngMaterial' ]) ;
-app.config(function($mdThemingProvider, $mdIconProvider){
-
-                  /*$mdIconProvider
-                      .defaultIconSet("./assets/svg/avatars.svg", 128)
-                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-                      .icon("share"      , "./assets/svg/share.svg"       , 24)
-                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
-                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
-                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
-                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);*/
+app.config(function($mdThemingProvider){
 
                       $mdThemingProvider.theme('default')
                           .primaryPalette('teal')
@@ -38,7 +29,7 @@ app.controller('registerCtrl', [
       $window.location = "/home" ;
     };
     $scope.bloodList = ["A","B","AB","O"];
-    $scope.genderList = [{abb:"M",gen:"Male"},{abb:"F",gen:"Female"}];
+    $scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
     $scope.showConfirmRegModal = false;
     $scope.pwNotMatch = false;
     $scope.regData = {};

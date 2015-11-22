@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <% layout('layout') -%>
 
 <!-- Heading -->
@@ -14,12 +15,15 @@
 </md-toolbar>
 
 <!-- Content -->
-<md-content flex layout-padding>
+<md-content ng-controller="InfoCtrl" flex layout-padding>
     <md-tabs md-dynamic-height md-border-bottom>
       <md-tab label="ข้อมูลส่วนตัว">
         <md-content class="md-padding">
-          <div class="h1-th">ข้อมูลส่วนตัว</div>
-
+          <div class="h1-th">ข้อมูลส่วนตัว
+          <md-button class="md-fab md-primary" ng-click="showEditProfile($event)">
+            <md-icon md-font-library="material-icons">create</md-icon>
+          </md-button>
+          </div>
           <md-list>
             <md-list-item class="md-2-line">
               <md-icon md-font-library="material-icons">menu</md-icon>

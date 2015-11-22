@@ -269,7 +269,10 @@ app.controller('InfoCtrl', [
 	'medical_records_fac',
 	'prescription_records_fac',
 	'medicines_fac',
-	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac){
+	'$mdDialog',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$mdDialog){
+      	$scope.bloodList = ["A","B","AB","O"];
+		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
 		$scope.init = function(patient_id) {
 			// Get patient info
 			$scope.patient_id = patient_id;
@@ -284,7 +287,44 @@ app.controller('InfoCtrl', [
 
 		    
 		};
+		$scope.showEditProfile = function(ev){
+			var editCtrl = function($scope,patient){
+	      	$scope.cancel = function() {
+		         $mdDialog.cancel();
+		    };
+		      	$scope.patient = {} ;
+		      	$scope.patient.gender = "M";
+		      	$scope.patient.blood_type = "A";
+		      	$scope.bloodList = ["A","B","AB","O"];
+	    		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		      	console.log("Update profile!");
+	            /*$http.post('/register', $scope.regData).success(function(data) {
+	              if(data.status === 'success')
+	              {
+	                $scope.regMessage = 'Successfully registered!';
+	                $window.location.href = "/home" ;
+	              }
+	              else
+	              {
+	                $scope.regMessage = 'Try again!';
+	              }
+	            });*/
+		      };	
+		$mdDialog.show({
+	        locals:{patient: $scope.patient},
+	        controller: editCtrl,
+	        templateUrl: '/dialog/editProfile.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(answer) {
+	        //Do something after close dialog
+	        //Switch to another page
+	      }, function() {
+	      });
 
+	    } 	;
 		// PHYSICAL RECORD
 		$scope.showPhysModal = false;
 		$scope.showPhysicalRecordForm = function(mode,pRecord){
@@ -410,19 +450,6 @@ app.controller('InfoCtrl', [
 					break;
 				}
 			}
-		};
-
-		$scope.generateMedicalRecord = function()
-		{
-			/*var pRecord = {
-				weight: Math.floor(Math.random()*50 + 50),
-				height: Math.floor(Math.random()*70 + 120),
-				blood_pressure: Math.floor(Math.random()*50 + 100),
-				pulse: Math.floor(Math.random()*30 + 30),
-				temperature: Math.floor(Math.random()*5 + 35)
-			};
-			console.log(pRecord);
-			patients_fac.addPhysicalRecord($scope.patient, pRecord);*/
 		};
 
 		$scope.submitMedicalRecord = function()
