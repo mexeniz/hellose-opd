@@ -264,6 +264,11 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 		roundwardCache: {}
 	};
 
+	var getKey = function(date, time)
+	{
+		return date.getDate() + ' ' + date.getMonth() + ' ' + date.getFullYear() + ' ' + time;
+	};
+
 	o.getCalendar = function(month, year, callback)
 	{
 		console.log('Getting calendar ' + year + ' ' + month);
@@ -280,7 +285,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 			for(var i in rwList)
 			{
 				var roundward = rwList[i];
-				var key = roundward.date.getDate() + ' ' + roundward.date.getMonth() + ' ' + roundward.date.getFullYear() + ' ' + roundward.time;
+				var key = getKey(roundward.date, roundward.time);
 				o.roundwardCache[key] = roundward;
 			}
 
@@ -292,11 +297,31 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 
 	o.getRoundwardCache = function(date, time)
 	{
-		var key = date.getDate() + ' ' + date.getMonth() + ' ' + date.getFullYear() + ' ' + time;
+		var key = getKey(date, time);
 		return o.roundwardCache[key];
 	};
 
+	o.addRoundward = function(date, time, callback)
+	{
+		var rwInfo = {
+			date: date,
+			time: time
+		};
+		/*$http.post('/roundward/add', rwInfo).success(function(data)
+		{
+			o.roundwardList.push(data);
+			o.roundwardCache[getKey(data.date, data.time)] = data;
+			callback();
+		});*/
 
+		$timeout(function() {
+			console.log('added roundward');
+			console.log(rwInfo);
+			o.roundwardList.push(rwInfo);
+			o.roundwardCache[getKey(rwInfo.date, rwInfo.time)] = rwInfo;
+			callback(date);
+		},2000);
+	};
 
   	return o;
 }]);
@@ -694,9 +719,10 @@ app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', f
 
 }]);
 
-app.controller('roundWardCtrl', ['$scope', '$filter', 'roundward_fac', 'CalendarData', function($scope, $filter, roundward_fac, CalendarData) {
+app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'roundward_fac', 'CalendarData', function($scope, $filter, $mdDialog, $http, roundward_fac, CalendarData) {
 	$scope.dayFormat = "d";
 	$scope.selectedDate = null;
+	$scope.showDate = null;
 	$scope.tooltips = true;
 
 	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
@@ -710,7 +736,6 @@ app.controller('roundWardCtrl', ['$scope', '$filter', 'roundward_fac', 'Calendar
 	$scope.setCalendar = function()
 	{
 		$scope.roundwardList.forEach(function(roundwardObj){
-			console.log(roundwardObj.date.getYear());
 			CalendarData.setDayContent(roundwardObj.date, "<i class='material-icons'>event</i>");
 		});
 		$scope.loadingCount--;
@@ -730,7 +755,12 @@ app.controller('roundWardCtrl', ['$scope', '$filter', 'roundward_fac', 'Calendar
 
     $scope.dayClick = function(date) {
       $scope.msg = "You clicked " + date;
-      $scope.selectedDate = date;
+
+      // Prevent selecting date while loading
+      console.log($scope.loadingCount);
+      if($scope.loadingCount > 0) { return; }
+
+      $scope.showDate = date;
 
       var rwAM = roundward_fac.getRoundwardCache(date, 'AM');
       var rwPM = roundward_fac.getRoundwardCache(date, 'PM');
@@ -758,7 +788,76 @@ app.controller('roundWardCtrl', ['$scope', '$filter', 'roundward_fac', 'Calendar
     	return "<p></p>";
     };
 
+    $scope.successAddRoundward = function(date)
+    {
+    	CalendarData.setDayContent(date, "<i class='material-icons'>event</i>");
+    	$scope.loadingCount--;
+    	$scope.dayClick(date);
+    };
+
+    var addDialogCtrl = function ($scope, $mdDialog, rwTimes) {
+
+		$scope.rwTimes = rwTimes;
+
+	    $scope.selectedTime = $scope.rwTimes[0];
+
+	  $scope.hide = function() {
+	    $mdDialog.hide();
+	  };
+	  $scope.cancel = function() {
+	    $mdDialog.cancel();
+	  };
+	  $scope.answer = function(selected) {
+	    $mdDialog.hide(selected);
+	  };
+	};
+
+    $scope.showAddDialog = function(ev) {
+    	var rwTimes = [];
+    	if($scope.selectedRoundward.length === 0)
+    	{
+    		// Show both AM and PM options
+    		rwTimes = [
+	    		{ value: 'AM', th: 'เช้า' },
+	    		{ value: 'PM', th: 'บ่าย' }
+	    	];
+    	}
+    	else if($scope.selectedRoundward.length === 1)
+    	{
+    		// Show only another option that wasn't added
+    		rwTimes.push($scope.selectedRoundward[0].time === 'AM' ? { value: 'PM', th: 'บ่าย' } : { value: 'AM', th: 'เช้า' });
+    	}
+    	else
+    	{
+    		// Cannot add!
+    		return;
+    	}
+
+		$mdDialog.show({
+		  controller: addDialogCtrl,
+		  locals: { 'rwTimes': rwTimes },
+		  templateUrl: '/dialog/addRoundward.html',
+		  parent: angular.element(document.body),
+		  targetEvent: ev,
+		  clickOutsideToClose:true
+		})
+	    .then(function(time) {
+	      var rwInfo = {
+	      	date: $scope.showDate,
+	      	time: time
+	      };
+	      console.log(rwInfo);
+
+	      $scope.loadingCount++;
+	      roundward_fac.addRoundward($scope.showDate, time, $scope.successAddRoundward);
+
+	    }, function() {
+
+	    });
+	};
+
 }]);
+
 
 
 app.directive('modal', function () {
