@@ -21,13 +21,13 @@
                 <td>{{ pres.status }}</td>
                 <td>{{ pres.doctor }}</td>
                 <td>
-                    <span class="btn btn-info">
+                    <span class="btn btn-info" ng-click="showMedicineList(pres)">
                       View Detail
                     </span>
                     <span class="btn btn-info" ng-show="pres.status == 'Pending'" ng-click="showPresForm('edit', pres)">
                       <i class="fa fa-pencil" ></i>
                     </span>
-                    <span class="btn btn-danger" ng-click="removePrescription(pres)">
+                    <span class="btn btn-danger" ng-show="pres.status == 'Pending'" ng-click="removePrescription(pres)">
                       <i class="fa fa-trash-o" ></i>
                     </span>
                 </td>
