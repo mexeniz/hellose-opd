@@ -44,3 +44,7 @@ router.get('/pharmacist/', function(req, res, next) {
 router.get('/pharmacist/profile', function(req, res, next) {
   res.render('material_pharmacist/view_profile');
 });
+
+router.get('/pharmacist/prescription', function(req, res, next) {
+  res.render('material_pharmacist/list_prescription');
+});
