@@ -3,11 +3,25 @@ var router = express.Router();
 
 module.exports = router;
 
-router.get('/', function(req, res, next) {
-  res.render('material/home');
+
+/*
+PATIENT
+*/
+router.get('/patient/', function(req, res, next) {
+  res.render('material_patient/home');
 });
 
-router.get('/profile', function(req, res, next) {
-  res.render('material/view_profile');
+router.get('/patient/profile', function(req, res, next) {
+  res.render('material_patient/view_profile');
 });
 
+router.get('/patient/', function(req, res, next) {
+  res.render('material_patient/home');
+});
+
+/*
+DOCTOR
+*/
+router.get('/doctor/profile', function(req, res, next) {
+  res.render('material_doctor/view_profile');
+});
