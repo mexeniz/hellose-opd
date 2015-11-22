@@ -12,16 +12,16 @@ TEST CASE
 {
     "date" : "2015-11-15",
     "time" : "AM",
-    "doctorid": "564a17045e402488288fc596"
+    "doctorid(user._id)": "564a17045e402488288fc596"
+    "doctor._id" : "564ec7d6324f8c3524d153f6",
 }
-
 */
 module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
  //Roundward Frontend need to pack field in the form correspond to 
  //schema's Attribute (name must be the same)
 
  //Find Doctor to add the Roundward
-  Doctor.findOne({userId:doctorid},function(err,thisDoctor){
+  Doctor.findOne({_id:doctorid},function(err,thisDoctor){
     if(err || !thisDoctor){ 
       return callback(err,'NO DOC FOUND');
     }else{ 
@@ -68,10 +68,46 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
   });
 };
 
+module.exports.getRoundward = function(doctorId_input,month,year,callback){
+
+  var returning = [];
+
+//FUNCTIONS
+
+  function findDoctor(doctorId_input){
+    return new Promise(function(resolve,reject){
+        Doctor.findOne({'_id' : mongoose.Types.ObjectId(doctorId_input)})
+        .populate('onDutyRoundward')
+        .exec(function(err,result){
+            if(err){
+              reject(err);
+            }
+            resolve(result);
+        });
+    });
+  }
+
+//FLOW GOES HERE
+
+  findDoctor(doctorId_input)
+  .then(function afterFoundDoctor(doctor){
+    doctor.onDutyRoundward.forEach(function(rw){
+        if(rw.date.getMonth() === month && rw.date.getFullYear() === year){
+        returning.push(rw);
+      }
+    });
+  })
+  .then(function() {
+    console.log(returning);
+    return callback(null,returning);
+  });
+
+};
+
 module.exports.cancelRoundward = function (doctorId_input,rwId_input,callback) {
   //Doctor Wants to CancelRoundward
   //Find Correspondent Doctor
-  Doctor.findOne({userId : doctorId_input},function(err1,thisDoctor){
+  Doctor.findOne({_id : doctorId_input},function(err1,thisDoctor){
   		if(!err1 && thisDoctor){
   			Roundward.findById(rwId_input,function(err2,thisRoundward){
   				if(!err2&&thisRoundward){
@@ -96,11 +132,10 @@ module.exports.cancelRoundward = function (doctorId_input,rwId_input,callback) {
   			callback(err1);
   		}
   });
- 
 };
 
 //Find Available time for single Doctor
-module.exports.getAvailableDateTime = function (doctor_id,month,callback) {
+module.exports.getAvailableDateTime = function (doctor_id,month,year,callback) {
 	//Find Correspondent Doctor
   console.log(doctor_id);
   console.log(month);
@@ -117,7 +152,7 @@ module.exports.getAvailableDateTime = function (doctor_id,month,callback) {
       };
       //Specific Month
       //with the roundward of that doctor_id
-      if(month===daypack.month){
+      if(month===daypack.month && year === daypack.year){
         var busySlot = [];
         var freeSlot_query = [];
           Appointment.find({roundWard : e._id })
@@ -136,7 +171,8 @@ module.exports.getAvailableDateTime = function (doctor_id,month,callback) {
               var single_roundward = {
                 date : daypack,
                 time : e.time,
-                freeSlot : freeSlot_query
+                freeSlot : freeSlot_query,
+                doctorid : doctor_id
               };
               roundward_return.push(single_roundward);
               
@@ -149,6 +185,59 @@ module.exports.getAvailableDateTime = function (doctor_id,month,callback) {
     //END FOREACH (Synchronous)
   });
     //End EXEC
+};
+
+module.exports.getDepartmentFreeMonth = function(month,year,department,callback){
+
+  function findDoctor(department) {
+    return new Promise(
+      function (resolve, reject) {
+        Doctor.find({'department': department}, 
+          function (err,doctors) {
+            if(err)reject(err);
+            resolve(doctors);
+          });
+      });
+  }
+
+  function getAvailTime(doctor, month,year) {
+    return new Promise(
+      function (resolve, reject) {
+        module.exports.getAvailableDateTime(doctor._id, month, year,
+          function (err, result) {
+            resolve(result);
+          });
+      });
+  }
+
+  var returning = [];
+
+  findDoctor(department)
+    .then(
+      function havingDoctors(doctors) {
+        var promises = [];
+        for (var i = 0; i < doctors.length; ++i) {
+          console.log(i);
+          promises.push(
+            getAvailTime(doctors[i], month,year) );
+        }
+        return Promise.all(promises);
+      })
+    .then(
+      function havingTimes(doctors) {
+        //console.log('arguments:', arguments);
+        var doctorAvailableTimes = arguments;
+        for (var i = 0; i < doctorAvailableTimes.length; ++i) {
+          var doctorTimes = doctorAvailableTimes[i];
+          //console.log(doctors[i]);
+          returning.push(doctorTimes);
+        }
+
+      })
+    .then(
+      function finished() {
+        return callback(null,returning);
+      });
 };
 
 module.exports.importRoundWard = function (startDate,data,callback) {
@@ -173,14 +262,14 @@ data.forEach(function(e){
                     if(e.sun1 == '1'){
                         //console.log('sunday morning'+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         pack = {};
                     }
                     if(e.sun2 == '1'){
                         //console.log('sunday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -189,14 +278,14 @@ data.forEach(function(e){
                     if(e.mon1 === '1'){
                         //console.log('monday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.mon2 === '1'){
                         //console.log('monday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -205,14 +294,14 @@ data.forEach(function(e){
                     if(e.tue1 == '1'){
                         //console.log('tuesday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.tue2 == '1'){
                         //console.log('tuesday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -221,14 +310,14 @@ data.forEach(function(e){
                     if(e.wed1 == '1'){
                        // console.log('wednesday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.wed2 == '1'){
                        // console.log('wednesday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -237,14 +326,14 @@ data.forEach(function(e){
                     if(e.thr1 == '1'){
                        // console.log('thursday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.thr2 == '1'){
                        // console.log('thursday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -254,14 +343,14 @@ data.forEach(function(e){
                     if(e.fri1 == '1'){
                         //console.log('friday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.fri2 == '1'){
                        // console.log('friday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -270,14 +359,14 @@ data.forEach(function(e){
                     if(e.sat1 == '1'){
                        // console.log('saturday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.sat2 == '1'){
                        // console.log('saturday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD'); 
+                        pack.date = m.format('YYYY-MM-DD').hour(1); 
                         my_stack.push(pack); pack = {};
                         
                     }

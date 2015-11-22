@@ -18,30 +18,24 @@ module.exports.generate = function(){
 	};
 	var appointment = new Appointment(data);
 	appointment.save(function(err,result){
-
 	});
 };
+
 //CONFLICT WITH RoundwardControl.js
-// module.exports.getEarliestDateTime = function(doctorIdentity, amount , callback)
-// {
-// 	//FIND DOCTOR IDENTITY
-// 	//PICK busy[]
-// 	// MOMENT.JS 
-// 	// BUSY PLOT TO MOMENT JS RANGE 
-// 	//INVERT RANGE
-// 	//RETURN
-// 	var busy = [];
-// 	Doctor.findById(mongoose.Types.ObjectId("564ec7d6324f8c3524d153f6")).exec()
-// 	.then(function(thisDoctor){
-// 		if(thisDoctor ===null){
-// 			return callback("NO DOC FOUND");
-// 		}
-// 		busy = thisDoctor.onDutyRoundward;
-// 	}).then(function(){
-// 		console.log(busy);
-// 	});
+module.exports.getEarliestDateTime = function(doctorIdentity, amount , callback)
+{
+	var busy = [];
+	Doctor.findById(mongoose.Types.ObjectId("564ec7d6324f8c3524d153f6")).exec()
+	.then(function(thisDoctor){
+		if(thisDoctor ===null){
+			return callback("NO DOC FOUND");
+		}
+		busy = thisDoctor.onDutyRoundward;
+	}).then(function(){
+		console.log(busy);
+	});
 	
-// };
+};
 
 module.exports.checkAppointment = function(patientId, selectedType, doctorId, department, symptom)
 {
@@ -53,10 +47,11 @@ module.exports.checkAppointment = function(patientId, selectedType, doctorId, de
 module.exports.createAppointment = function(appInfo, callback){
 	// Guaranteed that input appinFo is valid
 	/*appInfo
-			OK-doctor_id ( NO-firstname , NO-lastname ) //Doctor id is pass from frontend
-			patientid  //From  User's Session  (REQ.USER._ID)
-			slot // Slot to CreateAppointment - Valid and always Free (only freeslot choice is shown , so input is freeslot)
-			status //Archan said that give it a field 
+			-doctor_id ( NO-firstname , NO-lastname ) //Doctor id is pass from frontend
+			-patientid  //From  User's Session  (REQ.USER._ID)
+			-slot // Slot to CreateAppointment - Valid and always Free 
+			(only freeslot choice is shown , so input is freeslot)
+			-status //Archan said that give it a field 
 	*/
 	//Find Correspondent Doctor to add the Appointment with
 	var thisDoctor;

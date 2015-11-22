@@ -81,10 +81,13 @@ router.post('/cancelRoundward', function(req,res,next){
 		}
 	});
 });
+
+//Fetch Single Doctor whom Available that month  
 router.post('/getAvailableDateTime', function(req,res,next){
 	var doctor_id = req.body['doctor_id'];
 	var month = req.body['month'];
-	RoundWardControl.getAvailableDateTime(doctor_id,month,function(err,result) {
+	var year = req.body['year'];
+	RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
 		if(err){
 			return next(err);
 		}else{
@@ -97,6 +100,38 @@ router.post('/getAvailableDateTime', function(req,res,next){
 		}
 	});
 });
+
+
+
+router.post('/getDepartmentFreeMonth',function(req,res,next){
+	//Query Free Slot in a Month with Every Doctor in that Department
+	var month = req.body['month'];
+	var department = req.body['department'];
+	var year = req.body['year'];
+	RoundWardControl.getDepartmentFreeMonth(month,year,department,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}
+	});
+});
+
+router.post('/getRoundward',function(req,res,next){
+	var month = req.body['month'];
+	var doctor_id = req.body['doctorid'];
+	var year = req.body['year'];
+	RoundWardControl.getRoundward(doctor_id,month,year,function(err,result){
+		if(err){
+			return next(err);
+		}else{
+			return res.json(result);
+		}
+	});
+
+});
+
+
 router.post('/importRoundward', function(req,res,next){
 	//Use This Place (Router) to Split File
 	var longStream = req.body;
@@ -145,11 +180,6 @@ router.get('/chooseDate/', function(req,res,next){
 ////////////////////////////////////////////
 
 router.post('/createAppointment/',function(req,res,next){
-	/*	Find Doctor From Name and lastname (Provided From Backend)
-	appInfo 
-		///DOCTOR SEARCH    {firstname,lastname}
-		ROUNDWARD SEARCH {date,time}
-		patient 		 {id}*/
 	var appInfo = {
 		//firstname : req.body['docfirstname'],
 		//lastname : req.body['doclastname'],
