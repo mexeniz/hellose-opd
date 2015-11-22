@@ -34,9 +34,10 @@ router.get('/doctor/appointment', function(req, res, next) {
   res.render('material_doctor/list_appointment');
 });
 
-router.get('/doctor/appointment/view', function(req, res, next) {
-  res.render('material_doctor/view_appointment');
+router.get('/doctor/roundward', function(req, res, next) {
+  res.render('material_doctor/roundward_schedule');
 });
+
 /*
 PHARMACIST
 */
