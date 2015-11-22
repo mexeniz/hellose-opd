@@ -12,6 +12,16 @@ var PatientsSchema = new Schema({
     prescription_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' }]
 });
 
+/*
+{
+    userId: ObjectId("564ecbd6bd46ea782b4df536"),
+    patient_id: 12345678,
+    blood_type: 'B',
+    physical_record: [],
+    medical_record: [],
+    prescription_record: []
+}
 
+*/
 
 module.exports = mongoose.model('Patient', PatientsSchema);
