@@ -66,42 +66,15 @@
 
     <%- include prescription_show.ejs %>
 
-
     <%- include ../include/snap_footer.ejs %>
 
-<<<<<<< HEAD
-    <modal title="Physical Record Form" visible="showPhysModal">
-      <form ng-submit="submitPhysicalRecord()">
-        <input class="form-control hide" id="physId" ng-model="id"></input>
-        <div class="form-group">
-          <label for="weight">Weight</label>
-          <input type="text" class="form-control" id="weight" placeholder="Enter weight" ng-model="weight"></input>
-        </div>
-        <div class="form-group">
-          <label for="height">Height</label>
-          <input type="text" class="form-control" id="height" placeholder="Enter height" ng-model="height"></input>
-        </div>
-        <div class="form-group">
-          <label for="blood_pressure">Blood Pressure</label>
-          <input type="text" class="form-control" id="blood_pressure" placeholder="Enter blood pressure" ng-model="blood_pressure"></input>
-        </div>
-        <div class="form-group">
-          <label for="pulse">Pulse</label>
-          <input type="text" class="form-control" id="pulse" placeholder="Enter pulse" ng-model="pulse"></input>
-        </div>
-        <div class="form-group">
-          <label for="temperature">Temperature </label>
-          <input type="text" class="form-control" id="temperature" placeholder="Enter temperature celcius" ng-model="temperature"></input>
-        </div>
-        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
-      </form>
-    </modal>
-=======
     <%- include physical_record_form.ejs %>
 
     <%- include medical_record_form.ejs %>
 
     <%- include prescription_form.ejs %>
+
+    <%- include ../pharmacist/prescription_medicine_record.ejs %>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="/javascripts/patients_app.js"></script>
@@ -109,6 +82,5 @@
 
     
 
->>>>>>> master
   </body>
 </html>

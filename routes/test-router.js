@@ -37,3 +37,13 @@ router.get('/doctor/appointment', function(req, res, next) {
 router.get('/doctor/appointment/view', function(req, res, next) {
   res.render('material_doctor/view_appointment');
 });
+/*
+PHARMACIST
+*/
+router.get('/pharmacist/', function(req, res, next) {
+  res.render('material_pharmacist/home');
+});
+
+router.get('/pharmacist/profile', function(req, res, next) {
+  res.render('material_pharmacist/view_profile');
+});
