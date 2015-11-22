@@ -269,7 +269,11 @@ app.controller('InfoCtrl', [
 	'medical_records_fac',
 	'prescription_records_fac',
 	'medicines_fac',
-	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac){
+	'$mdDialog',
+	'$http',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$mdDialog,$http){
+      	$scope.bloodList = ["A","B","AB","O"];
+		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
 		$scope.init = function(patient_id) {
 			// Get patient info
 			$scope.patient_id = patient_id;
@@ -284,7 +288,44 @@ app.controller('InfoCtrl', [
 
 		    
 		};
+		$scope.showEditProfile = function(ev){
+			var editCtrl = function($scope,patient){
+	      	$scope.cancel = function() {
+		         $mdDialog.cancel();
+		    };
+		      	$scope.patient = {} ;
+		      	$scope.patient.gender = "M";
+		      	$scope.patient.blood_type = "A";
+		      	$scope.bloodList = ["A","B","AB","O"];
+	    		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		      	console.log("Update profile!");
+	            /*$http.post('/register', $scope.regData).success(function(data) {
+	              if(data.status === 'success')
+	              {
+	                $scope.regMessage = 'Successfully registered!';
+	                $window.location.href = "/home" ;
+	              }
+	              else
+	              {
+	                $scope.regMessage = 'Try again!';
+	              }
+	            });*/
+		      };	
+		$mdDialog.show({
+	        locals:{patient: $scope.patient},
+	        controller: editCtrl,
+	        templateUrl: '/dialog/editProfile.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(answer) {
+	        //Do something after close dialog
+	        //Switch to another page
+	      }, function() {
+	      });
 
+	    } 	;
 		// PHYSICAL RECORD
 		$scope.showPhysModal = false;
 		$scope.showPhysicalRecordForm = function(mode,pRecord){
@@ -412,19 +453,6 @@ app.controller('InfoCtrl', [
 			}
 		};
 
-		$scope.generateMedicalRecord = function()
-		{
-			/*var pRecord = {
-				weight: Math.floor(Math.random()*50 + 50),
-				height: Math.floor(Math.random()*70 + 120),
-				blood_pressure: Math.floor(Math.random()*50 + 100),
-				pulse: Math.floor(Math.random()*30 + 30),
-				temperature: Math.floor(Math.random()*5 + 35)
-			};
-			console.log(pRecord);
-			patients_fac.addPhysicalRecord($scope.patient, pRecord);*/
-		};
-
 		$scope.submitMedicalRecord = function()
 		{
 
@@ -540,16 +568,60 @@ app.controller('InfoCtrl', [
 
 		// Show Prescription Detail
 		$scope.medicineList = {};
-		$scope.pharmacistView = false;
+		$scope.prescriptionList = [
+			{_id:"01",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
+			{_id:"02",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
+			{_id:"03",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"}]},
+			{_id:"04",date:"1/1/15" , status:"รอการจ่าย" , doctor:"Mma" , medicine: [{name:"Para",dosage:"10",howTo:"Eat"},{name:"Para",dosage:"10",howTo:"Eat"}]}
+		];
 
-		$scope.showMedicineListModal = false;
+		$scope.showPresDetail = function(ev,prescription){
+			console.log(prescription);
 
-		$scope.showMedicineList = function(prescription) {
-			$scope.showMedicineListModal = true;
-			angular.copy(prescription,$scope.medicineList);
+
+		      var detailCtrl = function($scope,prescription,prescriptionList){
+		      	$scope.prescriptionList = prescriptionList;
+		      	console.log($scope.prescriptionList);
+		      	$scope.prescription =prescription ;
+		         $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.completePrescription = function(prescription){
+				// update in db
+				/*$http.post('complete/' + prescription._id).success(function(){
+					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
+							if(prescription._id === $scope.prescriptionList[i]._id){
+								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
+							}
+						}
+			  		});
+				};*/
+					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
+							if(prescription._id === $scope.prescriptionList[i]._id){
+								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
+							}
+						}
+						$mdDialog.cancel();
+		      	};
+		      };
+			$mdDialog.show({
+	        locals:{prescription : prescription , prescriptionList : $scope.prescriptionList},
+	        controller: detailCtrl,
+	        templateUrl: '/dialog/prescriptionDetail.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(answer) {
+	        //Do something after close dialog
+	        //Switch to another page
+	      }, function() {
+	      });
+		
+
 		};
-
 	}
+	
 ]);
 app.controller('symptomCtrl', function($scope, $mdSidenav) {
                 $scope.departmentList = [

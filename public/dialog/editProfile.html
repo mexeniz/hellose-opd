@@ -1,10 +1,10 @@
 
 
-<md-dialog aria-label="Confirm Register"  ng-cloak>
+<md-dialog aria-label="Edit Profile"  ng-cloak>
   <form>
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>ยืนยันการลงทัเบียน</h2>
+        <h2>แก้ไขข้อมูลส่วนตัว</h2>
         <span flex></span>
         <md-button class="md-icon-button" ng-click="cancel()">
           <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
@@ -14,77 +14,68 @@
     <md-dialog-content style="max-width:1200px;max-height:810px; ">
       <!-- Content -->
       <md-content  flex layout-padding>
-      <md-card flex = "100">
-        <md-card-content>
         <md-content layout-padding class="autoScroll">
-          <md-input-container md-no-float class="md-block" flex="60" >
-            <label>ชื่อผู้ใช้งาน</label>
-            <md-icon md-font-library="material-icons" class="material-icons">account_box</md-icon>
-            <input ng-model="regData.username" type="text"  disabled>
-          </md-input-container>
           <div layout layout-sm="column">
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
             <label>ชื่อ</label>
             <md-icon md-font-library="material-icons" class="material-icons">face</md-icon>
-            <input ng-model="regData.firstname" type="text" disabled>
+            <input ng-model="patient.firstname" type="text" >
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
             <label>นามสกุล</label>
-            <input ng-model="regData.lastname" type="text" disabled>
+            <input ng-model="patient.lastname" type="text" >
           </md-input-container>
           </div>
           <div layout layout-sm="column">
             <md-input-container class="md-icon-float md-block" flex="65"  >
               <label>รหัสประชาชน</label>
               <md-icon md-font-library="material-icons" class="material-icons">accessibility</md-icon>
-              <input ng-model="regData.ssn" type="text" disabled>
+              <input ng-model="patient.ssn" type="text" >
             </md-input-container>
-            <md-datepicker ng-model="regData.birthdate" md-placeholder="วันเกิด" flex="35" disabled></md-datepicker>
+            <md-datepicker ng-model="patient.birthdate" md-placeholder="วันเกิด" flex="35" ></md-datepicker>
           </div>
           <div layout layout-sm="column">
           <md-input-container class="md-icon-float md-block" flex="65"  >
             <md-icon md-font-library="material-icons" class="material-icons">mail_outline</md-icon>
             <!-- Use floating label instead of placeholder -->
             <label>Email</label>
-            <input ng-model="regData.email" type="email" disabled>
+            <input ng-model="patient.email" type="email" >
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="35" >
             <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
             <!-- Use floating label instead of placeholder -->
             <label>เบอร์โทรศัพท์</label>
-            <input ng-model="regData.tel_number" type="text" disabled>
+            <input ng-model="patient.tel_number" type="text" >
           </md-input-container>
           </div>
           <div layout layout-sm="column">
           <md-input-container style="margin-right: 10px;" flex = "40" >
             <label>เพศ</label>
             <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
-            <md-select ng-model="regData.gender">
-              <md-option ng-repeat="gender in genderList" value="{{regData.gender}}" disabled>{{regData.gender}}</md-option>
+            <md-select ng-model="patient.gender">
+              <md-option ng-repeat="gender in genderList" value="{{gender.abb}}" >{{gender.gen}}</md-option>
             </md-select>
           </md-input-container>
           <md-input-container style="margin-right: 10px;" flex = "40" >
             <md-icon md-font-library="material-icons" class="material-icons">local_hospital</md-icon>
-            <label>หมู่เลือด</label>
-            <md-select ng-model="regData.blood_type">
-              <md-option ng-repeat="blood in bloodList" value="{{regData.blood_type}}" disabled>{{regData.blood_type}}</md-option>
+            <label>หมู่</label>
+            <md-select ng-model="patient.blood_type">
+              <md-option ng-repeat="blood in bloodList" value="{{blood}}" >{{blood}}</md-option>
             </md-select>
           </md-input-container>
           </div>
           <md-input-container class="md-block" flex = "100" >
           <md-icon md-font-library="material-icons" class="material-icons">place</md-icon>
           <label>ที่อยู่</label>
-          <textarea ng-model="regData.address" columns="1" md-maxlength="150" rows="5" disabled></textarea>
+          <textarea ng-model="patient.address" columns="1" md-maxlength="150" rows="5" ></textarea>
         </md-input-container>   
-          </md-card > 
-        </md-content>
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <span flex></span>
       <md-button class="md-raised md-primary" ng-click="answer('confirm')">
-        Confirm
+        ยืนยัน
       </md-button>
     </md-dialog-actions>
   </form>
