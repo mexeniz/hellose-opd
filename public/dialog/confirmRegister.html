@@ -1,7 +1,7 @@
 
 
 <md-dialog aria-label="Confirm Register"  ng-cloak>
-  <form>
+  <form ng-submit="confirmRegister()">
     <md-toolbar>
       <div class="md-toolbar-tools">
         <h2>ยืนยันการลงทัเบียน</h2>
@@ -83,8 +83,8 @@
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <span flex></span>
-      <md-button class="md-raised md-primary" ng-click="answer('confirm')">
-        Confirm
+      <md-button class="md-raised md-primary" type="submit">
+        ยืนยัน
       </md-button>
     </md-dialog-actions>
   </form>

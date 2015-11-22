@@ -13,7 +13,6 @@ var passport = require('passport');
 
 // Models
 require('./models/model-patients');
-require('./models/model-doctors');
 require('./models/model-physicalrecords');
 require('./models/model-medicalrecords');
 require('./models/model-diseases');
@@ -21,7 +20,7 @@ require('./models/model-appointment');
 require('./models/model-prescriptions');
 require('./models/model-medicines');
 require('./models/model-users');
-
+require('./models/model-doctors');
 require('./models/model-roundward');
 
 // Configs
@@ -54,25 +53,24 @@ app.use(passport.session());
 
 //Routers
 var main_routes = require('./routes/ctrl-main');
-var records_routes = require('./routes/ctrl-records');
+/*var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
 var diseases_routes = require('./routes/ctrl-diseases');
 
 var appointment_routes = require('./routes/ctrl-router');
 
 var prescriptions_routes = require('./routes/ctrl-prescriptions');
-var medicines_routes = require('./routes/ctrl-medicines');
+var medicines_routes = require('./routes/ctrl-medicines');*/
 
-var test_routes = require('./routes/test-router');
 
 app.use('/', main_routes);
-app.use('/records', records_routes);
+/*app.use('/records', records_routes);
 app.use('/patients', patients_routes);
 app.use('/diseases', diseases_routes);
 app.use('/appointment', appointment_routes);
 app.use('/prescriptions', prescriptions_routes);
-app.use('/medicines', medicines_routes);
-app.use('/test', test_routes);
+app.use('/medicines', medicines_routes);*/
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
