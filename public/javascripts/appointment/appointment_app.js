@@ -3,7 +3,31 @@
 //Angular Extension : ui.router
 (function(){
 
-var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
+var app = angular.module('appointment', ['ui.router','ngCsvImport','ngMaterial' , "materialCalendar"]) ;
+	app.config(function($mdThemingProvider, $mdIconProvider){
+
+                  /*$mdIconProvider
+                      .defaultIconSet("./assets/svg/avatars.svg", 128)
+                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
+                      .icon("share"      , "./assets/svg/share.svg"       , 24)
+                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
+                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
+                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
+                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);*/
+
+                      $mdThemingProvider.theme('default')
+                          .primaryPalette('teal')
+                          .accentPalette('red')
+                          .warnPalette('pink');
+
+
+              });
+	app.controller('menuCtrl', function($scope, $mdSidenav) {
+                $scope.toggleNav = function(compId)
+                {
+                  $mdSidenav(compId).toggle();
+                };
+              });
 	
 	app.controller('AppointmentCtrl', [	'$scope', 
 		function($scope){
@@ -49,7 +73,7 @@ var app = angular.module('appointment', ['ui.router','ngCsvImport']) ;
 		  }
 		}]);
 
+    
 	
 
 })();
-

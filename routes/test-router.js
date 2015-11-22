@@ -22,6 +22,14 @@ router.get('/patient/', function(req, res, next) {
 /*
 DOCTOR
 */
+router.get('/doctor/', function(req, res, next) {
+  res.render('material_doctor/home');
+});
+
 router.get('/doctor/profile', function(req, res, next) {
   res.render('material_doctor/view_profile');
+});
+
+router.get('/doctor/appointment', function(req, res, next) {
+  res.render('material_doctor/list_appointment');
 });

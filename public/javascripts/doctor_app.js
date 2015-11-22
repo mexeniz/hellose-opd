@@ -1,5 +1,5 @@
 (function(){
-var app = angular.module('patients', ['ui.router', 'ngMaterial', 'materialCalendar']) ;
+var app = angular.module('doctor', ['ui.router', 'ngMaterial', 'materialCalendar']) ;
 
 // Angular Material Config
 app.config(function($mdThemingProvider, $mdIconProvider){
@@ -560,50 +560,50 @@ app.controller('symptomCtrl', function($scope, $mdSidenav) {
                 };
              });
 app.controller('calendarCtrl', function($scope) {
-          $scope.dayFormat = "d";
-          $scope.selectedDate = null;
-          $scope.availableSlot =[
-            {id:"1",time:"9.30-9.40"},
-            {id:"2",time:"9.40-9.50"},
-            {id:"3",time:"9.50-10.00"},
-            {id:"4",time:"10.00-10.10"},
-            {id:"5",time:"10.10-10.20"},
-            {id:"6",time:"10.20-10.30"},
-            {id:"7",time:"10.30-10.40"}
-          ];
-          $scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
-          $scope.setDirection = function(direction) {
-            $scope.direction = direction;
-            $scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
-          };
+	$scope.dayFormat = "d";
+	$scope.selectedDate = null;
+	$scope.availableSlot =[
+		{id:"1",time:"9.30-9.40"},
+		{id:"2",time:"9.40-9.50"},
+		{id:"3",time:"9.50-10.00"},
+		{id:"4",time:"10.00-10.10"},
+		{id:"5",time:"10.10-10.20"},
+		{id:"6",time:"10.20-10.30"},
+		{id:"7",time:"10.30-10.40"}
+	];
+	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+	$scope.setDirection = function(direction) {
+		$scope.direction = direction;
+		$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
+	};
 
-        $scope.dayClick = function(date) {
-          $scope.msg = "You clicked " + date;
-          console.log($scope.msg);
-        };
+    $scope.dayClick = function(date) {
+      $scope.msg = "You clicked " + date;
+      console.log($scope.msg);
+    };
 
-        $scope.prevMonth = function(data) {
-          $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
-        };
+    $scope.prevMonth = function(data) {
+      $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+    };
 
-        $scope.nextMonth = function(data) {
-          $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
-        };
+    $scope.nextMonth = function(data) {
+      $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+    };
 
-        $scope.tooltips = true;
-        $scope.setDayContent = function(date) {
-        var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-                "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-               "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
-        // To select a single date, make sure the ngModel is not an array.
-            if (dateList.indexOf(date+"") > -1){
-              return "<i class='material-icons'>assignment_turned_in</i>";
-              }
-            else{
-              return "<p></p>";
-            }
-        };
-              });
+    $scope.tooltips = true;
+    $scope.setDayContent = function(date) {
+    	var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+            "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+           "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
+    	// To select a single date, make sure the ngModel is not an array.
+        if (dateList.indexOf(date+"") > -1){
+          return "<i class='material-icons'>assignment_turned_in</i>";
+          }
+        else{
+          return "<p></p>";
+        }
+    };
+});
 app.directive('modal', function () {
     return {
       template: '<div class="modal fade">' +
