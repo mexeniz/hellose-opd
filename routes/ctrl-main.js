@@ -157,6 +157,79 @@ router.get('/roundward', function(req, res, next) {
   res.redirect('/login');
 });
 
+// Get roundward data of a doctor by month and year
+router.post('/getRoundward',function(req,res,next){
+  
+  if(req.user && req.session.role === '2')
+  {
+    var month = req.body['month'];
+    var year = req.body['year'];
+    RoundWardControl.getRoundward(req.user._id,month,year,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
+  
+});
+
+//DELETE ROUNDWARD FROM A SINGLE DOCTOR
+router.post('/cancelRoundward', function(req,res,next){
+  if(req.user && req.session.role === '2')
+  {
+    var userId = req.user._id; //GetFromSession
+    var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
+    RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
+});
+
+//GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
+//BUSY ROUNDWARD WILL NOT BE FETCHED
+router.post('/getAvailableDateTime', function(req,res,next){
+  var doctor_id = req.body['doctorid'];
+  var month = req.body['month'];
+  var year = req.body['year'];
+
+  RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
+    if(err){
+      return next(err);
+    }else{    
+      var returning = {
+        'doctor_id' : doctor_id,
+        'month' : month,
+        'data': result
+      };
+      return res.json(returning);
+    }
+  });
+});
+
+
+//GET MONTHLY ROUNDWARD OF THE ENTIRE DEPARTMENT
+router.post('/getDepartmentFreeMonth',function(req,res,next){
+  //Query Free Slot in a Month with Every Doctor in that Department
+  var month = req.body['month'];
+  var department = req.body['department'];
+  var year = req.body['year'];
+  RoundWardControl.getDepartmentFreeMonth(month,year,department,function(err,result){
+    if(err){
+      return next(err);
+    }else{
+      return res.json(result);
+    }
+  });
+});
+
+
+
 // Add roundward
 router.get('/roundward/add', function(req, res, next) {
   if(req.user && req.session.role === '2') {
@@ -165,18 +238,21 @@ router.get('/roundward/add', function(req, res, next) {
   res.redirect('/login');
 });
 
+
 // Add roundward post
-router.post('/roundward/add', function(req, res, next) {
-    if(req.user && req.session.role === '2') {
-      RoundWardControl.addRoundward(req.body,function(err,result){
-        if(err){
-          return next(err);
-        }else{
-          return res.json(result);
-        }
-      });
-    }
-    return res.json({message: "Error page not found"});
+router.post('/addRoundward', function(req,res,next){
+  if(req.user && req.session.role === '2')
+  {
+    var roundward = {date:req.body['date'],
+          time:req.body['time']};
+    var userId = req.user._id; //GetFromSession
+    RoundWardControl.addRoundWard(userId,roundward,function(err,result){
+      if(err){
+        return next(err); 
+      }
+      return res.json(result);
+    });
+  }
 });
 
 // Create appointment
@@ -384,6 +460,24 @@ router.get('/roundward/import', function(req, res, next) {
     res.render('staff/import_roundward');
   }
   res.redirect('/login');
+});
+
+//IMPORT ROUNDWARD FROM A CSV FILE
+router.post('/importRoundward', function(req,res,next){
+  if(req.user && req.session.role === '3')
+  {
+    //Use This Place (Router) to Split File
+    var longStream = req.body;
+    var startDate = new Date(longStream.year,longStream.month);
+    RoundWardControl.importRoundWard(startDate,longStream.data,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
+  
 });
 
 /* ------------------------------------------------------- */

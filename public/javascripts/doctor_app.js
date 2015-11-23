@@ -281,7 +281,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 		];*/
 		
 
-		$http.post('/appointment/getRoundward', { month: month, year: year }).success(function(rwList){
+		$http.post('/getRoundward', { month: month, year: year }).success(function(rwList){
 			
 			for(var i in rwList)
 			{
@@ -328,7 +328,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 			date: date,
 			time: time
 		};*/
-		$http.post('/appointment/addRoundward', { date: date, time: time }).success(function(data)
+		$http.post('/addRoundward', { date: date, time: time }).success(function(data)
 		{
 			data.date = new Date(data.date);
 			console.log('added roundward');
@@ -350,7 +350,7 @@ app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
 	o.cancelRoundward = function(rwId, callback)
 	{
 
-		$http.post('/appointment/cancelRoundward', { rwId: rwId }).success(function(data)
+		$http.post('/cancelRoundward', { rwId: rwId }).success(function(data)
 		{
 			for(var i in o.roundwardList)
 			{
