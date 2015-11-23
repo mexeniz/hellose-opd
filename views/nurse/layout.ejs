@@ -7,7 +7,7 @@
 
   </head>
 
-  <body ng-app="patients" ng-controller="menuCtrl" layout="row" ng-cloak >
+  <body ng-app="staff" ng-controller="menuCtrl" layout="row" ng-cloak >
 
      <md-sidenav class="md-sidenav-left md-whiteframe-z2" layout="column" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
       <md-toolbar>
@@ -27,14 +27,9 @@
           <p>Profile</p>
         </md-list-item>
 
-        <md-list-item md-ink-ripple class="md-clickable" href="/appointment">
+        <md-list-item md-ink-ripple class="md-clickable" href="/patient">
           <md-icon md-font-library="material-icons">date_range</md-icon>
-          <p>View appointments</p>
-        </md-list-item>
-
-        <md-list-item md-ink-ripple class="md-clickable" href="/appointment/create">
-          <md-icon md-font-library="material-icons">assignment_ind</md-icon>
-          <p>Make Appointment</p>
+          <p>Search Patient</p>
         </md-list-item>
 
         <md-list-item md-ink-ripple class="md-clickable" href="/logout">
@@ -45,11 +40,12 @@
      </md-sidenav>
 
     <%- body %>
-
+    
     <% include ../templates/footer %>
     
     <!-- Include patient_app.js -->
-    <script type="text/javascript" src="/javascripts/patients_app.js"></script>
+    <script type="text/javascript" src="/javascripts/staff_app.js"></script>
+    <script src="/lib/angular-csv-import/dist/angular-csv-import.js"></script>
 
   </body>
 </html>

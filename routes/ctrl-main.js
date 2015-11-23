@@ -109,6 +109,10 @@ router.get('/home', function(req, res, next) {
       res.render('doctor/home');
     } else if(role === '3') {
       res.render('staff/home');
+    } else if(role === '4') {
+      res.render('pharmacist/home');
+    } else if(role === '5') {
+      res.render('nurse/home');
     } else {
       res.render('patient/home');
     }
@@ -141,10 +145,6 @@ router.get('/create_appointment', function(req, res, next) {
 router.get('/patientViewAppointment', function(req,res) {
 	res.render('mockup/patientViewAppointment');
   });
-
-router.get('/prescriptions', function(req, res, next) {
-  res.render('pharmacist/prescription');
-});
 
 /* ------------------------------------------------------- */
 // Patient Only Route
@@ -273,7 +273,7 @@ router.get('/appointment/:appId', function(req, res, next) {
 });
 
 /* ------------------------------------------------------- */
-// Patient and  Staff and Pharmacist and Nurse
+// Patient and  Doctor and Staff and Pharmacist and Nurse
 
 // Information for each user
 router.get('/profile', function(req, res, next) {
@@ -281,6 +281,9 @@ router.get('/profile', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '1') {
       res.render('patient/view_profile', { patient_id: req.user._id });
+    }
+    else if (req.session.role === '2' ) {
+      res.render('doctor/view_profile', { doctor_id: req.user._id });
     }
     else if (req.session.role === '3') {
       res.render('staff/view_profile', { staff_id: req.user._id });
@@ -302,6 +305,9 @@ router.get('/profile/edit', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '1') {
       res.render('patient/edit_profile', { patient_id: req.user._id });
+    }
+    else if (req.session.role === '2') {
+      res.render('doctor/edit_profile', { doctor_id: req.user._id});
     }
     else if (req.session.role === '3') {
       res.render('staff/edit_profile', { staff_id: req.user._id });
@@ -386,9 +392,20 @@ router.get('/patient/:patientId/edit', function(req, res, next) {
   res.redirect('/login');
 });
 
-router.post('/roundward/import', function(req, res, next) {
+router.get('/roundward/import', function(req, res, next) {
   if(req.user && req.session.role === '3') {
-    res.render('staff/import_roundward.ejs');
+    res.render('staff/import_roundward');
+  }
+  res.redirect('/login');
+});
+
+/* ------------------------------------------------------- */
+
+// Pharmacist only
+// List prescription
+router.get('/prescription', function(req, res, next) {
+  if(req.user && req.session.role === '4') {
+    res.render('pharmacist/list_prescription');
   }
   res.redirect('/login');
 });
