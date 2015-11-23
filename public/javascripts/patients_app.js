@@ -285,9 +285,14 @@ app.controller('InfoCtrl', [
 				$scope.medicalRecordList = data.medical_record ;
 				$scope.prescriptionList = data.prescription_record ;
 
-		    });
+				$scope.patient.age = (function(){
+			    	var ageDifMs = Date.now() - new Date($scope.patient.birthdate).getTime();
+				    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+				    return Math.abs(ageDate.getUTCFullYear() - 1970);
+			    }());
 
-		    
+				// console.log(data);
+		    });
 		};
 		$scope.showEditProfile = function(ev){
 			var editCtrl = function($scope,patient){

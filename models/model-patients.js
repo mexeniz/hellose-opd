@@ -16,6 +16,7 @@ var PatientsSchema = new Schema({
     lastname: 'String',
     email: 'String',
     gender: 'String',
+    birthdate: 'Date',
     blood_type: 'String',
     tel_number: [{ type: String, min: 9, max: 10 }],
     physical_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PhysicalRecord' }],
