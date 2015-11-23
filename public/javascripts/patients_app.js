@@ -325,25 +325,6 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 			}
 
 		});
-
-		/*$timeout(function() {
-			
-
-			for(var i in o.roundwardList)
-			{
-				var rw = o.roundwardList[i];
-				if(rw._id === rwId)
-				{
-					console.log('deleted roundward id = ' + rwId);
-					o.roundwardList.splice(i, 1);
-					o.roundwardCache[getKey(rw.date, rw.time)] = null;
-					callback(rw);
-					return;
-				}
-			}
-
-			
-		},2000);*/
 	};
 
   	return o;

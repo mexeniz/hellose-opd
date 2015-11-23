@@ -13,6 +13,7 @@ var UserControl = require('../controllers/UserControl.js');
 var RoundWardControl = require('../controllers/RoundWardControl.js');
 var NotificationControl = require('../controllers/NotificationControl.js');
 var AppointmentControl = require('../controllers/AppointmentControl.js');
+var PatientControl = require('../controllers/PatientControl');
 
 /* ------------------------------------------------------- */
 // Guest Route
@@ -383,20 +384,6 @@ router.get('/patient', function(req, res, next) {
 router.get('/patient/:patientId/edit', function(req, res, next) {
   if(req.user && req.session.role == '3') {
     res.render('staff/edit_patient_profile');
-  }
-  res.redirect('/login');
-});
-
-router.post('/patient/:patientId/edit', function(req, res, next) {
-  if(req.user && req.session.role == '3') {
-    res.render('staff/edit_patient_profile');
-  }
-  res.redirect('/login');
-});
-
-router.get('/roundward/import', function(req, res, next) {
-  if(req.user && req.session.role == '3') {
-    res.render('staff/import_roundward.ejs');
   }
   res.redirect('/login');
 });
