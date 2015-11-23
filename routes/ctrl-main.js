@@ -68,6 +68,15 @@ router.post('/register', function(req, res, next) {
     });
   })(req, res, next);
 });
+/* GET Reset Password Page */
+router.get('/reset_password', function(req, res){
+  res.render('register/reset_password');
+});
+
+router.post('/reset_password', function(req, res, next) {
+  console.log(req.body.email);
+  res.json({status:'success'});
+});
 
 /* GET home page. */
 router.get('/home', function(req, res, next) {
@@ -76,13 +85,13 @@ router.get('/home', function(req, res, next) {
     return res.redirect('/login');
   } else {
     var role = req.session.role;
-    if(role == '1') {
+    if(role === '1') {
       console.log('patient');
       res.render('patient/home');
-    } else if(role == '2') {
+    } else if(role === '2') {
       console.log('doctor');
       res.render('doctor/home');
-    } else if(role == '3') {
+    } else if(role === '3') {
       res.render('staff/home');
     } else {
       res.render('patient/home');

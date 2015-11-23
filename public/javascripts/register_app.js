@@ -110,7 +110,53 @@ app.controller('registerCtrl', [
     };
 
 }]);
+app.controller('resetPasswordCtrl', ['$scope','$window', '$http', '$mdDialog',
+  function($scope , $window ,$http,$mdDialog){
+    $scope.email = "" ;
+    // Validate form and show modal
+    $scope.resetPassword = function(ev){
+      var modalCtrl = function($scope,$window, text , status) {
+          $scope.text = text ;
+          $scope.showProgress = true ;
+          $scope.finishProgress = false ;
+          setTimeout(function(){
+              $scope.showProgress = false;
+              $scope.finishProgress = true ;
+              console.log(status);
+          }, 2000);
+          $scope.cancel = function() {
+            $mdDialog.cancel();
+          };
+          $scope.confirm = function()
+          {
+            $mdDialog.hide('text');
+          };
+        };
+      $http.post('/reset_password', {email : $scope.email}).success(function(res) {
+          var text = "" ;
+          if (res.status === 'success'){
+            text = "ทำการรีเซ็ตรหัสผ่านสำเร็จ<br>กรุณาตรวจสอบEmailที่ได้รับ";
+          }else{
+            text = "ไม่พบEmailนี้ในระบบ" ;
+          }
+          // Initiate Modal
+          $mdDialog.show({
+            locals:{text : text , status : res.status},
+            controller: modalCtrl,
+            templateUrl: '/dialog/resetPasswordDialog.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true
+          })
+          .then(function(answer) {
+            //Do something after close dialog
+            //Switch to another page
+            console.log(answer);
+          });   
+      });
 
+    };
+}]);
 app.directive('pwCheck', [function () {
   return {
     require: 'ngModel',
