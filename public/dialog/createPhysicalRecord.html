@@ -1,0 +1,59 @@
+
+
+<md-dialog aria-label="Create Physical Record"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>เพิ่มข้อมูลทางการแพทย์</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:1200px;max-height:810px;width:400px;height:400px; ">
+      <!-- Content -->
+      <md-content  flex layout-padding>
+        <md-content layout-padding class="autoScroll">
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>น้ำหนัก</label>
+            <input ng-model="physicalRecord.weight" type="text" required>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>ส่วนสูง</label>
+            <input ng-model="physicalRecord.height" type="text" required>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>ความดันโลหิต</label>
+            <input ng-model="physicalRecord.blood_pressure" type="text" required>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>ชีพจร</label>
+            <input ng-model="physicalRecord.pulse" type="text" required>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>อุณหภูมิรางกาย</label>
+            <input ng-model="physicalRecord.temperature" type="text" required>
+          </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button type="submit" class="md-raised md-primary" ng-click="submitPhysicalRecord()">
+        ยืนยัน
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
+
+
+      
+      
+
+
+

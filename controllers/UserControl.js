@@ -6,58 +6,49 @@ var Patient = mongoose.model('Patient');
 
 module.exports.login = function(req, username, password, done) { 
 	// check in mongo if a user with username exists or not
-	User.findOne({ $or:[ { 'username': username }, { 'ssn': username } ] }, 
+	var role = req.body.role;
+	var query = {};
+	query.username = username;
+	switch(role)
+	{
+		case '1':
+			query.isPatient = true;
+			break;
+		case '2':
+			query.isDoctor = true;
+			break;
+		case '3':
+			query.isStaff = true;
+			break;
+		case '4':
+			query.isPharmacist = true;
+			break;
+		case '5':
+			query.isNurse = true;
+			break;
+	}
+	User.findOne(query, 
 		function(err, user) {
 			// In case of any error, return using the done method
 			if(!user)
 			{
-				// Find using patient_id
-				Patient.findOne({ 'patient_id': username }, function(err, patient) {
-					if(err) { return done(err); }
-					if(!patient)
-					{
-						console.log('User not found!');
-						return done(null, false, req.flash('message', 'User not found'));
-					}
+				return done(null, false, req.flash('message', 'User not found'));
 
-					// Populate User
-					patient.populate('userId', function(err, patient) {
-						if(err) { return done(err); }
-
-						if(!patient.userId)
-						{	
-							console.log('User not found!');
-							return done(null, false, req.flash('message', 'User not found'));
-						}
-
-						// Check password
-						if(!patient.userId.validPassword(password))
-						{
-							console.log('Invalid Password');
-							return done(null, false, 
-							req.flash('message', 'Invalid Password'));
-						}
-
-						// User and password both match, return user from 
-						// done method which will be treated like success
-						return done(null, patient.userId);
-					});
-				});
 			}
-
 			else
 			{
 				// Check password
 				if(!user.validPassword(password))
 				{
 					console.log('Invalid Password');
-					return done(null, false, 
-					req.flash('message', 'Invalid Password'));
+					return done(null, false, req.flash('message', 'Invalid Password'));
 				}
 				
 				// User and password both match, return user from 
 				// done method which will be treated like success
-				return done(null, user);
+				//user.aa = "aa";
+				//console.log(user);
+				return done(null, user, req.flash('message', role));
 			}
 			
 		}

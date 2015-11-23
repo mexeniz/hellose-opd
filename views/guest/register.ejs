@@ -24,8 +24,8 @@
                                   <input id="textinput" name="ssn" ng-model="regData.ssn" type="text" placeholder="1234567890123" class="form-control input-md" required ng-minlength="13" ng-maxlength="13" ng-pattern="/^\d+$/">
                                   <span style="color:red" ng-show="regForm.ssn.$dirty && regForm.ssn.$invalid">
                                     <span ng-show="regForm.ssn.$error.required">SSN is required.</span>
-                                    <span ng-message="md-minlength"SSN must be length of 13.</span>
-                                    <span ng-message="md-maxlength">SSN must be length of 13.</span>
+                                    <span ng-show="regForm.ssn.$error.minlength">SSN must be length of 13.</span>
+                                    <span ng-show="regForm.ssn.$error.maxlength">SSN must be length of 13.</span>
                                     <span ng-show="regForm.ssn.$error.pattern">SSN must contain only numbers.</span>
                                   </span>
                                 </div>

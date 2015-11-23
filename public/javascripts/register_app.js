@@ -1,15 +1,6 @@
 (function(){
 var app = angular.module('register_app', ['ui.router','ngMaterial' ]) ;
-app.config(function($mdThemingProvider, $mdIconProvider){
-
-                  /*$mdIconProvider
-                      .defaultIconSet("./assets/svg/avatars.svg", 128)
-                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-                      .icon("share"      , "./assets/svg/share.svg"       , 24)
-                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
-                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
-                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
-                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);*/
+app.config(function($mdThemingProvider){
 
                       $mdThemingProvider.theme('default')
                           .primaryPalette('teal')
@@ -37,9 +28,8 @@ app.controller('registerCtrl', [
       console.log("email : " + this.email + " pw : "+ this.password);
       $window.location = "/home" ;
     };
-    $scope.bloodList = ["A","B","AB","O"];
-    $scope.genderList = [{abb:"M",gen:"Male"},{abb:"F",gen:"Female"}];
-    $scope.showConfirmRegModal = false;
+    $scope.bloodList = [{abv:"A",text:"A"},{abv:"B",text:"B"},{abv:"AB",text:"AB"},{abv:"O",text:"O"},{abv:"X",text:"-"},];
+    $scope.genderList = [{abv:"M",gen:"ชาย"},{abv:"F",gen:"หญิง"}];
     $scope.pwNotMatch = false;
     $scope.regData = {};
     $scope.regData.blood_type = 'A';
@@ -61,7 +51,6 @@ app.controller('registerCtrl', [
           };
           $scope.confirmRegister = function()
           {
-            $scope.showConfirmRegModal = false;
             $http.post('/register', $scope.regData).success(function(data) {
               console.log(data);
               if(data.status === 'success')
@@ -93,11 +82,33 @@ app.controller('registerCtrl', [
     };
 
     $scope.resetNotMatchAlert = function()
-    {
-      $scope.pwNotMatch = false;
+    { 
+      if ($scope.regData.repeatPassword === $scope.regData.password)
+       {
+        $scope.pwNotMatch = false;
+       }
+       else {
+        $scope.pwNotMatch = true;
+       }
     };
 
-    
+    $scope.confirmRegister = function()
+    {
+      $scope.showConfirmRegModal = false;
+      $http.post('/register', $scope.regData).success(function(data) {
+        console.log(data);
+        if(data.status === 'success')
+        {
+          $scope.regMessage = 'Successfully registered!';
+          $window.location.href = "/home" ;
+        }
+        else
+        {
+          $scope.regMessage = 'Try again!';
+        }
+      });
+    };
+
 }]);
 
 app.directive('pwCheck', [function () {
