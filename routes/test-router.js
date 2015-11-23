@@ -59,3 +59,7 @@ router.get('/staff/', function(req, res, next) {
 router.get('/staff/import_roundward', function(req, res, next) {
   res.render('material_staff/import_roundward');
 });
+
+router.get('/staff/patient', function(req, res, next) {
+  res.render('material_staff/list_patient');
+});
