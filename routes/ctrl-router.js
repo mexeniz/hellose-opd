@@ -238,7 +238,7 @@ router.post('/cancelAppointment',function(req,res,next){
 
 /*
 	CANCEL ROUNDWARD -> EDITAPPOINTMENT = 'canceled'
-*/
+*///TesT
 
 // router.post('/editAppointment',function(req,res,next){
 // 	var userId = req.body['userId']; //Find 'patient'
