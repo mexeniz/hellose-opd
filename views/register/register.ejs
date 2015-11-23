@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<% layout('layout') -%>
+     
+     <!-- Heading -->
+     <md-content flex id="content">
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <md-button class="md-icon-button" ng-click="toggleNav('left')" hide-gt-md aria-label="Menu">
+            <md-icon md-font-library="material-icons">menu</md-icon>
+          </md-button>
+          <h2>
+            <i class="material-icons">supervisor_account</i>
+            <span>Registration</span>
+          </h2>
+        </div>
+      </md-toolbar>
+
+      <!-- Content -->
+      <md-content ng-controller="registerCtrl" flex layout-padding>
+      <form ng-submit="checkRegister()" name="userForm">
+      <md-card flex = "100">
+        <md-card-content>
+        <md-content layout-padding class="autoScroll">
+          <md-input-container md-no-float class="md-block" flex="60">
+            <label>Username</label>
+            <md-icon md-font-library="material-icons" class="material-icons">account_box</md-icon>
+            <input ng-model="regData.username" type="text" >
+          </md-input-container>
+          <div layout layout-sm="column">
+          <md-input-container class="md-icon-float md-block" flex="50">
+            <!-- Use floating label instead of placeholder -->
+            <label>Password</label>
+            <md-icon md-font-library="material-icons" class="material-icons">https</md-icon>
+            <input ng-model="regData.password" type="password">
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="50">
+            <!-- Use floating label instead of placeholder -->
+            <label>Repeat password</label>
+            <input ng-model="regData.repeatPassword" type="password">
+          </md-input-container>
+          </div>
+          </md-card-content>
+        </md-card>
+        <md-card flex = "100">
+          <md-card-content>
+          <div layout layout-sm="column">
+          <md-input-container class="md-icon-float md-block" flex="100">
+            <!-- Use floating label instead of placeholder -->
+            <label>Firstname</label>
+            <md-icon md-font-library="material-icons" class="material-icons">face</md-icon>
+            <input ng-model="regData.firstname" type="text">
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100">
+            <!-- Use floating label instead of placeholder -->
+            <label>Lastname</label>
+            <input ng-model="regData.lastname" type="text">
+          </md-input-container>
+          </div>
+          <div layout layout-sm="column">
+            <md-input-container class="md-icon-float md-block" flex="65" >
+              <label>SSN</label>
+              <md-icon md-font-library="material-icons" class="material-icons">accessibility</md-icon>
+              <input ng-model="regData.ssn" type="text">
+            </md-input-container>
+            <md-datepicker ng-model="regData.birthdate" md-placeholder="Birthdate" flex="35"></md-datepicker>
+          </div>
+          <div layout layout-sm="column">
+          <md-input-container class="md-icon-float md-block" flex="65" >
+            <md-icon md-font-library="material-icons" class="material-icons">mail_outline</md-icon>
+            <!-- Use floating label instead of placeholder -->
+            <label>Email</label>
+            <input ng-model="regData.email" type="email">
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="35">
+            <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
+            <!-- Use floating label instead of placeholder -->
+            <label>Tel</label>
+            <input ng-model="regData.tel_number" type="text">
+          </md-input-container>
+          </div>
+          <div layout layout-sm="column">
+          <md-input-container style="margin-right: 10px;" flex = "40">
+            <label>Gender</label>
+            <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
+            <md-select ng-model="regData.gender">
+              <md-option ng-repeat="gender in genderList" value="{{gender.abb}}">{{gender.gen}}</md-option>
+            </md-select>
+          </md-input-container>
+          <md-input-container style="margin-right: 10px;" flex = "40">
+            <md-icon md-font-library="material-icons" class="material-icons">local_hospital</md-icon>
+            <label>Blood Type</label>
+            <md-select ng-model="regData.blood_type">
+              <md-option ng-repeat="blood in bloodList" value="{{blood}}">{{blood}}</md-option>
+            </md-select>
+          </md-input-container>
+          </div>
+          <md-input-container class="md-block" flex = "100">
+          <md-icon md-font-library="material-icons" class="material-icons">place</md-icon>
+          <label>Address</label>
+          <textarea ng-model="regData.address" columns="1" md-maxlength="150" rows="5"></textarea>
+        </md-input-container>    
+        </md-content>
+          </md-card-content>
+
+        <md-content layout="row" layout-align="end center">
+        <md-button class="md-raised md-primary" ng-click="checkRegister($event)">Register</md-button>
+        <md-button type="reset" class="md-raised md-warn">Reset</md-button>
+        </md-content>
+        </md-card>
+      </form>
+      </md-content>
+      
+
+
+

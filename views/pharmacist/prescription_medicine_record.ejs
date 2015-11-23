@@ -1,0 +1,20 @@
+<modal title="Medicine List" visible="showMedicineListModal">
+	<label>Doctor: {{medicineList.doctor}}</label>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Medicine List</th>
+				<th>Dosage</th>
+				<th>How to</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="medicine in medicineList.med_dosage_list">
+				<td>{{medicine.medicine.name}}</td>
+				<td>{{medicine.dosage}}</td>
+				<td>{{medicine.howTo}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<button type="submit" id="submit" class="btn btn-primary" ng-click="completePrescription(medicineList)" ng-show="medicineList.status === 'Pending' && pharmacistView">Submit</button>
+</modal>

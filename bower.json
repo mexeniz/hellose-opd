@@ -18,6 +18,7 @@
     "chosen": "~1.4.2",
     "fontawesome": "~4.2.0",
     "angular-csv-import": "angular-csv-import#~0.0.27",
+    "material-calendar": "~0.2.12",
     "moment": "~2.10.6"
   }
 }

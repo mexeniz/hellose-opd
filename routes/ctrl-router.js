@@ -62,8 +62,8 @@ router.get('/patientView', function(req,res){
 router.post('/addRoundward', function(req,res,next){
 	var roundward = {date:req.body['date'],
 				time:req.body['time']};
-	var doctor_id = mongoose.Types.ObjectId(req.body['doctorid']); //GetFromSession
-	RoundWardControl.addRoundWard(doctor_id,roundward,function(err,result){
+	var userId = '564d48fab16f9a802283f450'; //GetFromSession
+	RoundWardControl.addRoundWard(userId,roundward,function(err,result){
 		if(err){
 			return next(err); 
 		}
@@ -73,9 +73,9 @@ router.post('/addRoundward', function(req,res,next){
 
 //DELETE ROUNDWARD FROM A SINGLE DOCTOR
 router.post('/cancelRoundward', function(req,res,next){
-	var doctor_id = mongoose.Types.ObjectId(req.body['doctorid']);
-	var roundward_id = mongoose.Types.ObjectId(req.body['rwid']);
-	RoundWardControl.cancelRoundward(doctor_id,roundward_id,function(err,result){
+	var userId = '564d48fab16f9a802283f450'; //GetFromSession
+	var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
+	RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
 		if(err){
 			return next(err);
 		}else{
@@ -125,8 +125,8 @@ router.post('/getDepartmentFreeMonth',function(req,res,next){
 router.post('/getRoundward',function(req,res,next){
 	var month = req.body['month'];
 	var year = req.body['year'];
-	var doctor_id = req.body['doctorid'];
-	RoundWardControl.getRoundward(doctor_id,month,year,function(err,result){
+	//FIX ME
+	RoundWardControl.getRoundward('564d48fab16f9a802283f450',month,year,function(err,result){
 		if(err){
 			return next(err);
 		}else{

@@ -29,13 +29,22 @@ router.get('/home', function(req, res, next) {
   res.render('main/home');
 });
 
+router.get('/test', function(req, res, next) {
+  res.render('material/home');
+});
+
+router.get('/test/profile', function(req, res, next) {
+  res.render('material/view_profile');
+});
+router.get('/calendar', function(req, res, next) {
+  res.render('material/calendar');
+});
+router.get('/create_appointment', function(req, res, next) {
+  res.render('material/create_appointment');
+});
 /* GET import schedule page. */
 router.get('/import_schedule', function(req, res, next) {
   res.render('mockup/import_schedule');
-});
-/* GET import schedule page. */
-router.get('/create_appointment', function(req, res, next) {
-  res.render('mockup/create_appointment');
 });
 
 router.get('/patientViewAppointment', function(req,res) {
@@ -43,7 +52,7 @@ router.get('/patientViewAppointment', function(req,res) {
   });
 /* GET register page. */
 router.get('/register', function(req, res, next) {
-  res.render('main/register');
+  res.render('register/register');
 
 });
 

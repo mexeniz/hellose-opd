@@ -63,6 +63,7 @@ var appointment_routes = require('./routes/ctrl-router');
 var prescriptions_routes = require('./routes/ctrl-prescriptions');
 var medicines_routes = require('./routes/ctrl-medicines');
 
+var test_routes = require('./routes/test-router');
 
 app.use('/', main_routes);
 app.use('/records', records_routes);
@@ -71,7 +72,7 @@ app.use('/diseases', diseases_routes);
 app.use('/appointment', appointment_routes);
 app.use('/prescriptions', prescriptions_routes);
 app.use('/medicines', medicines_routes);
-
+app.use('/test', test_routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

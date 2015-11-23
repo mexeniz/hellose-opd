@@ -1,100 +1,104 @@
 (function(){
-var app = angular.module('register_app', ['ui.router']) ;
+var app = angular.module('register_app', ['ui.router','ngMaterial' ]) ;
+app.config(function($mdThemingProvider, $mdIconProvider){
+
+                  /*$mdIconProvider
+                      .defaultIconSet("./assets/svg/avatars.svg", 128)
+                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
+                      .icon("share"      , "./assets/svg/share.svg"       , 24)
+                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
+                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
+                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
+                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);*/
+
+                      $mdThemingProvider.theme('default')
+                          .primaryPalette('teal')
+                          .accentPalette('red')
+                          .warnPalette('pink');
 
 
-app.controller('registerController', [
-	'$scope',
-	'$window',
-	'$stateParams', 
-	'$http',
-	function($scope , $window ,$stateParams,$http){
-	 	$scope.loginSubmit = function() {
-	 		console.log("email : " + this.email + " pw : "+ this.password);
-			$window.location = "/home" ;
-		};
+              });
+app.controller('menuCtrl', function($scope, $mdSidenav) {
+                $scope.toggleNav = function(compId)
+                {
+                  $mdSidenav(compId).toggle();
+                };
+              });
 
-		$scope.showConfirmRegModal = false;
+
+
+app.controller('registerCtrl', [
+  '$scope',
+  '$window',
+  '$stateParams', 
+  '$http', '$mdDialog',
+  function($scope , $window ,$stateParams,$http,$mdDialog){
+    $scope.loginSubmit = function() {
+      console.log("email : " + this.email + " pw : "+ this.password);
+      $window.location = "/home" ;
+    };
+    $scope.bloodList = ["A","B","AB","O"];
+    $scope.genderList = [{abb:"M",gen:"Male"},{abb:"F",gen:"Female"}];
+    $scope.showConfirmRegModal = false;
     $scope.pwNotMatch = false;
     $scope.regData = {};
     $scope.regData.blood_type = 'A';
     $scope.regData.gender = 'M';
 
     // Validate form and show modal
-		$scope.checkRegister = function(){
-      if($scope.password !== $scope.repeatPassword)
+    $scope.checkRegister = function(ev){
+      console.log("check!");
+      if($scope.regData.password !== $scope.regData.repeatPassword)
       {
+        console.log("not Match");
         $scope.pwNotMatch = true;
         return;
       }
-			$scope.showConfirmRegModal = true;
-		};
+      var confirmCtrl = function($scope, regData) {
+          $scope.regData = regData ;
+          $scope.cancel = function() {
+            $mdDialog.cancel();
+          };
+          $scope.confirmRegister = function()
+          {
+            $scope.showConfirmRegModal = false;
+            $http.post('/register', $scope.regData).success(function(data) {
+              console.log(data);
+              if(data.status === 'success')
+              {
+                $scope.regMessage = 'Successfully registered!';
+                $window.location.href = "/home" ;
+              }
+              else
+              {
+                $scope.regMessage = 'Try again!';
+              }
+            });
+          };
+        };
+      $mdDialog.show({
+        locals:{regData: $scope.regData},
+        controller: confirmCtrl,
+        templateUrl: '/dialog/confirmRegister.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose:true
+      })
+      .then(function(answer) {
+        //Do something after close dialog
+        //Switch to another page
+      }, function() {
+      });
+
+    };
 
     $scope.resetNotMatchAlert = function()
     {
       $scope.pwNotMatch = false;
     };
 
-    $scope.confirmRegister = function()
-    {
-      $scope.showConfirmRegModal = false;
-      $http.post('/register', $scope.regData).success(function(data) {
-        console.log(data);
-        if(data.status === 'success')
-        {
-          $scope.regMessage = 'Successfully registered!';
-          $window.location.href = "/home" ;
-        }
-        else
-        {
-          $scope.regMessage = 'Try again!';
-        }
-      });
-    };
-
+    
 }]);
-
-
-app.directive('modal', function () {
-    return {
-      template: '<div class="modal fade">' +
-          '<div class="modal-dialog">' +
-            '<div class="modal-content">' +
-              '<div class="modal-header">' +
-                '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-                '<h4 class="modal-title">{{ title }}</h4>' +
-              '</div>' +
-              '<div class="modal-body" ng-transclude></div>' +
-            '</div>' +
-          '</div>' +
-        '</div>',
-      restrict: 'E',
-      transclude: true,
-      replace:true,
-      scope:true,
-      link: function postLink(scope, element, attrs) {
-        scope.title = attrs.title;
-
-        scope.$watch(attrs.visible, function(value){
-          if(value === true)
-            $(element).modal('show');
-          else
-            $(element).modal('hide');
-        });
-
-        $(element).on('shown.bs.modal', function(){
-          scope.$apply(function(){
-            scope.$parent[attrs.visible] = true;
-          });
-        });
-
-        $(element).on('hidden.bs.modal', function(){
-          scope.$apply(function(){
-            scope.$parent[attrs.visible] = false;
-          });
-        });
-      }
-    };
-  });
 
 app.directive('pwCheck', [function () {
   return {

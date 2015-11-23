@@ -18,12 +18,13 @@ TEST CASE
     "doctor._id" : "564ec7d6324f8c3524d153f6",
 }
 */
-module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
+module.exports.addRoundWard = function(userId,rwinfo,callback) {
  //Roundward Frontend need to pack field in the form correspond to 
  //schema's Attribute (name must be the same)
 
  //Find Doctor to add the Roundward
-  Doctor.findOne({userId:doctorid},function(err,thisDoctor){
+
+  Doctor.findOne({userId:mongoose.Types.ObjectId(userId)},function(err,thisDoctor){
     if(err || !thisDoctor){ 
       return callback(err,'NO DOC FOUND');
     }else{ 
@@ -43,7 +44,7 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
                if(err){
                 return callback(err4);
                }
-                callback(err4,thisDoctor);
+                callback(err4,result);
           });
         }else if(!result){
           //New Roundward ! : Add To Array
@@ -60,7 +61,7 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
                if(err){
                 return callback(err4);
                }
-                callback(err4,thisDoctor);
+                callback(err4,res);
           });
             }
           });
@@ -70,15 +71,15 @@ module.exports.addRoundWard = function(doctorid,rwinfo,callback) {
   });
 };
 
-module.exports.getRoundward = function(doctorId_input,month,year,callback){
-
+module.exports.getRoundward = function(userId,month,year,callback){
+  console.log("getting Roudward"+userId);
   var returning = [];
 
 //FUNCTIONS
 
-  function findDoctor(doctorId_input){
+  function findDoctor(userId){
     return new Promise(function(resolve,reject){
-        Doctor.findOne({'userId' : mongoose.Types.ObjectId(doctorId_input)})
+        Doctor.findOne({'userId' : mongoose.Types.ObjectId(userId)})
         .populate('onDutyRoundward')
         .exec(function(err,result){
             if(err){
@@ -91,7 +92,7 @@ module.exports.getRoundward = function(doctorId_input,month,year,callback){
 
 //FLOW GOES HERE
 
-  findDoctor(doctorId_input)
+  findDoctor(userId)
   .then(function afterFoundDoctor(doctor){
     doctor.onDutyRoundward.forEach(function(rw){
         if(rw.date.getMonth() === month && rw.date.getFullYear() === year){
@@ -106,15 +107,15 @@ module.exports.getRoundward = function(doctorId_input,month,year,callback){
 
 };
 
-module.exports.cancelRoundward = function (doctorId_input,rwId_input,callback) {
+module.exports.cancelRoundward = function (userId,rwId_input,callback) {
   //Doctor Wants to CancelRoundward
   //Find Correspondent Doctor
-  Doctor.findOne({userId : doctorId_input},function(err1,thisDoctor){
+  Doctor.findOne({userId : userId},function(err1,thisDoctor){
   		if(!err1 && thisDoctor){
   			Roundward.findById(rwId_input,function(err2,thisRoundward){
   				if(!err2&&thisRoundward){
   					// Delete Roundward From Doctor's Roundward Array List
-            Doctor.update({_id:thisDoctor._id},{$pull : {availableRoundward:thisRoundward._id}},
+            Doctor.update({_id:thisDoctor._id},{$pull : {onDutyRoundward:thisRoundward._id}},
               {},
               function(err3,result){
                 if(err3 || !result){
