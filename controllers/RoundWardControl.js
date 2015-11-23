@@ -6,6 +6,7 @@ var User = mongoose.model('User');
 var Doctor = mongoose.model('Doctor');
 var moment = require('moment');
 var Appointment = mongoose.model('Appointment');
+var AppointmentControl = require('./AppointmentControl.js');
 
 /*
 TEST CASE 
@@ -121,7 +122,16 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
                   console.log('no doc found in order to update array');
                   return callback(err3);
                 }else{
-                  callback(err3,thisDoctor);
+                  console.log("Update With Doctor Success");
+                    //Appointment.findAndUpdate to Canceled
+                    AppointmentControl.updateAppointment(thisRoundward._id,function(err5,app_result){
+                      if(err5){
+                        return callback(err5)
+                      }
+                      callback(null,result);
+                    });
+                        
+
                 }
               });
   				}else{
