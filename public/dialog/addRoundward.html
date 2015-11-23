@@ -1,0 +1,40 @@
+<md-dialog aria-label="เพิ้่มรอบออกตรวจ"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>เพิ่มรอบออกตรวจ</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+      <!-- Content -->
+      <div layout>
+        <md-input-container flex>
+          <label>รอบ</label>
+          <md-select ng-model="selectedTime" class="md-padding">
+            <md-option ng-repeat="time in rwTimes" value="{{time.value}}">
+              {{time.th}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button class="md-raised md-primary" ng-click="answer(selectedTime)">
+        Confirm
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
+
+
+      
+      
+
+
+

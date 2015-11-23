@@ -9,13 +9,12 @@
           <md-icon md-font-library="material-icons">menu</md-icon>
         </md-button>
         <h2>
-          <span>List appointment</span>
+          <span>Appointment List</span>
         </h2>
       </div>
     </md-toolbar>
-    <md-content ng-controller="calendarCtrl" class="md-padding">
+    <md-content ng-controller="appointmentListCtrl" ng-init="init()" class="md-padding">
       <div class="h2-th">ตารางนัดหมายกับผู้ป่วย</div>
-      <h2 class="md-title">เลือกวันเพื่อดูรายละเอียดการนัดหมาย</h2>
       <calendar-md md-accent flex layout layout-fill
         calendar-direction="direction"
         on-prev-month="prevMonth"
@@ -27,7 +26,7 @@
        data-start-month=""
        data-start-year=""
        tooltips="tooltips"
-        day-format="dayFormat"
+        day-format="'d'"
        day-label-format="'EEE'"
        day-label-tooltip-format="'EEEE'"
        day-tooltip-format="'fullDate'"
@@ -36,55 +35,33 @@
       </calendar-md>
 
       <br>
-      <div class="h2-th">ตารางนัดหมาย วันที่ 20 พ.ย. 2558</div>
 
-      <md-data-table-container>
-        <table md-data-table>
-          <thead>
-            <tr>
-              <th>เวลา</th>
-              <th>น้ำหนัก</th>
-              <th>ส่วนสูง</th>
-              <th>ความดันโลหิต(บน)</th>
-              <th>ความดันโลหิต(ล่าง)</th>
-              <th>อัตราการเต้นหัวใจ</th>
-              <th>อุณหภูมิร่างกาย</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>20/5/58</td>
-              <td>53</td>
-              <td>170</td>
-              <td>120</td>
-              <td>80</td>
-              <td>60</td>
-              <td>36</td>
-            </tr>
-            <tr>
-              <td>20/5/58</td>
-              <td>53</td>
-              <td>170</td>
-              <td>120</td>
-              <td>80</td>
-              <td>60</td>
-              <td>36</td>
-            </tr>
-            <tr>
-              <td>20/5/58</td>
-              <td>53</td>
-              <td>170</td>
-              <td>120</td>
-              <td>80</td>
-              <td>60</td>
-              <td>36</td>
-            </tr>
-          </tbody>
-        </table>
-      </md-data-table-container>
+      <div ng-show="selectedDate">
+        <div class="h2-th">ตารางนัดหมาย วันที่ {{ selectedDate | date:'dd-MM-yyyy' }}</div>
+        <md-data-table-container>
+          <table md-data-table>
+            <thead>
+              <tr>
+                <th>เวลา</th>
+                <th>ชื่อผู้ป่วย</th>
+                <th>อาการ</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="appointment in appointmentList">
+                <td>{{ appointment.time }}</td>
+                <td>{{ appointment.patient }}</td>
+                <td>{{ appointment.symptom }}</td>
+                <td><md-button class="md-primary md-raised" href="#"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
+              </tr>
+            </tbody>
+          </table>
+        </md-data-table-container>
+      </div>
+
+      <h2 class="md-title" ng-hide="selectedDate">กรุณาเลือกวันเพื่อดูรายละเอียดการนัดหมาย</h2>
 
       </md-content>
-
-      
 
 </md-content>

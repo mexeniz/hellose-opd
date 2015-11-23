@@ -35,7 +35,7 @@ calendar-md {
       calendar-md md-content > md-content.calendar > :not(:first-child) > *:hover {
         background: rgba(0, 0, 0, 0.04); }
       calendar-md md-content > md-content.calendar > :not(:first-child) > *.disabled {
-        color: rgba(0, 0, 0, 0.3);
+        color: rgba(1, 0, 0, 0.3);
         pointer-events: none;
         cursor: auto; }
       calendar-md md-content > md-content.calendar > :not(:first-child) > *.active {

@@ -215,6 +215,181 @@ app.factory('medicines_fac', ['$http', function($http){
 	  return o;
 	}]);
 
+app.factory('appointment_fac', ['$http', function($http){
+	var o = {
+		appointmentList: [],
+		busyDate: []
+	};
+
+	o.getCalendar = function(month)
+	{
+		var bd = [];
+		angular.copy(bd, o.busyDate);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+	};
+
+	o.getAppointmentListByDate = function(date)
+	{
+		console.log('appointment_fac getAppointmentListByDate ' + date);
+		var appList = [
+			{
+				_id: 0, time: '9.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 1, time: '10.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 2, time: '11.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 3, time: '12.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			},
+			{
+				_id: 4, time: '13.30', patient: 'ติวเคอร์ อิอิ', symptom: 'หิวๆๆๆๆๆ'
+			}
+		];
+
+		angular.copy(appList, o.appointmentList);
+	};
+
+  	return o;
+}]);
+
+app.factory('roundward_fac', ['$http', '$timeout', function($http, $timeout){
+	var o = {
+		roundwardList: [],
+		roundwardCache: {}
+	};
+
+	var getKey = function(date, time)
+	{
+		return date.getDate() + ' ' + date.getMonth() + ' ' + date.getFullYear() + ' ' + time;
+	};
+
+	o.getCalendar = function(month, year, callback)
+	{
+		console.log('Getting calendar ' + year + ' ' + month);
+		/*var rwList = [
+			{_id: 0, date: new Date(year, month, 1, 0, 0, 0, 0), time: 'AM'},
+			{_id: 1, date: new Date(year, month, 2, 0, 0, 0, 0), time: 'AM'},
+			{_id: 2, date: new Date(year, month, 3, 0, 0, 0, 0), time: 'PM'},
+			{_id: 3, date: new Date(year, month, 4, 0, 0, 0, 0), time: 'AM'},
+			{_id: 4, date: new Date(year, month, 4, 0, 0, 0, 0), time: 'PM'}
+		];*/
+		
+
+		$http.post('/appointment/getRoundward', { month: month, year: year }).success(function(rwList){
+			
+			for(var i in rwList)
+			{
+				var roundward = rwList[i];
+				roundward.date = new Date(roundward.date);
+				var key = getKey(roundward.date, roundward.time);
+				o.roundwardCache[key] = roundward;
+			}
+
+			angular.copy(rwList, o.roundwardList);
+			
+
+
+			console.log(o.roundwardList);
+			callback();
+		});
+
+		/*$timeout(function() {
+			angular.copy(rwList, o.roundwardList);
+			
+			for(var i in rwList)
+			{
+				var roundward = rwList[i];
+				var key = getKey(roundward.date, roundward.time);
+				o.roundwardCache[key] = roundward;
+			}
+
+			console.log(o.roundwardList);
+			callback();
+		},2000);*/
+		
+	};
+
+	o.getRoundwardCache = function(date, time)
+	{
+		var key = getKey(date, time);
+		return o.roundwardCache[key];
+	};
+
+	o.addRoundward = function(date, time, callback)
+	{
+		/*var rwInfo = {
+			_id: o.roundwardList.length + 1,
+			date: date,
+			time: time
+		};*/
+		$http.post('/appointment/addRoundward', { date: date, time: time }).success(function(data)
+		{
+			data.date = new Date(data.date);
+			console.log('added roundward');
+			console.log(data);
+			o.roundwardList.push(data);
+			o.roundwardCache[getKey(data.date, data.time)] = data;
+			callback(data.date);
+		});
+
+		/*$timeout(function() {
+			console.log('added roundward');
+			console.log(rwInfo);
+			o.roundwardList.push(rwInfo);
+			o.roundwardCache[getKey(rwInfo.date, rwInfo.time)] = rwInfo;
+			callback(date);
+		},2000);*/
+	};
+
+	o.cancelRoundward = function(rwId, callback)
+	{
+
+		$http.post('/appointment/cancelRoundward', { rwId: rwId }).success(function(data)
+		{
+			for(var i in o.roundwardList)
+			{
+				var rw = o.roundwardList[i];
+				if(rw._id === rwId)
+				{
+					console.log('deleted roundward id = ' + rwId);
+					o.roundwardList.splice(i, 1);
+					o.roundwardCache[getKey(rw.date, rw.time)] = null;
+					callback(rw);
+					return;
+				}
+			}
+
+		});
+
+		/*$timeout(function() {
+			
+
+			for(var i in o.roundwardList)
+			{
+				var rw = o.roundwardList[i];
+				if(rw._id === rwId)
+				{
+					console.log('deleted roundward id = ' + rwId);
+					o.roundwardList.splice(i, 1);
+					o.roundwardCache[getKey(rw.date, rw.time)] = null;
+					callback(rw);
+					return;
+				}
+			}
+
+			
+		},2000);*/
+	};
+
+  	return o;
+}]);
+
 app.controller('ListCtrl', [
 	'$scope',
 	'patients_fac',
@@ -559,19 +734,20 @@ app.controller('symptomCtrl', function($scope, $mdSidenav) {
                     console.log($scope.department + $scope.symptoms);
                 };
              });
-app.controller('calendarCtrl', function($scope) {
+app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', function($scope, $filter, appointment_fac) {
 	$scope.dayFormat = "d";
 	$scope.selectedDate = null;
-	$scope.availableSlot =[
-		{id:"1",time:"9.30-9.40"},
-		{id:"2",time:"9.40-9.50"},
-		{id:"3",time:"9.50-10.00"},
-		{id:"4",time:"10.00-10.10"},
-		{id:"5",time:"10.10-10.20"},
-		{id:"6",time:"10.20-10.30"},
-		{id:"7",time:"10.30-10.40"}
-	];
+	$scope.tooltips = true;
+
 	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+	$scope.appointmentList = appointment_fac.appointmentList;
+	$scope.busyDate = appointment_fac.busyDate;
+
+	$scope.init = function()
+	{
+		appointment_fac.getCalendar(11);
+	};
+
 	$scope.setDirection = function(direction) {
 		$scope.direction = direction;
 		$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
@@ -579,31 +755,231 @@ app.controller('calendarCtrl', function($scope) {
 
     $scope.dayClick = function(date) {
       $scope.msg = "You clicked " + date;
-      console.log($scope.msg);
+      $scope.selectedDate = date;
+      appointment_fac.getAppointmentListByDate(date);
     };
 
     $scope.prevMonth = function(data) {
       $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+      appointment_fac.getCalendar(data.month);
     };
 
     $scope.nextMonth = function(data) {
       $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+      appointment_fac.getCalendar(data.month);
     };
 
-    $scope.tooltips = true;
+    
     $scope.setDayContent = function(date) {
-    	var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-            "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-           "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
-    	// To select a single date, make sure the ngModel is not an array.
-        if (dateList.indexOf(date+"") > -1){
+    	var d = $filter("date")(date, "d");
+        if ($scope.busyDate.indexOf(parseInt(d)) > -1){
+
           return "<i class='material-icons'>assignment_turned_in</i>";
           }
         else{
           return "<p></p>";
         }
     };
-});
+
+}]);
+
+app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'roundward_fac', 'CalendarData', function($scope, $filter, $mdDialog, $http, roundward_fac, CalendarData) {
+	$scope.dayFormat = "d";
+	$scope.selectedDate = null;
+	$scope.showDate = null;
+	$scope.tooltips = true;
+
+	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+	$scope.roundwardList = roundward_fac.roundwardList;
+	$scope.roundwardCache = roundward_fac.roundwardCache;
+
+	$scope.loadingCount = 0;
+
+	$scope.selectedRoundward = [];
+	$scope.canceledRoundward = null;
+
+	$scope.setCalendar = function()
+	{
+		$scope.roundwardList.forEach(function(roundwardObj){
+			CalendarData.setDayContent(roundwardObj.date, "<i class='material-icons'>event</i>");
+		});
+		$scope.loadingCount--;
+	};
+
+	$scope.init = function()
+	{
+		var date = new Date();
+		$scope.loadingCount++;
+		roundward_fac.getCalendar(date.getMonth(), date.getFullYear(), $scope.setCalendar);
+	};
+
+	$scope.setDirection = function(direction) {
+		$scope.direction = direction;
+		$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
+	};
+
+    $scope.dayClick = function(date) {
+      $scope.msg = "You clicked " + date;
+
+      // Prevent selecting date while loading
+      console.log($scope.loadingCount);
+      if($scope.loadingCount > 0) { return; }
+
+      $scope.showDate = date;
+
+      var rwAM = roundward_fac.getRoundwardCache(date, 'AM');
+      var rwPM = roundward_fac.getRoundwardCache(date, 'PM');
+
+      $scope.selectedRoundward = [];
+      if(rwAM) { $scope.selectedRoundward.push(rwAM); }
+      if(rwPM) { $scope.selectedRoundward.push(rwPM); }
+
+      console.log($scope.selectedRoundward);
+      
+    };
+
+    $scope.prevMonth = function(data) {
+      $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+      $scope.loadingCount++;
+  		roundward_fac.getCalendar(data.month - 1, data.year, $scope.setCalendar);
+    };
+
+    $scope.nextMonth = function(data) {
+      $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+      $scope.loadingCount++;
+		roundward_fac.getCalendar(data.month - 1, data.year, $scope.setCalendar);
+    };
+
+    
+    $scope.setDayContent = function(date) {
+    	return "<p></p>";
+    };
+
+    $scope.successAddRoundward = function(date)
+    {
+    	CalendarData.setDayContent(date, "<i class='material-icons'>event</i>");
+    	$scope.loadingCount--;
+    	$scope.dayClick(date);
+    };
+
+    $scope.successCancelRoundward = function(rwInfo)
+    {
+    	var rwAM = roundward_fac.getRoundwardCache(rwInfo.date, 'AM');
+      	var rwPM = roundward_fac.getRoundwardCache(rwInfo.date, 'PM');
+
+      	console.log(rwAM);
+      	console.log(rwPM);
+
+      	if(rwAM || rwPM)
+      	{
+      		CalendarData.setDayContent(rwInfo.date, "<i class='material-icons'>event</i>");
+      	}
+      	else
+      	{
+      		CalendarData.setDayContent(rwInfo.date, "<p></p>");
+      	}
+    	
+    	$scope.loadingCount--;
+    	$scope.dayClick(rwInfo.date);
+    };
+
+    var addDialogCtrl = function ($scope, $mdDialog, rwTimes) {
+
+		$scope.rwTimes = rwTimes;
+
+	    $scope.selectedTime = $scope.rwTimes[0];
+
+	  $scope.hide = function() {
+	    $mdDialog.hide();
+	  };
+	  $scope.cancel = function() {
+	    $mdDialog.cancel();
+	  };
+	  $scope.answer = function(selected) {
+	    $mdDialog.hide(selected);
+	  };
+	};
+
+	var cancelDialogCtrl = function ($scope, $mdDialog, rwInfo) {
+
+		$scope.rwInfo = rwInfo;
+
+	  $scope.cancel = function() {
+	    $mdDialog.cancel();
+	  };
+	  $scope.confirm = function() {
+	    $mdDialog.hide();
+	  };
+	};
+
+    $scope.showAddDialog = function(ev) {
+    	var rwTimes = [];
+    	if($scope.selectedRoundward.length === 0)
+    	{
+    		// Show both AM and PM options
+    		rwTimes = [
+	    		{ value: 'AM', th: 'เช้า' },
+	    		{ value: 'PM', th: 'บ่าย' }
+	    	];
+    	}
+    	else if($scope.selectedRoundward.length === 1)
+    	{
+    		// Show only another option that wasn't added
+    		rwTimes.push($scope.selectedRoundward[0].time === 'AM' ? { value: 'PM', th: 'บ่าย' } : { value: 'AM', th: 'เช้า' });
+    	}
+    	else
+    	{
+    		// Cannot add!
+    		return;
+    	}
+
+		$mdDialog.show({
+		  controller: addDialogCtrl,
+		  locals: { 'rwTimes': rwTimes },
+		  templateUrl: '/dialog/addRoundward.html',
+		  parent: angular.element(document.body),
+		  targetEvent: ev,
+		  clickOutsideToClose:true
+		})
+	    .then(function(time) {
+	      var rwInfo = {
+	      	date: $scope.showDate,
+	      	time: time
+	      };
+	      console.log(rwInfo);
+
+	      $scope.loadingCount++;
+	      roundward_fac.addRoundward($scope.showDate, time, $scope.successAddRoundward);
+
+	    }, function() {
+
+	    });
+	};
+
+	$scope.showCancelDialog = function(ev, rwInfo) {
+		console.log(rwInfo);
+		$scope.canceledRoundward = rwInfo;
+		$mdDialog.show({
+		  controller: cancelDialogCtrl,
+		  locals: { 'rwInfo': rwInfo },
+		  templateUrl: '/dialog/cancelRoundward.html',
+		  parent: angular.element(document.body),
+		  targetEvent: ev,
+		  clickOutsideToClose:true
+		})
+	    .then(function() {
+
+	      $scope.loadingCount++;
+	      	console.log($scope.canceledRoundward);
+	      roundward_fac.cancelRoundward($scope.canceledRoundward._id, $scope.successCancelRoundward);
+
+	    });
+	};
+
+}]);
+
+
+
 app.directive('modal', function () {
     return {
       template: '<div class="modal fade">' +

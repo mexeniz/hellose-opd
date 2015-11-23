@@ -34,6 +34,10 @@ router.get('/doctor/appointment', function(req, res, next) {
   res.render('material_doctor/list_appointment');
 });
 
+router.get('/doctor/roundward', function(req, res, next) {
+  res.render('material_doctor/roundward_schedule');
+});
+
 /*
 PHARMACIST
 */
@@ -47,4 +51,19 @@ router.get('/pharmacist/profile', function(req, res, next) {
 
 router.get('/pharmacist/prescription', function(req, res, next) {
   res.render('material_pharmacist/list_prescription');
+});
+/*
+STAFF
+*/
+router.get('/staff/', function(req, res, next) {
+  res.render('material_staff/home');
+});
+
+router.get('/staff/import_roundward', function(req, res, next) {
+  res.render('material_staff/import_roundward');
+});
+
+router.get('/staff/patient', function(req, res, next) {
+  res.render('material_staff/list_patient');
+  origin/waterfall-init
 });
