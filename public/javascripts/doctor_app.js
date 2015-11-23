@@ -887,7 +887,7 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
 
 		$scope.rwTimes = rwTimes;
 
-	    $scope.selectedTime = $scope.rwTimes[0];
+	    $scope.selectedTime = null;
 
 	  $scope.hide = function() {
 	    $mdDialog.hide();
