@@ -154,18 +154,105 @@ router.get('/roundward/add', function(req, res, next) {
 });
 
 // Add roundward post
-router.post('/roundward/add', function(req, res, next) {
+router.post('/addRoundward', function(req, res, next) {
     if(req.user && req.session.role == '2') {
-      RoundWardControl.addRoundward(req.body,function(err,result){
+      var roundward = {date:req.body['date'],
+        time:req.body['time']};
+      var userId = req.user._id; //GetFromSession
+      RoundWardControl.addRoundWard(userId,roundward,function(err,result){
         if(err){
-          return next(err);
-        }else{
-          return res.json(result);
+          return next(err); 
         }
+        return res.json(result);
       });
     }
-    return res.json({message: "Error page not found"});
 });
+
+//DELETE ROUNDWARD FROM A SINGLE DOCTOR
+router.post('/cancelRoundward', function(req,res,next){
+  if(req.user && req.session.role === '2')
+  {
+    var userId = req.user._id; //GetFromSession
+    var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
+    RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
+});
+
+//GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
+//BUSY ROUNDWARD WILL NOT BE FETCHED
+router.post('/getAvailableDateTime', function(req,res,next){
+  if(req.user && req.session.role !== '4' && req.session.role !== '5')
+  {
+    var doctor_id = null;
+    if(req.session.role === '1' || req.session.role === '3') // Patient or staff
+    {
+      doctor_id = req.body['doctorid'];
+    }
+    else if(req.session.role === '2') // Doctor
+    {
+      doctor_id = req.user._id;
+    }
+    var month = req.body['month'];
+    var year = req.body['year'];
+
+    RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
+      if(err){
+        return next(err);
+      }else{    
+        var returning = {
+          'doctor_id' : doctor_id,
+          'month' : month,
+          'data': result
+        };
+        return res.json(returning);
+      }
+    });
+  }
+  
+});
+
+//GET MONTHLY ROUNDWARD OF THE ENTIRE DEPARTMENT
+router.post('/getDepartmentFreeMonth',function(req,res,next){
+  if(req.user && (req.session.role === '1' || req.session.role === '3')) // Login & patient or staff
+  {
+    //Query Free Slot in a Month with Every Doctor in that Department
+    var month = req.body['month'];
+    var department = req.body['department'];
+    var year = req.body['year'];
+    RoundWardControl.getDepartmentFreeMonth(month,year,department,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
+});
+
+//GET MONTHLY ROUNDWARD OF A DOCTOR
+router.post('/getRoundward',function(req,res,next){
+  if(req.user && (req.session.role === '2' || req.session.role === '3')) // Login & doctor or staff
+  {
+    var month = req.body['month'];
+    var year = req.body['year'];
+    var user_id = req.session.role === '2' ? req.user._id : req.body['doctorid'];
+    //FIX ME
+    RoundWardControl.getRoundward(user_id,month,year,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
+});
+  
 
 // Create appointment
 router.get('/patient/:patientId/create_appointment', function(req, res, next) {
@@ -380,4 +467,21 @@ router.post('/roundward/import', function(req, res, next) {
     res.render('staff/import_roundward.ejs');
   }
   res.redirect('/login');
+});
+
+//IMPORT ROUNDWARD FROM A CSV FILE
+router.post('/importRoundward', function(req,res,next){
+  if(req.user && req.session.role === '3') // Staff
+  {
+    //Use This Place (Router) to Split File
+    var longStream = req.body;
+    var startDate = new Date(longStream.year,longStream.month);
+    RoundWardControl.importRoundWard(startDate,longStream.data,function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        return res.json(result);
+      }
+    });
+  }
 });
