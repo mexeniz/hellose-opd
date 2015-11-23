@@ -58,7 +58,7 @@ app.controller('registerCtrl', [
               }
               else if(data.status === 'failed')
               {
-                $scope.regMessage = 'พบข้อผิดพลาด';
+                $scope.regMessage = data.message[0];
               }
             });
           };

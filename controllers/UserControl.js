@@ -65,7 +65,7 @@ module.exports.register = function(req, username, password, done) {
       // find a user in Mongo with provided username or ssn
       User.find(function(err,userList){
       	  var n = userList.length ;
-		  User.findOne({ $or:[ { 'username': username }, { 'ssn': ssn } ] }, function(err, user) {
+		  User.findOne({ $or:[ { 'username': username }, { 'ssn': ssn }, { 'email': req.body.email } ] }, function(err, user) {
 		    // In case of any error return
 		    if (err){
 		      console.log('Error in SignUp: '+err);
@@ -80,7 +80,7 @@ module.exports.register = function(req, username, password, done) {
 					if(patient)
 					{
 						return done(null, false, 
-				 		req.flash('message','User Already Exists'));
+				 		req.flash('message', 'มีผู้ใช้บัญชีนี้แล้ว'));
 					}
 					else // Not found patient data
 					{
@@ -100,7 +100,7 @@ module.exports.register = function(req, username, password, done) {
 					    newPatient.save(function(err) {
 					    	if (err){
 					          console.log('Error in Saving patient: '+err);  
-					          throw err;
+					          req.flash('message','Error in Saving patient: '+err);
 					        }
 					    	console.log('User Registration successful');    
 					    	// Set role as patient
@@ -131,14 +131,14 @@ module.exports.register = function(req, username, password, done) {
 		      	newUser.save(function(err) {
 		        if (err){
 		          console.log('Error in Saving user: '+err);  
-		          throw err;  
+		          return done(null, false, req.flash('message', 'Error in Saving user: '+err));
 		        }
 
 		        // Count all patient number
 		        Patient.count({}, function(err, n) {
 		        	if(err) {
 		        		console.log('Error in Saving user: '+err);  
-		          		throw err;  
+		          		req.flash('message','Error in Saving user: '+err);
 		        	}
 
 		        	// create patient data
@@ -159,7 +159,7 @@ module.exports.register = function(req, username, password, done) {
 		            newPatient.save(function(err) {
 		            	if (err){
 			              console.log('Error in Saving patient: '+err);  
-			              throw err;
+			              req.flash('message','Error in Saving patient: '+err);
 			            }
 		            	console.log('User Registration successful');
 		            	// Set role as patient

@@ -61,27 +61,14 @@ router.get('/register', function(req, res){
 });
 
 router.post('/register', function(req, res, next) {
-  var e = req.body.email ;
-  User.findOne({email: e}).exec(function(err, user) {
-    if(err) {
-      return res.json(500, {
-          message: 'Error getting patient.'
+  passport.authenticate('register', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) { return res.json({status:'failed', message: req.flash('message')}); }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+          return res.json({status:'success'});
       });
-    }
-    if(!user) {
-          passport.authenticate('register', function(err, user, info) {
-          if (err) { return next(err); }
-          if (!user) { return res.json({status:'failed'}); }
-          req.logIn(user, function(err) {
-            if (err) { return next(err); }
-              return res.json({status:'success'});
-          });
-          })(req, res, next);
-    }else{
-      console.log("Dup");
-      return res.json({ status:'Duplicate email!'});
-    }
-});
+    })(req, res, next);
 });
 /* GET Reset Password Page */
 router.get('/reset_password', function(req, res){
