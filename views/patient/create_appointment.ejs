@@ -71,7 +71,7 @@
 
         </div>
         <md-content layout="row" layout-align="center center">
-        <md-button type="submit" ng-disabled="!(selectedType === 'Department' && selectedDepartment) && !(selectedType === 'Doctor' && selectedDoctor)" class="md-raised md-primary">Next</md-button>
+        <md-button type="submit" ng-disabled="!(selectedType === 'Department' && selectedDepartment) && !(selectedType === 'Doctor' && selectedDoctor)" class="md-raised md-primary" href="/appointment/confirm_{{ selectedType }}/{{ selectedType === 'Department' ? selectedDepartment : selectedDoctor._id }}">Next</md-button>
         </md-content>
       </form>
       </md-content>

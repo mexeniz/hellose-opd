@@ -228,7 +228,12 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 		appointmentCache: {}
 	};
 
-	o.getCalendar = function(month, year, callback)
+	var getKey = function(doctorId, month, year)
+	{
+		return doctorId + ' ' + month + ' ' + year;
+	}
+
+	o.getCalendar = function(doctorId, month, year, callback)
 	{
 		console.log('Getting calendar ' + year + ' ' + month);
 		/*var rwList = [
@@ -240,8 +245,11 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 		];*/
 		
 
-		$http.post('/appointment/getRoundward', { month: month, year: year }).success(function(rwList){
+		$http.post('/getAvailableDateTime', { doctor_id: doctorId, month: month, year: year }).success(function(result){
 			
+			console.log(result);
+
+			/*
 			for(var i in rwList)
 			{
 				var roundward = rwList[i];
@@ -254,7 +262,7 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 			
 
 
-			console.log(o.roundwardList);
+			console.log(o.roundwardList);*/
 			callback();
 		});
 
@@ -893,7 +901,7 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
       {id:"5",name:"Mma",department:"Mech"},
     ];
     $scope.submit = function(){
-        console.log($scope.department + $scope.symptoms);
+        
     };
 
 
@@ -909,23 +917,30 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
  }]);
 
-app.controller('calendarCtrl', function($scope) {
-          $scope.dayFormat = "d";
-          $scope.selectedDate = null;
-          $scope.availableSlot =[
-            {id:"1",time:"9.30-9.40"},
-            {id:"2",time:"9.40-9.50"},
-            {id:"3",time:"9.50-10.00"},
-            {id:"4",time:"10.00-10.10"},
-            {id:"5",time:"10.10-10.20"},
-            {id:"6",time:"10.20-10.30"},
-            {id:"7",time:"10.30-10.40"}
-          ];
-          $scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
-          $scope.setDirection = function(direction) {
-            $scope.direction = direction;
-            $scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
-          };
+app.controller('confirmAppointmentCtrl', ['$scope', 'appointment_fac', function($scope, appointment_fac) {
+		$scope.dayFormat = "d";
+		$scope.selectedDate = null;
+		$scope.availableSlot =[
+			{id:"1",time:"9.30-9.40"},
+			{id:"2",time:"9.40-9.50"},
+			{id:"3",time:"9.50-10.00"},
+			{id:"4",time:"10.00-10.10"},
+			{id:"5",time:"10.10-10.20"},
+			{id:"6",time:"10.20-10.30"},
+			{id:"7",time:"10.30-10.40"}
+		];
+		$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+		
+		$scope.init = function(doctorId)
+		{	
+			var currentDate = new Date();
+			appointment_fac.getCalendar(doctorId, currentDate.getMonth(), currentDate.getFullYear(), () => {});
+		}
+
+		$scope.setDirection = function(direction) {
+			$scope.direction = direction;
+			$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
+		};
 
         $scope.dayClick = function(date) {
           $scope.msg = "You clicked " + date;
@@ -953,6 +968,7 @@ app.controller('calendarCtrl', function($scope) {
               return "<p></p>";
             }
         };
-              });
+
+}]);
 
 })();

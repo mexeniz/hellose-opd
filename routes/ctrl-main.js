@@ -138,7 +138,19 @@ router.get('/patientViewAppointment', function(req,res) {
 
 // Create appointment
 router.get('/appointment/create', function(req, res, next) {
-  res.render('patient/create_appointment');
+  if(req.user && req.session.role === '1')
+  {
+    res.render('patient/create_appointment');
+  }
+});
+
+// Create appointment
+router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
+  if(req.user && req.session.role === '1')
+  {
+    var doctorid = req.params.doctorId;
+    res.render('patient/confirm_appointment', { doctorid: doctorid });
+  }
 });
 
 // Create appointment post
@@ -194,22 +206,29 @@ router.post('/cancelRoundward', function(req,res,next){
 //GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
 //BUSY ROUNDWARD WILL NOT BE FETCHED
 router.post('/getAvailableDateTime', function(req,res,next){
-  var doctor_id = req.body['doctorid'];
-  var month = req.body['month'];
-  var year = req.body['year'];
+  if(req.user && (req.session.role === '1' || req.session.role === '2' || req.session.role === '3'))
+  {
 
-  RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
-    if(err){
-      return next(err);
-    }else{    
-      var returning = {
-        'doctor_id' : doctor_id,
-        'month' : month,
-        'data': result
-      };
-      return res.json(returning);
-    }
-  });
+    var doctor_id = req.session.role === '2' ? req.user._id : req.body['doctor_id']; // If doctor, use user id of doctor, else must pass doctorid(userid of doctor)
+    var month = req.body['month'];
+    var year = req.body['year'];
+
+    console.log(doctor_id + month + year);
+
+    RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
+      if(err){
+        return next(err);
+      }else{    
+        var returning = {
+          'doctor_id' : doctor_id,
+          'month' : month,
+          'data': result
+        };
+        return res.json(returning);
+      }
+    });
+  }
+
 });
 
 
