@@ -37,14 +37,13 @@ app.controller('registerCtrl', [
 
     // Validate form and show modal
     $scope.checkRegister = function(ev){
-      console.log("check!");
       if($scope.regData.password !== $scope.regData.repeatPassword)
       {
-        console.log("not Match");
         $scope.pwNotMatch = true;
         return;
       }
       var confirmCtrl = function($scope, regData) {
+          $scope.regMessage = "" ;
           $scope.regData = regData ;
           $scope.cancel = function() {
             $mdDialog.cancel();
@@ -52,15 +51,14 @@ app.controller('registerCtrl', [
           $scope.confirmRegister = function()
           {
             $http.post('/register', $scope.regData).success(function(data) {
-              console.log(data);
               if(data.status === 'success')
               {
-                $scope.regMessage = 'Successfully registered!';
+                $scope.regMessage = 'ลงทะเบียนสำเร็จ';
                 $window.location.href = "/home" ;
               }
               else
               {
-                $scope.regMessage = 'Try again!';
+                $scope.regMessage = 'Email ถูกใช้ลงทะเบียนไปแล้ว';
               }
             });
           };
@@ -76,8 +74,9 @@ app.controller('registerCtrl', [
       .then(function(answer) {
         //Do something after close dialog
         //Switch to another page
-      }, function() {
-      });
+        $window.location.href = "/home" ;
+      }
+    );
 
     };
 
@@ -96,15 +95,17 @@ app.controller('registerCtrl', [
     {
       $scope.showConfirmRegModal = false;
       $http.post('/register', $scope.regData).success(function(data) {
-        console.log(data);
+
         if(data.status === 'success')
         {
-          $scope.regMessage = 'Successfully registered!';
-          $window.location.href = "/home" ;
+          $scope.regMessage = 'ลงทะเบียนสำเร็จ';
+          setTimeout(function(){
+              $mdDialog.hide() ;
+          },2000);
         }
         else
         {
-          $scope.regMessage = 'Try again!';
+          $scope.regMessage = 'พบข้อผิดพลาด กรุณาตรวจสอบข้อมูใหม่';
         }
       });
     };
@@ -135,7 +136,7 @@ app.controller('resetPasswordCtrl', ['$scope','$window', '$http', '$mdDialog',
       $http.post('/reset_password', {email : $scope.email}).success(function(res) {
           var text = "" ;
           if (res.status === 'success'){
-            text = "ทำการรีเซ็ตรหัสผ่านสำเร็จ<br>กรุณาตรวจสอบEmailที่ได้รับ";
+            text = "ทำการรีเซ็ตรหัสผ่านสำเร็จ กรุณาตรวจสอบEmailที่ได้รับ";
           }else{
             text = "ไม่พบEmailนี้ในระบบ" ;
           }

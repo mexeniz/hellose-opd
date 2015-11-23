@@ -7,6 +7,7 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
+var User = mongoose.model('User');
 var Middleware = require('../middlewares/Middleware');
 var UserControl = require('../controllers/UserControl.js');
 var RoundWardControl = require('../controllers/RoundWardControl.js');
@@ -59,14 +60,29 @@ router.get('/register', function(req, res){
 });
 
 router.post('/register', function(req, res, next) {
-  passport.authenticate('register', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.json({status:'failed'}); }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      return res.json({status:'success'});
-    });
-  })(req, res, next);
+  var e = req.body.email ;
+  User.findOne({email: e}).exec(function(err, user) {
+              if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+              }
+              console.log("Test");
+              if(!user) {
+                console.log("Test2");
+                    passport.authenticate('register', function(err, user, info) {
+                    if (err) { return next(err); }
+                    if (!user) { return res.json({status:'failed'}); }
+                    req.logIn(user, function(err) {
+                      if (err) { return next(err); }
+                        return res.json({status:'success'});
+                    });
+                    })(req, res, next);
+              }else{
+                console.log("Dup");
+                return res.json({ status:'Duplicate email!'});
+              }
+          });
 });
 /* GET Reset Password Page */
 router.get('/reset_password', function(req, res){
@@ -74,7 +90,8 @@ router.get('/reset_password', function(req, res){
 });
 
 router.post('/reset_password', function(req, res, next) {
-  console.log(req.body.email);
+  var email = req.body.email ;
+  // Do something to reset password
   res.json({status:'success'});
 });
 
