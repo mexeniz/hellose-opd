@@ -9,6 +9,8 @@ var MedicalRecord = mongoose.model('MedicalRecord');
 var Prescription = mongoose.model('Prescription');
 var Disease = mongoose.model('Disease');
 
+var PatientControl = require('../controllers/PatientControl');
+
 /* GET patients page. */
 router.get('/', function(req, res, next) {
   res.render('patients/index');
@@ -38,6 +40,16 @@ router.post('/insert', function(req, res, next) {
   });
 });
 
+router.put('/update/:patid', function(req, res, next) {
+  var patientId = req.params.patid;
+  var newPatientInfo = req.body;
+
+  PatientControl.editPatientInfo(patientId, newPatientInfo, function(err, result) {
+    if(err) { next(err); }
+    res.json(result);
+  });
+});
+
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
@@ -56,7 +68,7 @@ router.get('/info/:patid', function(req, res, next) {
                       message: 'Patient not found!'
                   });
               }
-
+              console.log(typeof patient.birthdate);
               // var options = {
               //   path: 'medical_record.diseases',
               //   model: 'Disease'
