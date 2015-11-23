@@ -740,25 +740,41 @@ app.controller('InfoCtrl', [
 	}
 	
 ]);
-app.controller('symptomCtrl', function($scope, $mdSidenav) {
-                $scope.departmentList = [
-                  {id:"10",name:"Comp"},
-                  {id:"11",name:"Elec"},
-                  {id:"12",name:"Chem"},
-                  {id:"13",name:"Civil"},
-                  {id:"14",name:"Mech"},
-                ];
-                $scope.doctorList = [
-                  {id:"1",name:"Santa",department:"Comp"},
-                  {id:"2",name:"Gale",department:"Elec"},
-                  {id:"2",name:"Kirk",department:"Mech"},
-                  {id:"3",name:"Tutor",department:"Mech"},
-                  {id:"4",name:"Mma",department:"Mech"},
-                ];
-                $scope.submit = function(){
-                    console.log($scope.department + $scope.symptoms);
-                };
-             });
+app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$http', function($scope, $q, $timeout, $log, $http) {
+
+	$scope.selectedType = 'Doctor';
+
+    $scope.departmentList = [
+      {name:"Comp"},
+      {name:"Elec"},
+      {name:"Chem"},
+      {name:"Civil"},
+      {name:"Mech"},
+    ];
+    $scope.doctorList = [
+      {id:"1",name:"Santa",department:"Comp"},
+      {id:"2",name:"Gale",department:"Elec"},
+      {id:"3",name:"Kirk",department:"Mech"},
+      {id:"4",name:"Tutor",department:"Mech"},
+      {id:"5",name:"Mma",department:"Mech"},
+    ];
+    $scope.submit = function(){
+        console.log($scope.department + $scope.symptoms);
+    };
+
+
+
+    $scope.querySearch = function (query) {
+      	deferred = $q.defer();
+      	$http.get('/doctor/find/' + query).success(function(data){
+      		deferred.resolve(data);
+      	});
+      	return deferred.promise;
+    };
+
+
+ }]);
+
 app.controller('calendarCtrl', function($scope) {
           $scope.dayFormat = "d";
           $scope.selectedDate = null;

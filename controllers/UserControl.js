@@ -157,3 +157,8 @@ module.exports.register = function(req, username, password, done) {
     // the method in the next tick of the event loop
     process.nextTick(findOrCreateUser);
 };
+
+module.exports.searchDoctor = function(queryString, callback)
+{
+	User.find({firstname: new RegExp(queryString, "i"), isDoctor: true}, callback);
+};

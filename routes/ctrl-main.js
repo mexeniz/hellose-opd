@@ -86,6 +86,17 @@ router.get('/home', function(req, res, next) {
 /* ------------------------------------------------------- */
 // Cannot Determine
 
+/* Find user who is a doctor by name */
+router.get('/doctor/find/:query', function(req, res, next){
+  var query = req.params.query;
+  console.log('query ' + query);
+  UserControl.searchDoctor(query, function(err, result)
+  {
+    if(err) { return next(err); }
+    return res.json(result);
+  });
+});
+
 /* GET import schedule page. */
 router.get('/import_schedule', function(req, res, next) {
   res.render('mockup/import_schedule');
