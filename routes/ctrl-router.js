@@ -205,3 +205,27 @@ router.post('/createAppointment/',function(req,res,next){
 	});
 });
 
+router.post('/getAppointment',function(req,res,next){
+	var userId = req.body['userId'];
+	var month = req.body['month'];
+	var year = req.body['year'];
+	AppointmentControl.getAppointment(userId,month,year,function(err,result){
+		if(err){
+			return next(err);
+		}
+		return res.json(result);
+	});
+
+});
+
+//Trigger When Roundward Is Canceled
+router.post('/cancelAppointment',function(req,res,next){
+	var appId = req.body['appId'];
+	AppointmentControl.cancelAppointment(appId,function(err,result){
+		if(err){
+			return next(err);
+		}
+		return res.json(result);
+	});
+});
+
