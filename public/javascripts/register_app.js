@@ -56,9 +56,9 @@ app.controller('registerCtrl', [
                 $scope.regMessage = 'ลงทะเบียนสำเร็จ';
                 $window.location.href = "/home" ;
               }
-              else
+              else if(data.status === 'failed')
               {
-                $scope.regMessage = 'Email ถูกใช้ลงทะเบียนไปแล้ว';
+                $scope.regMessage = 'พบข้อผิดพลาด';
               }
             });
           };

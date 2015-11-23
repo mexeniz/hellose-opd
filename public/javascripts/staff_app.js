@@ -242,7 +242,7 @@ app.controller('ListCtrl', [
   
 	  	$scope.query = {
 	 	   order: 'patient_id',
-	 	   limit: 3,
+	 	   limit: 5,
 		    page: 1
 		};
 

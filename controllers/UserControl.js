@@ -115,8 +115,6 @@ module.exports.register = function(req, username, password, done) {
 		      // create the user
 		      var newUser = new User();
 		      // set the user's local credentials
-		      console.log("xxxxxxx" +req.body.ssn + " " + ssn);
-		      console.log("zzzzzzz" +req.body.username);
 		      newUser.username = username;
 		      newUser.setPassword(password);
 				newUser.gender = req.body.gender;
@@ -154,7 +152,6 @@ module.exports.register = function(req, username, password, done) {
 						pat_id = '0' + pat_id;
 					}
 
-		            newPatient.ssn = ssn;
 		            newPatient.patient_id = pat_id;
 		            newPatient.blood_type = req.body.blood_type;
 

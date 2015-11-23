@@ -63,27 +63,25 @@ router.get('/register', function(req, res){
 router.post('/register', function(req, res, next) {
   var e = req.body.email ;
   User.findOne({email: e}).exec(function(err, user) {
-              if(err) {
-                return res.json(500, {
-                    message: 'Error getting patient.'
-                });
-              }
-              console.log("Test");
-              if(!user) {
-                console.log("Test2");
-                    passport.authenticate('register', function(err, user, info) {
-                    if (err) { return next(err); }
-                    if (!user) { return res.json({status:'failed'}); }
-                    req.logIn(user, function(err) {
-                      if (err) { return next(err); }
-                        return res.json({status:'success'});
-                    });
-                    })(req, res, next);
-              }else{
-                console.log("Dup");
-                return res.json({ status:'Duplicate email!'});
-              }
+    if(err) {
+      return res.json(500, {
+          message: 'Error getting patient.'
+      });
+    }
+    if(!user) {
+          passport.authenticate('register', function(err, user, info) {
+          if (err) { return next(err); }
+          if (!user) { return res.json({status:'failed'}); }
+          req.logIn(user, function(err) {
+            if (err) { return next(err); }
+              return res.json({status:'success'});
           });
+          })(req, res, next);
+    }else{
+      console.log("Dup");
+      return res.json({ status:'Duplicate email!'});
+    }
+});
 });
 /* GET Reset Password Page */
 router.get('/reset_password', function(req, res){
@@ -166,7 +164,7 @@ router.post('/appointment/create', function(req, res, next) {
 
 // Show roundward
 router.get('/roundward', function(req, res, next) {
-  if(req.user && req.session.role == '2') {
+  if(req.user && req.session.role === '2') {
     res.render('doctor/roundward_schedule');
   }
   res.redirect('/login');
@@ -174,7 +172,7 @@ router.get('/roundward', function(req, res, next) {
 
 // Add roundward
 router.get('/roundward/add', function(req, res, next) {
-  if(req.user && req.session.role == '2') {
+  if(req.user && req.session.role === '2') {
     res.render('doctor/add_roundward');
   }
   res.redirect('/login');
@@ -182,7 +180,7 @@ router.get('/roundward/add', function(req, res, next) {
 
 // Add roundward post
 router.post('/roundward/add', function(req, res, next) {
-    if(req.user && req.session.role == '2') {
+    if(req.user && req.session.role === '2') {
       RoundWardControl.addRoundward(req.body,function(err,result){
         if(err){
           return next(err);
@@ -196,7 +194,7 @@ router.post('/roundward/add', function(req, res, next) {
 
 // Create appointment
 router.get('/patient/:patientId/create_appointment', function(req, res, next) {
-  if(req.user && req.session.role == '2') {
+  if(req.user && req.session.role === '2') {
     res.render('doctor/create_appointment', { patient_id : req.param.patientId });
   }
   res.redirect('/login');
@@ -204,7 +202,7 @@ router.get('/patient/:patientId/create_appointment', function(req, res, next) {
 
 // Create appointment post
 router.post('/patient/:patientId/create_appointment', function(req, res, next) {
-  if(req.user && req.session.role == '2') {
+  if(req.user && req.session.role === '2') {
     res.send('create success');
   }
   res.send('Error page not found');
@@ -216,10 +214,10 @@ router.post('/patient/:patientId/create_appointment', function(req, res, next) {
 // List appointment
 router.get('/appointment', function(req, res, next) {
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/list_appointment');
     }
-    else if(req.session.role == '2') {
+    else if(req.session.role === '2') {
       res.render('doctor/list_appointment');
     }
   }
@@ -232,13 +230,13 @@ router.get('/appointment', function(req, res, next) {
 // Edit appointment
 router.get('/appointment/:appId/edit', function(req, res, next) {
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/edit_appointment');
     }
-    else if(req.session.role == '2') {
+    else if(req.session.role === '2') {
       res.render('doctor/edit_appointment');
     }
-    else if(req.session.role == '3') {
+    else if(req.session.role === '3') {
       res.render('staff/edit_appointment');
     }
   }
@@ -251,10 +249,10 @@ router.get('/appointment/:appId/edit', function(req, res, next) {
 // Edit appointment
 router.post('/appointment/:appId/edit', function(req, res, next) {
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/edit_appointment');
     }
-    else if(req.session.role == '3') {
+    else if(req.session.role === '3') {
       res.render('staff/edit_appointment');
     }
   }
@@ -264,10 +262,10 @@ router.post('/appointment/:appId/edit', function(req, res, next) {
 // View appointment
 router.get('/appointment/:appId', function(req, res, next) {
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/view_appointment');
     }
-    else if(req.session.role == '3') {
+    else if(req.session.role === '3') {
       res.render('staff/view_appointment');
     }
   }
@@ -281,16 +279,16 @@ router.get('/appointment/:appId', function(req, res, next) {
 router.get('/profile', function(req, res, next) {
   // Have to add authenticate
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/view_profile', { patient_id: req.user._id });
     }
-    else if (req.session.role == '3') {
+    else if (req.session.role === '3') {
       res.render('staff/view_profile', { staff_id: req.user._id });
     }
-    else if (req.session.role == '4') {
+    else if (req.session.role === '4') {
       res.render('pharmacist/view_profile', { pharmacist_id: req.user._id });
     }
-    else if (req.session.role == '5') {
+    else if (req.session.role === '5') {
       res.render('nurse/view_profile', { nurse_id: req.user._id });
     }
   }
@@ -302,16 +300,16 @@ router.get('/profile', function(req, res, next) {
 router.get('/profile/edit', function(req, res, next) {
   // Have to add authenticate
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/edit_profile', { patient_id: req.user._id });
     }
-    else if (req.session.role == '3') {
+    else if (req.session.role === '3') {
       res.render('staff/edit_profile', { staff_id: req.user._id });
     }
-    else if (req.session.role == '4') {
+    else if (req.session.role === '4') {
       res.render('pharmacist/edit_profile', { pharmacist_id: req.user._id });
     }
-    else if (req.session.role == '5') {
+    else if (req.session.role === '5') {
       res.render('nurse/edit_profile', { nurse_id: req.user._id });
     }
   }
@@ -322,16 +320,16 @@ router.get('/profile/edit', function(req, res, next) {
 router.post('/profile/edit', function(req, res, next) {
   // Have to add authenticate
   if(req.user) {
-    if(req.session.role == '1') {
+    if(req.session.role === '1') {
       res.render('patient/edit_profile', { patient_id: req.user._id });
     }
-    else if (req.session.role == '3') {
+    else if (req.session.role === '3') {
       res.render('staff/edit_profile', { staff_id: req.user._id });
     }
-    else if (req.session.role == '4') {
+    else if (req.session.role === '4') {
       res.render('pharmacist/edit_profile', { pharmacist_id: req.user._id });
     }
-    else if (req.session.role == '5') {
+    else if (req.session.role === '5') {
       res.render('nurse/edit_profile', { nurse_id: req.user._id });
     }
   }
@@ -344,16 +342,16 @@ router.post('/profile/edit', function(req, res, next) {
 // Show patient profile
 router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
-    if(req.session.role == '2') {
+    if(req.session.role === '2') {
       res.render('doctor/patient_profile', { patient_id : req.param.patientId });
     }
-    else if (req.session.role == '3') {
+    else if (req.session.role === '3') {
       res.render('staff/patient_profile', { patient_id : req.param.patientId });
     }
-    else if (req.session.role == '4') {
+    else if (req.session.role === '4') {
       res.render('pharmacist/patient_profile', { patient_id : req.param.patientId });
     }
-    else if (req.session.role == '5') {
+    else if (req.session.role === '5') {
       res.render('nurse/patient_profile', { patient_id : req.param.patientId });
     }
   }
@@ -365,13 +363,13 @@ router.get('/patient/:patientId', function(req, res, next) {
 // Staff and Pharmacist and Nurse
 router.get('/patient', function(req, res, next) {
   if(req.user) {
-    if(req.session.role == '3') {
+    if(req.session.role === '3') {
       res.render('staff/list_patient');
     }
-    else if(req.session.role == '4') {
+    else if(req.session.role === '4') {
       res.render('pharmacist/list_patient');
     }
-    else if(req.session.role == '5') {
+    else if(req.session.role === '5') {
       res.render('nurse/list_patient');
     }
   }
@@ -382,14 +380,14 @@ router.get('/patient', function(req, res, next) {
 
 // Staff only
 router.get('/patient/:patientId/edit', function(req, res, next) {
-  if(req.user && req.session.role == '3') {
+  if(req.user && req.session.role === '3') {
     res.render('staff/edit_patient_profile');
   }
   res.redirect('/login');
 });
 
 router.post('/roundward/import', function(req, res, next) {
-  if(req.user && req.session.role == '3') {
+  if(req.user && req.session.role === '3') {
     res.render('staff/import_roundward.ejs');
   }
   res.redirect('/login');

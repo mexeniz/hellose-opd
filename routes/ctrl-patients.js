@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
 
 // Warehouse for patient list
 router.get('/store', function(req, res, next) {
-  Patient.find(function(err, patient){
+  Patient.find().populate('userId').exec(function(err, patient){
     // Check if error
     if(err) { return next(err); }
     res.json(patient);
@@ -57,6 +57,7 @@ router.get('/info/:patid', function(req, res, next) {
           .populate('physical_record')
           .populate('medical_record')
           .populate('prescription_record')
+          .populate('userId')
           .exec(function(err, patient) {
               if(err) {
                 return res.json(500, {
@@ -68,7 +69,6 @@ router.get('/info/:patid', function(req, res, next) {
                       message: 'Patient not found!'
                   });
               }
-              console.log(typeof patient.birthdate);
               // var options = {
               //   path: 'medical_record.diseases',
               //   model: 'Disease'
@@ -76,8 +76,6 @@ router.get('/info/:patid', function(req, res, next) {
               
               // Get disease info and return it
               // Patient.populate(patient, options, function (err, patient) {
-                if(err) return next(err);
-
                 var options2 = {
                   path: 'prescription_record.med_dosage_list.medicine',
                   model: 'Medicine'
