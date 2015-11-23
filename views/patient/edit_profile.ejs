@@ -1,0 +1,29 @@
+<!doctype html>
+
+    <%- include ./include/header.ejs %>
+
+    <body ng-app="patients" ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')">
+
+    <%- include ./include/snap_header.ejs %>
+      <div class="row">
+        <div class="col-md-8" >
+          <div class="panel panel-info" style="color: black; width: auto ; font-size: 20px">
+              <div class="panel-heading">
+                <h3 class="panel-title" style="font-size: 30px">Patient's Info</h3>
+              </div>
+                <div class="panel-body">
+                  <div class="row">
+                    <h1>Edit profile</h1>
+                    <p><%= patient_id %></p>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="/javascripts/patients_app.js"></script>
+    <!-- endbuild -->   
+
+  </body>
+</html>
