@@ -138,7 +138,7 @@
               </thead>
               <tbody ng-repeat="physicalRecord in physicalRecordList">
                 <tr>
-                  <td>{{physicalRecord.date}}</td>
+                  <td>{{physicalRecord.date | date : 'medium'}}</td>
                   <td>{{physicalRecord.weight}}</td>
                   <td>{{physicalRecord.height}}</td>
                   <td>{{physicalRecord.blood_pressure}}</td>
@@ -179,9 +179,12 @@
               </thead>
               <tbody ng-repeat="medicalRecord in medicalRecordList">
                 <tr>
-                  <td>{{medicalRecord.date}}</td>
+                  <td>{{medicalRecord.date | date: 'medium'}}</td>
                   <td>{{medicalRecord.doctor}}</td>
-                  <td>{{medicalRecord.diseases}}</td>
+                  <td>
+                    <span ng-repeat="diseaseItem in medicalRecord.diseases">{{diseaseItem}} </span>
+                    <span ng-show="medicalRecord.diseases.length === 0">-</span>
+                  </td>
                   <td>{{medicalRecord.symptoms}}</td>
                   <td>
                     <md-button class="md-fab md-mini md-primary" ng-click="showMedicalRecordForm($event,'edit',medicalRecord)">

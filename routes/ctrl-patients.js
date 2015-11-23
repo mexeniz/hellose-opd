@@ -57,13 +57,13 @@ router.get('/info/:patid', function(req, res, next) {
                   });
               }
 
-              var options = {
-                path: 'medical_record.diseases',
-                model: 'Disease'
-              };
+              // var options = {
+              //   path: 'medical_record.diseases',
+              //   model: 'Disease'
+              // };
               
               // Get disease info and return it
-              Patient.populate(patient, options, function (err, patient) {
+              // Patient.populate(patient, options, function (err, patient) {
                 if(err) return next(err);
 
                 var options2 = {
@@ -77,7 +77,7 @@ router.get('/info/:patid', function(req, res, next) {
                   res.json(patient);
                 });
                 
-              });
+              // });
 
           });
 

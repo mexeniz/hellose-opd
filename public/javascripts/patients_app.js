@@ -85,15 +85,16 @@ app.factory('medical_records_fac', ['$http', function($http){
 
 			// Get disease id only!
 			var newMedRecord = {};
+			// console.log(medRecord);
 			angular.copy(medRecord, newMedRecord);
-			console.log(medRecord.diseases.length);
+			// console.log(medRecord.diseases.length);
 			if(medRecord.diseases.length > 0){newMedRecord.diseases = [];}
 			for(var i = 0; i < medRecord.diseases.length; i++)
 			{
-				console.log(medRecord.diseases[i]._id);
-				newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				// console.log(medRecord.diseases[i]);
+				newMedRecord.diseases.push(medRecord.diseases[i]);
 			}
-
+			console.log(newMedRecord);
 			return $http.post('/records/medical/insert/'+ patient._id , newMedRecord).success(function(data){
 					// If succeeded, push it to display
 		    	patient.medical_record.push(data);

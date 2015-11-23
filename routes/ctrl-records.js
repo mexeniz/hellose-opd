@@ -38,23 +38,23 @@ router.post('/physical/insert/:patient', function(req, res, next) {
 
 // Insert new Medical Record
 router.post('/medical/insert/:patient', function(req, res, next) {
-
+  console.log(req.body);
   var medicalRecord = new MedicalRecord(req.body);
   console.log(medicalRecord);
-  // Save new medical record
+  // // Save new medical record
   medicalRecord.save(function(err, medicalRecord){
-      // Update patient's medical record
+  //     // Update patient's medical record
       if(err){ return next(err); }
       req.patient.medical_record.push(medicalRecord._id);
       req.patient.save(function(err, patient) {
 
       if(err){ return next(err); }
 
-      MedicalRecord.populate(medicalRecord, 'diseases', function(err, medicalRecord) {
+      // MedicalRecord.populate(medicalRecord, 'diseases', function(err, medicalRecord) {
         // Get disease info and return it
-        if(err){ return next(err); }
+        // if(err){ return next(err); }
         res.json(medicalRecord);
-      });
+      // });
       
     });
   });
@@ -114,11 +114,11 @@ router.put('/medical/update/:medid', function(req, res, next) {
               return res.end('No such a medical Record');
           }
 
-          MedicalRecord.populate(medicalrecord, 'diseases', function(err, medicalrecord) {
+          // MedicalRecord.populate(medicalrecord, 'diseases', function(err, medicalrecord) {
             // Get disease info and return it
-            if(err){ return next(err); }
+            // if(err){ return next(err); }
             res.json(medicalrecord);
-          });
+          // });
       });
   });
 });
