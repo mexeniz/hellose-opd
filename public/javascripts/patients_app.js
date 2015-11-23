@@ -659,16 +659,9 @@ app.controller('InfoCtrl', [
 		        };
 		        $scope.submitPrescription = function(prescription){
 				// update in db
-				/*$http.post('complete/' + prescription._id).success(function(){
-					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
-							if(prescription._id === $scope.prescriptionList[i]._id){
-								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
-							}
-						}
-			  		});
-				};*/
-					console.log($scope.prescription) ;
-					$mdDialog.cancel();
+					
+					// console.log($scope.prescription) ;
+					$mdDialog.hide($scope.prescription.med_dosage_list);
 		      	};
 		      	$scope.addMedicine = function(){
 		   			$scope.prescription.med_dosage_list.push($scope.addedMedicine);
@@ -690,9 +683,16 @@ app.controller('InfoCtrl', [
 	      .then(function(answer) {
 	        //Do something after close dialog
 	        //Switch to another page
+	        // console.log(answer);
+	        var medicineList = {patient: $scope.patient._id, doctor: $scope.patient._id, status: 'รอการจ่าย',
+	        		date: new Date(), med_dosage_list: answer};
+        	$http.post('/prescriptions/insert/' + $scope.patient._id, medicineList).success(function(){
+        	
+				$scope.prescriptionList.push(medicineList);
+	  		});
 	      }, function() {
 	      });
-	  	}
+	  	};
 		$scope.showPresDetail = function(ev,prescription){
 		   var detailCtrl = function($scope,prescription,prescriptionList){
 		      	$scope.prescriptionList = prescriptionList;
@@ -703,20 +703,14 @@ app.controller('InfoCtrl', [
 		        };
 		        $scope.completePrescription = function(prescription){
 				// update in db
-				/*$http.post('complete/' + prescription._id).success(function(){
-					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
-							if(prescription._id === $scope.prescriptionList[i]._id){
-								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
-							}
-						}
-			  		});
-				};*/
+				$http.post('/prescriptions/complete/' + prescription._id).success(function(){
 					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
 							if(prescription._id === $scope.prescriptionList[i]._id){
 								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
 							}
 						}
 						$mdDialog.cancel();
+			  		});
 		      	};
 		      };
 			$mdDialog.show({

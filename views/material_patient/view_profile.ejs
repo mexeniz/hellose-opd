@@ -232,7 +232,7 @@
               </thead>
               <tbody ng-repeat="p in prescriptionList">
                 <tr>
-                  <td >{{p.date}}</td>
+                  <td >{{ p.date | date: 'medium' }}</td>
                   <td ng-style="{'color':p.status === 'รอการจ่าย'?'red':'green'}">{{p.status}}</td>
                   <td>{{p.doctor}}</td>
                   <td>

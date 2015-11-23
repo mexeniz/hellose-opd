@@ -18,7 +18,7 @@
           <md-input-container style="margin-right: 10px;" flex = "60">
             <label>ชื่อยา</label>
             <md-icon md-font-library="material-icons" class="material-icons">adb</md-icon>
-            <md-select ng-model="addedMedicine.medicine">
+            <md-select ng-model="addedMedicine.name">
               <md-option ng-repeat="m in medicine" value="{{m}}">{{m}}</md-option>
             </md-select>
           </md-input-container>
@@ -51,7 +51,7 @@
               </thead>
               <tbody ng-repeat="m in prescription.med_dosage_list">
                 <tr>
-                  <td>{{m.medicine}}</td>
+                  <td>{{m.name}}</td>
                   <td>{{m.dosage}}</td>
                   <td>{{m.howTo}}</td>
                   <td>
