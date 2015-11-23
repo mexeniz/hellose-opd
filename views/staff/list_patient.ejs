@@ -38,8 +38,8 @@
         <tbody >
           <tr ng-repeat="p in patients | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
             <td>{{p.patient_id}}</td>
-            <td>{{p.firstname}}</td>
-            <td>{{p.lastname}}</td>
+            <td>{{p.userId.firstname}}</td>
+            <td>{{p.userId.lastname}}</td>
             <td><md-button class="md-primary md-raised" href="/patient_profile/{{p.patient_id}}"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
           </tr>
 

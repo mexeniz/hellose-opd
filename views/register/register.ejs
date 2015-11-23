@@ -26,8 +26,8 @@
             <md-icon md-font-library="material-icons" class="material-icons">account_box</md-icon>
             <input ng-model="regData.username" type="text" name="username" required ng-minlength="6">
             <span style="color:red" ng-show="regForm.username.$dirty && regForm.username.$invalid">
-              <span ng-show="regForm.username.$error.required">Username is required.</span>
-              <span ng-show="regForm.username.$error.minlength">Username must contain at least 6 characters.</span>
+              <span ng-show="regForm.username.$error.required">กรุณากรอกชื่อผู้ใชช้งาน</span>
+              <span ng-show="regForm.username.$error.minlength">ชื่อผู้ใช่งานต้องมีอย่างน้อย 6 อักขระ</span>
             </span>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="50">
@@ -35,8 +35,8 @@
             <md-icon md-font-library="material-icons" class="material-icons">https</md-icon>
             <input ng-model="regData.password" type="password" name="password" required ng-minlength="6" ng-change="resetNotMatchAlert()">
             <span style="color:red" ng-show="regForm.password.$dirty && regForm.password.$invalid">
-              <span ng-show="regForm.password.$error.required">Password is required.</span>
-              <span ng-show="regForm.password.$error.minlength">Password must contain at least 6 characters.</span>
+              <span ng-show="regForm.username.$error.required">กรุณากรอกรหัสผ่าน</span>
+              <span ng-show="regForm.username.$error.minlength">รหัสผ่านต้องมีอย่างน้อย 6 อักขระ</span>
             </span>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="50">
@@ -44,11 +44,11 @@
             <label>รหัสผ่านซ้ำ</label>
             <input ng-model="regData.repeatPassword" type="password" name="password" required ng-change="resetNotMatchAlert()">
             <span style="color:red" ng-show="regForm.repeatPassword.$dirty && regForm.repeatPassword.$invalid" >
-              <span ng-show="regForm.repeatPassword.$error.required">Re-Password is required.</span>
-              <span ng-show="regForm.repeatPassword.$error.pwMatch">Re-Password is not matched.</span>
+              <span ng-show="regForm.repeatPassword.$error.required">กรุณากรอกรหัสผ่านอีกครั้ง</span>
+              <span ng-show="regForm.repeatPassword.$error.pwMatch">กรุณาตรวจสอบรหัสผ่านอีกครั้ง</span>
             </span>
             <span style="color:red" ng-show="pwNotMatch">
-              <span ng-show="pwNotMatch">Re-Password is not matched.</span>
+              <span ng-show="pwNotMatch">รหัสผ่านไม่ตรงกัน</span>
             </span>
           </md-input-container>
           </md-card-content>
@@ -62,7 +62,7 @@
             <md-icon md-font-library="material-icons" class="material-icons">face</md-icon>
             <input ng-model="regData.firstname" name="firstname" type="text" required>
             <span style="color:red" ng-show="regForm.firstname.$dirty && regForm.firstname.$invalid">
-                <span ng-show="regForm.firstname.$error.required">Firstname is required.</span>
+                <span ng-show="regForm.firstname.$error.required">กรุณากรอกชื่อ</span>
             </span>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="100">
@@ -70,7 +70,7 @@
             <label>นามสกุล</label>
             <input ng-model="regData.lastname" name="lastname" type="text" required>
             <span style="color:red" ng-show="regForm.lastname.$dirty && regForm.lastname.$invalid" >
-              <span ng-show="regForm.lastname.$error.required">Lastname is required.</span>
+              <span ng-show="regForm.lastname.$error.required">กรุณากรอกนามสกุล</span>
             </span>
           </md-input-container>
           </div>
@@ -80,10 +80,10 @@
               <md-icon md-font-library="material-icons" class="material-icons">accessibility</md-icon>
               <input ng-model="regData.ssn" name="ssn" required ng-minlength="13" ng-maxlength="13" ng-pattern="/^\d+$/">
               <span style="color:red" ng-show="regForm.ssn.$dirty && regForm.ssn.$invalid">
-                <span ng-show="regForm.ssn.$error.required">SSN is required.</span>
-                <span ng-show="regForm.ssn.$error.minlength">SSN must be length of 13.</span>
-                <span ng-show="regForm.ssn.$error.maxlength">SSN must be length of 13.</span>
-                <span ng-show="regForm.ssn.$error.pattern">SSN must contain only numbers.</span>
+                <span ng-show="regForm.ssn.$error.required">กรุณากรอกรหัสประชาชน</span>
+                <span ng-show="regForm.ssn.$error.minlength">รหัสประชาชนต้องมีความยาวเท่ากับ 13</span>
+                <span ng-show="regForm.ssn.$error.maxlength">รหัสประชาชนต้องมีความยาวเท่ากับ 13</span>
+                <span ng-show="regForm.ssn.$error.pattern">กรุณากรอกเฉพาะตัวเลข</span>
               </span>
             </md-input-container>
             <md-datepicker ng-model="regData.birthdate" md-placeholder="วันเกิด" flex="35" required></md-datepicker>
@@ -95,8 +95,8 @@
             <label>Email</label>
             <input ng-model="regData.email" type="email" name="email" required ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/">
             <span style="color:red" ng-show="regForm.email.$dirty && regForm.email.$invalid">
-              <span ng-show="regForm.email.$error.required">Email is required.</span>
-              <span ng-show="regForm.email.$error.pattern">This email is invalid.</span>
+              <span ng-show="regForm.email.$error.required">กรุณากรอกEmail</span>
+              <span ng-show="regForm.email.$error.pattern">รูบแบบEmailไม่ถูกต้อง</span>
             </span>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="35">
@@ -105,8 +105,8 @@
             <label>เบอร์โทรศัพท์</label>
             <input ng-model="regData.telNum" name="telNum" type="text" required ng-pattern="/^\d+$/">
             <span style="color:red" ng-show="regForm.telNum.$dirty && regForm.telNum.$invalid">
-              <span ng-show="regForm.telNum.$error.required">Telephone number is required.</span>
-              <span ng-show="regForm.telNum.$error.pattern">Telephone number must contain only numbers</span>
+              <span ng-show="regForm.telNum.$error.required">กรุณากรอกเบอร์โทรศัพท์</span>
+              <span ng-show="regForm.telNum.$error.pattern">กรุณากรอกเฉพาะตัวเลข</span>
             </span>
           </md-input-container>
           </div>
@@ -131,7 +131,7 @@
           <label>ที่อยู่</label>
           <textarea ng-model="regData.address" name="address" columns="1" md-maxlength="150" rows="5" required></textarea>
           <span style="color:red" ng-show="regForm.address.$dirty && regForm.address.$invalid">
-            <span ng-show="regForm.address.$error.required">Address is required.</span>
+            <span ng-show="regForm.address.$error.required">กรุณากรอกที่อยู่</span>
           </span>
         </md-input-container>    
         </md-content>
