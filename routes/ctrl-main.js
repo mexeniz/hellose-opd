@@ -16,7 +16,17 @@ var AppointmentControl = require('../controllers/AppointmentControl.js');
 /* ------------------------------------------------------- */
 // Guest Route
 router.get('/', function(req, res, next) {
-  res.render('guest/welcome');
+  if(req.user)
+  {
+    // If logged in, go to homepage
+    res.redirect('/home');
+  }
+  else
+  {
+    // If not, go to login page
+    res.render('guest/login');
+  }
+  
 });
 
 /* GET login page. */
@@ -33,7 +43,7 @@ router.get('/login', function(req, res, next) {
 router.post('/login', passport.authenticate('login', {
   successRedirect: '/home',
   failureRedirect: '/login',
-  failureFlash : true 
+  failureFlash : true,
 }));
 
 /* Handle Logout */
@@ -65,9 +75,6 @@ router.get('/home', function(req, res, next) {
   if(!req.user) {
     return res.redirect('/login');
   } else {
-    if(!req.session.role) {
-      req.session.role = req.session.flash.message[0];
-    }
     var role = req.session.role;
     if(role == '1') {
       console.log('patient');

@@ -48,6 +48,9 @@ module.exports.login = function(req, username, password, done) {
 				// done method which will be treated like success
 				//user.aa = "aa";
 				//console.log(user);
+
+				// Set role
+				req.session.role = role;
 				return done(null, user, req.flash('message', role));
 			}
 			
@@ -79,15 +82,27 @@ module.exports.register = function(req, username, password, done) {
 				}
 				else // Not found patient data
 				{
-					// Create new patient data
-					var newPatient = new Patient();
-				    newPatient.userId = newUser;
+					// create patient data
+		            var newPatient = new Patient();
+		            newPatient.userId = newUser;
+
+		            // Get next patient id
+		            var pat_id = n + '';
+		            var size = 8;
+	    			while (pat_id.length < size) {
+	    				pat_id = '0' + pat_id;
+	    			}
+
+		            newPatient.patient_id = pat_id;
+		            newPatient.blood_type = req.body.blood_type;
 				    newPatient.save(function(err) {
 				    	if (err){
 				          console.log('Error in Saving patient: '+err);  
 				          throw err;
 				        }
 				    	console.log('User Registration successful');    
+				    	// Set role as patient
+						req.session.role = '1';
 				    	return done(null, newUser);
 				    });
 				}
@@ -100,12 +115,12 @@ module.exports.register = function(req, username, password, done) {
           // set the user's local credentials
           newUser.username = username;
           newUser.setPassword(password);
- 			newUser.prefix = req.body.prefix;
  			newUser.gender = req.body.gender;
+ 			newUser.birthdate = req.body.birthdate;
  			newUser.ssn = ssn;
  			newUser.firstname = req.body.firstname;
  			newUser.lastname = req.body.lastname;
- 			newUser.telNo = req.body.telNo;
+ 			newUser.telNum = req.body.telNum;
  			newUser.address = req.body.address;
  			newUser.email = req.body.email;
  			newUser.isPatient = true;
@@ -144,7 +159,9 @@ module.exports.register = function(req, username, password, done) {
 		              console.log('Error in Saving patient: '+err);  
 		              throw err;
 		            }
-	            	console.log('User Registration successful');    
+	            	console.log('User Registration successful');
+	            	// Set role as patient
+					req.session.role = '1';
 	            	return done(null, newUser);
 	            });
             });

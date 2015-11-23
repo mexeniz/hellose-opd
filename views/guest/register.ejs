@@ -35,8 +35,7 @@
                               <div class="form-group">
                                 <label class="col-md-4 control-label" for="Username">Username</label>  
                                 <div class="col-md-4">
-                                  <input id="Username" name="username" ng-model="regData.username" type="text" placeholder="abcdefg" class="form-control input-md" required ng-minlength="6">
-                                  <span style="color:red" ng-show="regForm.username.$dirty && regForm.username.$invalid">
+
                                     <span ng-show="regForm.username.$error.required">Username is required.</span>
                                     <span ng-show="regForm.username.$error.minlength">Username must contain at least 6 characters.</span>
                                   </span>

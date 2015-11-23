@@ -54,22 +54,22 @@
             <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
             <!-- Use floating label instead of placeholder -->
             <label>เบอร์โทรศัพท์</label>
-            <input ng-model="regData.tel_number" type="text" disabled>
+            <input ng-model="regData.telNum" type="text" disabled>
           </md-input-container>
           </div>
           <div layout layout-sm="column">
           <md-input-container style="margin-right: 10px;" flex = "40" >
             <label>เพศ</label>
             <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
-            <md-select ng-model="regData.gender">
-              <md-option ng-repeat="gender in genderList" value="{{regData.gender}}" disabled>{{regData.gender}}</md-option>
+            <md-select ng-model="regData.gender" disabled>
+              <md-option value="{{regData.gender}}">{{regData.gender == 'M' ? 'ขาย' : 'หญิง'}}</md-option>
             </md-select>
           </md-input-container>
           <md-input-container style="margin-right: 10px;" flex = "40" >
             <md-icon md-font-library="material-icons" class="material-icons">local_hospital</md-icon>
             <label>หมู่เลือด</label>
-            <md-select ng-model="regData.blood_type">
-              <md-option ng-repeat="blood in bloodList" value="{{regData.blood_type}}" disabled>{{regData.blood_type}}</md-option>
+            <md-select ng-model="regData.blood_type" disabled>
+              <md-option value="{{regData.blood_type}}">{{regData.blood_type}}</md-option>
             </md-select>
           </md-input-container>
           </div>
