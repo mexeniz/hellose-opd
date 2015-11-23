@@ -9,45 +9,44 @@
       <md-icon md-font-library="material-icons">menu</md-icon>
     </md-button>
     <h2>
-      <span>Patient List</span>
+      <span>รายชื่อผู้ป่วย</span>
     </h2>
   </div>
 </md-toolbar>
 
 <!-- Content -->
-<md-content flex layout-padding>
+<md-content ng-controller = "ListCtrl" flex layout-padding>
   
-
-  <md-content class="md-padding">
-    <div class="h1-th">รายชื่อผู้ป่วย</div>
-
-    <md-input-container class="md-icon-float md-block">
-      <label>ค้นหา (รหัสผู้ป่วย, ชื่อ, นามสกุล)</label>
-      <md-icon md-font-library="material-icons">info</md-icon>
-      <input ng-model="searchText" type="text">
-    </md-input-container>
-
+    <md-card >
+      <md-card >
+        <md-input-container class="md-icon-float md-block ">
+          <label>ค้นหา (รหัสผู้ป่วย, ชื่อ, นามสกุล)</label>
+          <md-icon md-font-library="material-icons">search</md-icon>
+          <input ng-model="searchText" type="text">
+        </md-input-container>
+      </md-card>
     <md-data-table-container>
-      <table md-data-table>
-        <thead>
+      <table md-data-table class="md-primary" md-progress="deferred">
+        <thead md-order="query.order" md-trigger="onorderchange">
           <tr>
-            <th>รหัสผู้ป่วย</th>
-            <th>ชื่อ</th>
-            <th>นามสกุล</th>
-            <th>Actions</th>
+            <th order-by="patient_id" name="รหัสผู้ป่วย"></th>
+            <th order-by="firstame" name="ชื่อ"></th>
+            <th order-by="lastame" name="นามสกุล"></th>
+            <th name="จัดการ"></th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>12345678</td>
-            <td>อาชัญ</td>
-            <td>สุนทรอารมณ์</td>
-            <td><md-button class="md-primary md-raised" href="#"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
+        <tbody >
+          <tr ng-repeat="p in patients | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
+            <td>{{p.patient_id}}</td>
+            <td>{{p.firstname}}</td>
+            <td>{{p.lastname}}</td>
+            <td><md-button class="md-primary md-raised" href="/patient_profile/{{p.patient_id}}"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
           </tr>
 
         </tbody>
       </table>
     </md-data-table-container>
-    
-  </md-content>
+    <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{patients.length}}" md-trigger="onpagechange"></md-data-table-pagination>
+    </md-card>
+
 </md-content>

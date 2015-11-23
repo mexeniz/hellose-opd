@@ -7,11 +7,13 @@ module.exports = router;
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
+var User = mongoose.model('User');
 var Middleware = require('../middlewares/Middleware');
 var UserControl = require('../controllers/UserControl.js');
 var RoundWardControl = require('../controllers/RoundWardControl.js');
 var NotificationControl = require('../controllers/NotificationControl.js');
 var AppointmentControl = require('../controllers/AppointmentControl.js');
+var PatientControl = require('../controllers/PatientControl');
 
 /* ------------------------------------------------------- */
 // Guest Route
@@ -59,14 +61,39 @@ router.get('/register', function(req, res){
 });
 
 router.post('/register', function(req, res, next) {
-  passport.authenticate('register', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.json({status:'failed'}); }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      return res.json({status:'success'});
-    });
-  })(req, res, next);
+  var e = req.body.email ;
+  User.findOne({email: e}).exec(function(err, user) {
+              if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+              }
+              console.log("Test");
+              if(!user) {
+                console.log("Test2");
+                    passport.authenticate('register', function(err, user, info) {
+                    if (err) { return next(err); }
+                    if (!user) { return res.json({status:'failed'}); }
+                    req.logIn(user, function(err) {
+                      if (err) { return next(err); }
+                        return res.json({status:'success'});
+                    });
+                    })(req, res, next);
+              }else{
+                console.log("Dup");
+                return res.json({ status:'Duplicate email!'});
+              }
+          });
+});
+/* GET Reset Password Page */
+router.get('/reset_password', function(req, res){
+  res.render('register/reset_password');
+});
+
+router.post('/reset_password', function(req, res, next) {
+  var email = req.body.email ;
+  // Do something to reset password
+  res.json({status:'success'});
 });
 
 /* GET home page. */
@@ -76,13 +103,13 @@ router.get('/home', function(req, res, next) {
     return res.redirect('/login');
   } else {
     var role = req.session.role;
-    if(role == '1') {
+    if(role === '1') {
       console.log('patient');
       res.render('patient/home');
-    } else if(role == '2') {
+    } else if(role === '2') {
       console.log('doctor');
       res.render('doctor/home');
-    } else if(role == '3') {
+    } else if(role === '3') {
       res.render('staff/home');
     } else {
       res.render('patient/home');
@@ -444,20 +471,6 @@ router.get('/patient', function(req, res, next) {
 router.get('/patient/:patientId/edit', function(req, res, next) {
   if(req.user && req.session.role == '3') {
     res.render('staff/edit_patient_profile');
-  }
-  res.redirect('/login');
-});
-
-router.post('/patient/:patientId/edit', function(req, res, next) {
-  if(req.user && req.session.role == '3') {
-    res.render('staff/edit_patient_profile');
-  }
-  res.redirect('/login');
-});
-
-router.get('/roundward/import', function(req, res, next) {
-  if(req.user && req.session.role == '3') {
-    res.render('staff/import_roundward.ejs');
   }
   res.redirect('/login');
 });

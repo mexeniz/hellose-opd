@@ -54,6 +54,7 @@ app.use(passport.session());
 //Routers
 var main_routes = require('./routes/ctrl-main');
 var test_routes = require('./routes/test-router');
+var patients_routes = require('./routes/ctrl-patients');
 /*var records_routes = require('./routes/ctrl-records');
 var patients_routes = require('./routes/ctrl-patients');
 var diseases_routes = require('./routes/ctrl-diseases');
@@ -66,6 +67,7 @@ var medicines_routes = require('./routes/ctrl-medicines');*/
 
 app.use('/', main_routes);
 app.use('/test', test_routes);
+app.use('/patients', patients_routes);
 /*app.use('/records', records_routes);
 app.use('/patients', patients_routes);
 app.use('/diseases', diseases_routes);

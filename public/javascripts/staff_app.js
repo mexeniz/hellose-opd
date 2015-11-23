@@ -1,5 +1,5 @@
 (function(){
-var app = angular.module('staff', ['ui.router', 'ngMaterial', 'materialCalendar', 'ngCsvImport']) ;
+var app = angular.module('staff', ['ui.router', 'ngMaterial', 'materialCalendar', 'ngCsvImport' ,'md.data.table']) ;
 
 // Angular Material Config
 app.config(function($mdThemingProvider, $mdIconProvider){
@@ -229,8 +229,48 @@ app.factory('schedule_fac', ['$http', function($http){
 	  return o;
 	}]);
 
-	//Importing CSV Here
-	app.controller('ImportCtrl', [	'$scope', '$parse', 'schedule_fac',
+//Patient List controller
+app.controller('ListCtrl', [
+	'$scope',
+	'$q',
+	'patients_fac',
+	'$timeout',
+	function($scope,$q, patients_fac,$timeout){
+		patients_fac.getList();
+		$scope.patients = patients_fac.patients;
+		$scope.selected = [];
+  
+	  	$scope.query = {
+	 	   order: 'patient_id',
+	 	   limit: 3,
+		    page: 1
+		};
+
+		$scope.onpagechange = function(page, limit) {
+		    var deferred = $q.defer();
+		    
+		    setTimeout(function () {
+		      deferred.resolve();
+		    }, 2000);
+		    
+		    return deferred.promise;
+		  };
+	  
+		$scope.onorderchange = function(order) {
+		    var deferred = $q.defer();
+		    
+		    setTimeout(function () {
+		      deferred.resolve();
+		    }, 2000);
+		    
+		    return deferred.promise;
+		  };
+
+
+	}
+]);
+//Importing CSV Here
+app.controller('ImportCtrl', [	'$scope', '$parse', 'schedule_fac',
 		function($scope,$parse,schedule_fac){
 
 			$scope.csv = {

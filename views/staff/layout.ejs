@@ -28,13 +28,23 @@
         </md-list-item>
 
         <md-list-item md-ink-ripple class="md-clickable" href="/patient">
+          <md-icon md-font-library="material-icons">assignment</md-icon>
+          <p>Patient list</p>
+        </md-list-item>
+
+        <md-list-item md-ink-ripple class="md-clickable" href="/appointment">
           <md-icon md-font-library="material-icons">date_range</md-icon>
-          <p>Search Patient</p>
+          <p>View appointments</p>
         </md-list-item>
 
         <md-list-item md-ink-ripple class="md-clickable" href="/roundward/import">
+          <md-icon md-font-library="material-icons">playlist_add</md-icon>
+          <p>Import roundward</p>
+        </md-list-item>
+
+        <md-list-item md-ink-ripple class="md-clickable" href="/appointment/create">
           <md-icon md-font-library="material-icons">assignment_ind</md-icon>
-          <p>Import roundward table</p>
+          <p>Make Appointment</p>
         </md-list-item>
 
         <md-list-item md-ink-ripple class="md-clickable" href="/logout">
@@ -45,12 +55,11 @@
      </md-sidenav>
 
     <%- body %>
-    
+
     <% include ../templates/footer %>
     
     <!-- Include patient_app.js -->
     <script type="text/javascript" src="/javascripts/staff_app.js"></script>
-    <script src="/lib/angular-csv-import/dist/angular-csv-import.js"></script>
 
   </body>
 </html>
