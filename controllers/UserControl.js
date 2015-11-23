@@ -224,6 +224,7 @@ module.exports.register = function(req, username, password, done) {
 
 			            newPatient.patient_id = pat_id;
 			            newPatient.blood_type = req.body.blood_type;
+			            newPatient.ssn = ssn;
 
 		            	// save patient data
 			            newPatient.save(function(err) {
