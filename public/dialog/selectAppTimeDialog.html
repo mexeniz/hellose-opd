@@ -13,9 +13,9 @@
       <!-- Content -->
       <div layout>
         <md-input-container flex>
-          <md-select ng-model="selectedSlot" class="md-padding">
+          <md-select ng-model="selectedSlot" class="md-padding">{{selectedSlot}}
             <md-option ng-repeat="slot in availableSlots" value="{{slot}}">
-              {{slot}}
+              {{slot.display}}
             </md-option>
           </md-select>
         </md-input-container>
@@ -23,7 +23,7 @@
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <span flex></span>
-      <md-button class="md-raised md-primary" ng-click="select()">
+      <md-button class="md-raised md-primary" ng-click="select(selectedSlot)">
         ยืนยัน
       </md-button>
     </md-dialog-actions>

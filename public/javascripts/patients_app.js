@@ -224,13 +224,7 @@ app.factory('medicines_fac', ['$http', function($http){
 
 app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 	var o = {
-		appointmentList: [],
-		appointmentCache: {}
-	};
-
-	var getKey = function(doctorId, month, year)
-	{
-		return doctorId + ' ' + month + ' ' + year;
+		availableDataCache: {}
 	};
 
 	o.getCalendar = function(doctorId, month, year, callback)
@@ -245,23 +239,8 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 		];*/
 		
 		$http.post('/getAvailableDateTime', { doctor_id: doctorId, month: month, year: year }).success(function(result){
-			console.log("SUCCESS");
-			console.log(result);
-
-			/*
-			for(var i in rwList)
-			{
-				var roundward = rwList[i];
-				roundward.date = new Date(roundward.date);
-				var key = getKey(roundward.date, roundward.time);
-				o.roundwardCache[key] = roundward;
-			}
-
-			angular.copy(rwList, o.roundwardList);
-			
-
-
-			console.log(o.roundwardList);*/
+			// result: date, firstname, lastname, time, doctor_id, roundward
+			angular.copy(result, o.availableDataCache);
 			callback();
 		});
 
@@ -918,24 +897,96 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
  }]);
 
-app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', 'appointment_fac', function($scope, $mdDialog, appointment_fac) {
+app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 'CalendarData', function($scope, $mdDialog, $http, $q, CalendarData) {
 		
 		$scope.selectedAvailableDate = null;
 		$scope.appointmentDate = null;
-		
-		
-		$scope.init = function(doctorId)
+		$scope.selectedData = [];
+		$scope.freeSlots = [];
+		$scope.loadingCount = 0;
+
+		var startAM = 9 * 60 + 30;
+		var startPM = 13 * 60;
+		var getFreeSlots = function(selectedData)
+		{
+			var freeSlots = [];
+			selectedData.forEach(function(data){
+	    		data.freeSlot.forEach(function(slot)
+	    		{	
+	    			var minutes = data.time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+	    			var min = minutes % 60;
+	    			var hour = (minutes - min) / 60;
+	    			var slotObj = { time: data.time, slot: slot, display: hour + '.' + min };
+	    			console.log(slotObj);
+	    			freeSlots.push(slotObj);
+	    		});
+	    	});
+	    	return freeSlots;
+		};
+
+		$scope.init = function(earliestData)
 		{	
-			var currentDate = new Date();
-			appointment_fac.getCalendar(doctorId, currentDate.getMonth(), currentDate.getFullYear(), () => {});
+			var data = JSON.parse(earliestData);
+			$scope.doctor_id = data.doctor_id;
+			$scope.selectedData.push(data);
+			$scope.appointmentDate = new Date(data.date);
+			angular.copy(getFreeSlots($scope.selectedData), $scope.freeSlots);
+			$scope.selectedSlot = $scope.freeSlots[0];
 		};
 
         
-        var DialogController = function($scope, $mdDialog)
+        var DialogController = function($scope, $mdDialog, $http, CalendarData, doctor_id)
         {
         	$scope.dayFormat = "d";
 			$scope.selectedDate = null;
         	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+        	$scope.loadingCount = 0;
+        	$scope.availableData = [];
+
+
+
+        	$scope.init = function()
+        	{
+        		console.log('getting current month data');
+        		var cur_date = new Date();
+        		$scope.getData(cur_date.getMonth() + 1, cur_date.getFullYear(), $scope.setCalendar);
+        	};
+
+			$scope.getData = function(month, year, callback)
+			{
+				$scope.loadingCount++;
+				$http.post('/getAvailableDateTime', { doctor_id: doctor_id, month: month-1, year: year }).success(function(result){
+	        		// result: date, firstname, lastname, time, doctor_id, roundward, freeslot
+	        		console.log(result);
+	        		angular.copy(result, $scope.availableData);
+	        		$scope.loadingCount--;
+	        		callback();
+	        	});
+			};
+
+			$scope.checkAvailable = function(date)
+			{
+				for(var i in $scope.availableData)
+				{
+					var data = $scope.availableData[i];
+					var dataDate = new Date(data.date);
+					if(dataDate.getDate() === date.getDate() && dataDate.getMonth() === date.getMonth() && dataDate.getFullYear() && date.getFullYear())
+					{
+						return true;
+					}
+				}
+				return false;
+			};
+
+			$scope.setCalendar = function()
+			{
+				console.log('Set calendar');
+				if($scope.loadingCount > 0) { return; }
+				$scope.availableData.forEach(function(data){
+					console.log(data);
+					CalendarData.setDayContent(new Date(data.date), "<i class='material-icons'>event</i>");
+				});
+			};
 
         	$scope.close = function()
         	{
@@ -948,61 +999,63 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', 'appointment_fa
 			};
 
 	        $scope.dayClick = function(date) {
-	        	$scope.msg = "You clicked " + date;
-				console.log($scope.msg);
-				var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-				        "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-				       "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
-		        // To select a single date, make sure the ngModel is not an array.
-	            if (dateList.indexOf(date+"") > -1){
-	              	$scope.selectedAvailableDate = date;
-	              	console.log('selected date ' + date.getMonth());
+	            if ($scope.checkAvailable(date)){
+	              	$scope.selectedDate = date;
 	          	}
 	            else{
-	              	$scope.selectedAvailableDate = null;
+	              	$scope.selectedDate = null;
 	            }
 	        };
 
 	        $scope.prevMonth = function(data) {
 	          $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+	          $scope.getData(data.month, data.year, $scope.setCalendar);
 	        };
 
 	        $scope.nextMonth = function(data) {
 	          $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+	          $scope.getData(data.month, data.year, $scope.setCalendar);
 	        };
 
 	        $scope.tooltips = true;
 	        $scope.setDayContent = function(date) {
-		        var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-		                "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-		               "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
-		        // To select a single date, make sure the ngModel is not an array.
-	            if (dateList.indexOf(date+"") > -1){
-	              return "<i class='material-icons'>assignment_turned_in</i>";
-	              }
-	            else{
-	              return "<p></p>";
-	            }
+	        	return "<p></p>";
 	        };
 
 	        $scope.changeDate = function()
 	        {
-	        	$mdDialog.hide($scope.selectedAvailableDate);
+	        	var date = $scope.selectedDate;
+	        	var result = [];
+	        	// Find freeslot data
+	        	for(var i in $scope.availableData)
+				{
+					var data = $scope.availableData[i];
+					var dataDate = new Date(data.date);
+					if(dataDate.getDate() === date.getDate() && dataDate.getMonth() === date.getMonth() && dataDate.getFullYear() && date.getFullYear())
+					{
+						result.push(data);
+					}
+				}
+	        	$mdDialog.hide(result);
 	        };
 
 
         };
 
+       
         $scope.showDialog = function(ev) {
 		    $mdDialog.show({
+		    	locals: { doctor_id: $scope.doctor_id },
 		    	controller: DialogController,
 		      templateUrl: '/dialog/selectDateDialog.html',
 		      parent: angular.element(document.body),
 		      targetEvent: ev,
 		      clickOutsideToClose:true
-		    }).then(function(selectedAppDate)
+		    }).then(function(selectedData)
 		    {
-		    	$scope.appointmentDate = selectedAppDate;
+		    	angular.copy(getFreeSlots(selectedData), $scope.freeSlots);
+		    	$scope.selectedData = selectedData;
+		    	$scope.appointmentDate = new Date(selectedData[0].date);
 		    });
 	  	};
 
@@ -1010,9 +1063,10 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', 'appointment_fa
 	  	{
 	  		$scope.availableSlots = availableSlots;
 	  		$scope.selectedSlot = availableSlots[0];
-	  		$scope.select = function()
+	  		$scope.select = function(selectedSlot)
 	  		{
-	  			$mdDialog.hide($scope.selectedSlot);
+	  			console.log(selectedSlot);
+	  			$mdDialog.hide(selectedSlot);
 	  		};
 	  		$scope.close = function()
 	  		{
@@ -1020,12 +1074,15 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', 'appointment_fa
 	  		};
 	  	};
 
-	  	$scope.availableSlots = [0,1,3,5,7,8,12];
+	  	$scope.setSelectedSlotDisplay = function(selectedSlot)
+	  	{
+	  		$scope.selectedSlot = selectedSlot;
+	  	};
 
 	  	$scope.showSelectTimeDialog = function(ev)
 	  	{
 	  		$mdDialog.show({
-	  			locals: { availableSlots: $scope.availableSlots },
+	  			locals: { availableSlots: $scope.freeSlots },
 		    	controller: SelectTimeDialogController,
 		      templateUrl: '/dialog/selectAppTimeDialog.html',
 		      parent: angular.element(document.body),
@@ -1033,7 +1090,7 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', 'appointment_fa
 		      clickOutsideToClose:true
 		    }).then(function(selectedSlot)
 		    {
-		    	$scope.selectedSlot = selectedSlot;
+		    	$scope.setSelectedSlotDisplay(selectedSlot);
 		    });
 	  	};
 

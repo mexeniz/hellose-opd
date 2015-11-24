@@ -151,9 +151,22 @@ router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
   //if(req.user && req.session.role === '1')
   {
     var doctorid = req.params.doctorId;
-    var month = 
-    RoundWardControl.getAvailableDateTime(doctorid,month,year,callback)
-    res.render('patient/confirm_appointment', { doctorid: doctorid });
+    var curDate = new Date();
+    RoundWardControl.getAvailableDateTime(doctorid,curDate.getMonth(),curDate.getFullYear(),function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        if(result.length > 0)
+        {
+          res.render('patient/confirm_appointment', { earliestData: JSON.stringify(result[0]) });
+        }
+        else
+        {
+          res.render('patient/create_appointment', req.flash( {message: 'แพทย์ไม่ว่างเลย'}));
+        }
+      }
+    });
+    
   }
 });
 
@@ -225,12 +238,7 @@ router.post('/getAvailableDateTime', function(req,res,next){
       if(err){
         return next(err);
       }else{    
-        var returning = {
-          'doctor_id' : doctor_id,
-          'month' : month,
-          'data': result
-        };
-        return res.json(returning);
+        return res.json(result);
       }
     });
   }

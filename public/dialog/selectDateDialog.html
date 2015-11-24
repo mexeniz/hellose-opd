@@ -1,4 +1,4 @@
-<md-dialog aria-label="เลือกวันที่ต้องการนัดพบแพทย์" ng-cloak style="width: 100%">
+<md-dialog aria-label="เลือกวันที่ต้องการนัดพบแพทย์" ng-init="init()" ng-cloak style="width: 100%">
   <md-toolbar>
     <div class="md-toolbar-tools">
       <h2 style="font-size: 36px">เลือกวันที่ต้องการนัดพบแพทย์</h2>
@@ -32,7 +32,7 @@
     <md-dialog-actions layout="row">
       <small><i class='material-icons'>assignment_turned_in</i> แสดงถึงวันที่สามารถนัดพบแพทย์ได้</small>
       <span flex></span>
-      <md-button ng-disabled="!selectedAvailableDate" ng-click="changeDate(selectedDate)" style="margin-right:20px;">
+      <md-button ng-disabled="!selectedDate" ng-click="changeDate(selectedDate)" style="margin-right:20px;">
         ยืนยัน
       </md-button>
     </md-dialog-actions>
