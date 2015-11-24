@@ -14,7 +14,7 @@
       </div>
     </md-toolbar>
 
-    <md-content ng-controller="roundWardCtrl" ng-init="init()" class="md-padding">
+    <md-content ng-controller="confirmAppointmentCtrl" ng-init="init('<%= doctorid %>')" class="md-padding">
 
       <div class="h2-th">ยืนยันการนัดหมาย</div>
       <div ng-show="loadingCount > 0" layout="row" layout-align="space-around">

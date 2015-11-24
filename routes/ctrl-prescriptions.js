@@ -29,8 +29,8 @@ router.get('/list', function(req, res, next){
 
 // Add new prescription
 router.post('/insert/:patient_id', function(req, res, next) {
+  console.log('insert ' + req.params.patient_id);
   var prescriptionData = req.body;
-
   PrescriptionControl.addPrescription(req.params.patient_id, prescriptionData, function(err, result) {
     if(err) { next(err); }
     res.json(result);

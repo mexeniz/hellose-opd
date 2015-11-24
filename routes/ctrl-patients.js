@@ -9,6 +9,8 @@ var MedicalRecord = mongoose.model('MedicalRecord');
 var Prescription = mongoose.model('Prescription');
 var Disease = mongoose.model('Disease');
 
+var PatientControl = require('../controllers/PatientControl');
+
 /* GET patients page. */
 router.get('/', function(req, res, next) {
   res.render('patients/index');
@@ -16,7 +18,7 @@ router.get('/', function(req, res, next) {
 
 // Warehouse for patient list
 router.get('/store', function(req, res, next) {
-  Patient.find(function(err, patient){
+  Patient.find().populate('userId').exec(function(err, patient){
     // Check if error
     if(err) { return next(err); }
     res.json(patient);
@@ -38,14 +40,27 @@ router.post('/insert', function(req, res, next) {
   });
 });
 
+router.put('/update/:patid', function(req, res, next) {
+  var patientId = req.params.patid;
+  var newPatientInfo = req.body;
+
+  PatientControl.editPatientInfo(patientId, newPatientInfo, function(err, result) {
+    if(err) { next(err); }
+    res.json(result);
+  });
+});
+
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
-    Patient.findOne({patient_id: id})
+  console.log(id);
+    Patient.findOne({userId: id})
           .populate('physical_record')
           .populate('medical_record')
           .populate('prescription_record')
+          .populate('userId')
           .exec(function(err, patient) {
+              console.log(patient);
               if(err) {
                 return res.json(500, {
                     message: 'Error getting patient.'
@@ -56,16 +71,13 @@ router.get('/info/:patid', function(req, res, next) {
                       message: 'Patient not found!'
                   });
               }
-
-              var options = {
-                path: 'medical_record.diseases',
-                model: 'Disease'
-              };
+              // var options = {
+              //   path: 'medical_record.diseases',
+              //   model: 'Disease'
+              // };
               
               // Get disease info and return it
-              Patient.populate(patient, options, function (err, patient) {
-                if(err) return next(err);
-
+              // Patient.populate(patient, options, function (err, patient) {
                 var options2 = {
                   path: 'prescription_record.med_dosage_list.medicine',
                   model: 'Medicine'
@@ -74,10 +86,11 @@ router.get('/info/:patid', function(req, res, next) {
                 // Get medicine info
                 Patient.populate(patient, options2, function(err, patient) {
                   if(err) return next(err);
+                  console.log(patient);
                   res.json(patient);
                 });
                 
-              });
+              // });
 
           });
 

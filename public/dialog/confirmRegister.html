@@ -4,7 +4,7 @@
   <form ng-submit="confirmRegister()">
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>ยืนยันการลงทัเบียน</h2>
+        <h2>ยืนยันการลงทะเบียน</h2>
         <span flex></span>
         <md-button class="md-icon-button" ng-click="cancel()">
           <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
@@ -61,16 +61,12 @@
           <md-input-container style="margin-right: 10px;" flex = "40" >
             <label>เพศ</label>
             <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
-            <md-select ng-model="regData.gender" disabled>
-              <md-option value="{{regData.gender}}">{{regData.gender == 'M' ? 'ขาย' : 'หญิง'}}</md-option>
-            </md-select>
+            <input ng-model="regData.gender" type="text" disabled>
           </md-input-container>
           <md-input-container style="margin-right: 10px;" flex = "40" >
             <md-icon md-font-library="material-icons" class="material-icons">local_hospital</md-icon>
             <label>หมู่เลือด</label>
-            <md-select ng-model="regData.blood_type" disabled>
-              <md-option value="{{regData.blood_type}}">{{regData.blood_type}}</md-option>
-            </md-select>
+            <input ng-model="regData.blood_type" type="text" disabled>
           </md-input-container>
           </div>
           <md-input-container class="md-block" flex = "100" >
@@ -82,7 +78,7 @@
         </md-content>
     </md-dialog-content>
     <md-dialog-actions layout="row">
-      <span flex></span>
+      <span flex>{{regMessage}}</span>
       <md-button class="md-raised md-primary" type="submit">
         ยืนยัน
       </md-button>

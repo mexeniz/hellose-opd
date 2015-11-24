@@ -49,6 +49,9 @@ router.get('/pharmacist/profile', function(req, res, next) {
   res.render('material_pharmacist/view_profile');
 });
 
+router.get('/pharmacist/prescription', function(req, res, next) {
+  res.render('material_pharmacist/list_prescription');
+});
 /*
 STAFF
 */
@@ -62,4 +65,5 @@ router.get('/staff/import_roundward', function(req, res, next) {
 
 router.get('/staff/patient', function(req, res, next) {
   res.render('material_staff/list_patient');
+  origin/waterfall-init
 });

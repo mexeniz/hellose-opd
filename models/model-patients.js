@@ -5,7 +5,8 @@ var mongoose = require('mongoose'),
 
 var PatientsSchema = new Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    patient_id: {type : 'String' , maxlength: 8, minlength: 8, trim : true , unique : true},
+    patient_id: {type : 'String' , maxlength: 8 , minlength: 8, 
+    trim : true , unique : true, required : true, dropDups: true},
     blood_type: 'String',
     physical_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PhysicalRecord' }],
     medical_record: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MedicalRecord' }],

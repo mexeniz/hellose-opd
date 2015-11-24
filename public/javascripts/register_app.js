@@ -37,14 +37,13 @@ app.controller('registerCtrl', [
 
     // Validate form and show modal
     $scope.checkRegister = function(ev){
-      console.log("check!");
       if($scope.regData.password !== $scope.regData.repeatPassword)
       {
-        console.log("not Match");
         $scope.pwNotMatch = true;
         return;
       }
       var confirmCtrl = function($scope, regData) {
+          $scope.regMessage = "" ;
           $scope.regData = regData ;
           $scope.cancel = function() {
             $mdDialog.cancel();
@@ -52,15 +51,14 @@ app.controller('registerCtrl', [
           $scope.confirmRegister = function()
           {
             $http.post('/register', $scope.regData).success(function(data) {
-              console.log(data);
               if(data.status === 'success')
               {
-                $scope.regMessage = 'Successfully registered!';
+                $scope.regMessage = 'ลงทะเบียนสำเร็จ';
                 $window.location.href = "/home" ;
               }
-              else
+              else if(data.status === 'failed')
               {
-                $scope.regMessage = 'Try again!';
+                $scope.regMessage = data.message[0];
               }
             });
           };
@@ -76,8 +74,9 @@ app.controller('registerCtrl', [
       .then(function(answer) {
         //Do something after close dialog
         //Switch to another page
-      }, function() {
-      });
+        $window.location.href = "/home" ;
+      }
+    );
 
     };
 
@@ -96,21 +95,69 @@ app.controller('registerCtrl', [
     {
       $scope.showConfirmRegModal = false;
       $http.post('/register', $scope.regData).success(function(data) {
-        console.log(data);
+
         if(data.status === 'success')
         {
-          $scope.regMessage = 'Successfully registered!';
-          $window.location.href = "/home" ;
+          $scope.regMessage = 'ลงทะเบียนสำเร็จ';
+          setTimeout(function(){
+              $mdDialog.hide() ;
+          },2000);
         }
         else
         {
-          $scope.regMessage = 'Try again!';
+          $scope.regMessage = 'พบข้อผิดพลาด กรุณาตรวจสอบข้อมูใหม่';
         }
       });
     };
 
 }]);
+app.controller('resetPasswordCtrl', ['$scope','$window', '$http', '$mdDialog',
+  function($scope , $window ,$http,$mdDialog){
+    $scope.email = "" ;
+    // Validate form and show modal
+    $scope.resetPassword = function(ev){
+      var modalCtrl = function($scope,$window, text , status) {
+          $scope.text = text ;
+          $scope.showProgress = true ;
+          $scope.finishProgress = false ;
+          setTimeout(function(){
+              $scope.showProgress = false;
+              $scope.finishProgress = true ;
+              console.log(status);
+          }, 2000);
+          $scope.cancel = function() {
+            $mdDialog.cancel();
+          };
+          $scope.confirm = function()
+          {
+            $mdDialog.hide('text');
+          };
+        };
+      $http.post('/reset_password', {email : $scope.email}).success(function(res) {
+          var text = "" ;
+          if (res.status === 'success'){
+            text = "ทำการรีเซ็ตรหัสผ่านสำเร็จ กรุณาตรวจสอบEmailที่ได้รับ";
+          }else{
+            text = "ไม่พบEmailนี้ในระบบ" ;
+          }
+          // Initiate Modal
+          $mdDialog.show({
+            locals:{text : text , status : res.status},
+            controller: modalCtrl,
+            templateUrl: '/dialog/resetPasswordDialog.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true
+          })
+          .then(function(answer) {
+            //Do something after close dialog
+            //Switch to another page
+            console.log(answer);
+          });   
+      });
 
+    };
+}]);
 app.directive('pwCheck', [function () {
   return {
     require: 'ngModel',

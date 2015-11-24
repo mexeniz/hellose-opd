@@ -61,9 +61,10 @@ module.exports.editPrescription = function(presId, newPres, callback)
 
 			if(err) { return callback(err); }
 
-			pres.med_dosage_list = newPres.med_dosage_list;
+			// pres.med_dosage_list = newPres.med_dosage_list;
 			// Populate new med dosage
-			pres.populate('med_dosage_list.medicine', callback);
+			// pres.populate('med_dosage_list.medicine', callback);
+			callback(null, pres);
 		});
 
 	});
@@ -88,12 +89,13 @@ module.exports.completePrescription = function(presId, callback)
 		if(err) { return callback(err); }
 
 		// Change status to complete
-		pres.status = 'Completed';
+		pres.status = 'จ่ายแล้ว';
 		pres.save(function(err, pres) {
 
 			if(err) { return callback(err); }
 			// Populate new med dosage
-			pres.populate('med_dosage_list.medicine', callback);
+			// pres.populate('med_dosage_list.medicine', callback);
+			callback(null, pres);
 		});
 	});
 };

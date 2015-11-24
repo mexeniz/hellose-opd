@@ -7,7 +7,7 @@
 
   </head>
 
-  <body ng-app="patients" ng-controller="menuCtrl" layout="row" ng-cloak >
+  <body ng-app="doctor" ng-controller="menuCtrl" layout="row" ng-cloak >
 
      <md-sidenav class="md-sidenav-left md-whiteframe-z2" layout="column" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
       <md-toolbar>
@@ -20,16 +20,20 @@
           <md-icon md-font-library="material-icons">home</md-icon>
           <p>Homepage</p>
         </md-list-item>
-        
 
-        <md-list-item md-ink-ripple class="md-clickable" href="/profile">
-          <md-icon md-font-library="material-icons">account_circle</md-icon>
-          <p>Profile</p>
+        <md-list-item md-ink-ripple class="md-clickable" href="/user">
+          <md-icon md-font-library="material-icons">date_range</md-icon>
+          <p>User</p>
         </md-list-item>
 
-        <md-list-item md-ink-ripple class="md-clickable" href="/prescription">
+        <md-list-item md-ink-ripple class="md-clickable" href="/medicine">
           <md-icon md-font-library="material-icons">date_range</md-icon>
-          <p>Prescriptions</p>
+          <p>Medicine</p>
+        </md-list-item>
+
+        <md-list-item md-ink-ripple class="md-clickable" href="/disease">
+          <md-icon md-font-library="material-icons">assignment_ind</md-icon>
+          <p>Disease</p>
         </md-list-item>
 
         <md-list-item md-ink-ripple class="md-clickable" href="/logout">
@@ -40,11 +44,11 @@
      </md-sidenav>
 
     <%- body %>
-
+    
     <% include ../templates/footer %>
     
     <!-- Include patient_app.js -->
-    <script type="text/javascript" src="/javascripts/patients_app.js"></script>
+    <script type="text/javascript" src="/javascripts/doctor_app.js"></script>
 
   </body>
 </html>

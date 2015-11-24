@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <% layout('layout') -%>
 
-    <style type="text/css">
-    .red {
-        color: red; 
-    }
-
-    .green {
-        color: green;
-    }
-
-    .black {
-        color: black;
-    }
-    </style>
 <!-- Heading -->
 <md-content flex id="content">
 <md-toolbar>
@@ -93,7 +80,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">today</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">วันเกิด</div>
-                <div class="h2-th">{{patient.birthdate}}</div>
+                <div class="h2-th">{{patient.birthdate | date:medium}}</div>
               </div>
             </md-list-item>
 
@@ -151,7 +138,7 @@
               </thead>
               <tbody ng-repeat="physicalRecord in physicalRecordList">
                 <tr>
-                  <td>{{physicalRecord.date}}</td>
+                  <td>{{physicalRecord.date | date : 'medium'}}</td>
                   <td>{{physicalRecord.weight}}</td>
                   <td>{{physicalRecord.height}}</td>
                   <td>{{physicalRecord.blood_pressure}}</td>
@@ -192,9 +179,12 @@
               </thead>
               <tbody ng-repeat="medicalRecord in medicalRecordList">
                 <tr>
-                  <td>{{medicalRecord.date}}</td>
+                  <td>{{medicalRecord.date | date: 'medium'}}</td>
                   <td>{{medicalRecord.doctor}}</td>
-                  <td>{{medicalRecord.diseases}}</td>
+                  <td>
+                    <span ng-repeat="diseaseItem in medicalRecord.diseases">{{diseaseItem}} </span>
+                    <span ng-show="medicalRecord.diseases.length === 0">-</span>
+                  </td>
                   <td>{{medicalRecord.symptoms}}</td>
                   <td>
                     <md-button class="md-fab md-mini md-primary" ng-click="showMedicalRecordForm($event,'edit',medicalRecord)">
@@ -245,8 +235,8 @@
               </thead>
               <tbody ng-repeat="p in prescriptionList">
                 <tr>
-                  <td >{{p.date}}</td>
-                  <td ng-class="{red: p.status === 'รอการจ่าย', green: p.status !== 'รอการจ่าย'}">{{p.status}}</td>
+                  <td >{{ p.date | date: 'medium' }}</td>
+                  <td ng-style="{'color':p.status === 'รอการจ่าย'?'red':'green'}">{{p.status}}</td>
                   <td>{{p.doctor}}</td>
                   <td>
                     <md-button class="md-raised md-primary" ng-click="showPresDetail($event,p)">รายละเอียด</md-button>
