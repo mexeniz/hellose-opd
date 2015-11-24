@@ -146,22 +146,123 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
   });
 };
 
+
+module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
+  console.log("getAvailableDateTime2 Called With "+year+"___"+month);
+  var returning = [];
+  var freeSlot = [];
+  var busySlot = [];
+  function findDoctorFromUsers(userId){
+    return new Promise(
+      function (resolve,reject){
+          Doctor.findOne({'userId' : mongoose.Types.ObjectId(userId)})
+          .populate({path : 'onDutyRoundward' , match: {date : {"$gte": new Date(year, month), "$lt": new Date(year, month+1)} }})
+          .populate('userId' , 'firstname lastname')
+          .exec(function(err,result){
+              if(err)reject(err);
+              resolve(result);
+          });
+    });
+  }
+
+  function findAppointment(e){ 
+    return new Promise(function(resolve, reject){
+        Appointment.find({roundWard : e._id }).populate('roundWard').exec(function(err,results){
+          if(err){
+              reject(err);
+          }
+          resolve(results);
+        });
+    });
+  }
+
+  var onDutyRoundwards;
+  var thisDoctor_obj;
+  //Flow Goes Here
+  findDoctorFromUsers(doctor_id)
+    .then(
+      function havingDoctor(thisDoctor){
+        thisDoctor_obj = thisDoctor.userId;
+        return thisDoctor.onDutyRoundward;
+    }).then(function(doctorRoundward){
+      onDutyRoundwards = doctorRoundward;
+      var promises = [];
+      //EveryRoundward that thisDoctor hold
+      for(var i  = 0; i < onDutyRoundwards.length;++i)
+      {
+            promises.push(findAppointment(onDutyRoundwards[i]));
+      }
+      
+      return Promise.all(promises);
+    }).then(function(){
+      //We Got Appointments
+        var appointments = arguments;
+        onDutyRoundwards.forEach(function(e){
+            var single_roundward = {
+              date : e.date,
+              firstname : thisDoctor_obj.firstname,
+              lastname : thisDoctor_obj.lastname,
+              time : e.time,
+              doctor_id : thisDoctor_obj._id,
+              roundward : e._id
+            };
+            var busySlot=[];
+            var freeSlot=[];
+            for(var i = 0 ; i < appointments.length ; ++i){
+              for(var j = 0 ; j< appointments[i].length ; ++j){
+                for(var k = 0 ; k < appointments[i][j].length ; ++k){
+                    var data = appointments[i][j][k];
+                    if(String(data.roundWard._id) === String(e._id)){
+                        busySlot.push(data.slot);
+                    }
+                }
+              }
+            }
+            for(var slot = 0 ; slot <15 ; ++slot){
+              if(busySlot.indexOf(slot) === -1){
+                    freeSlot.push(slot);
+                  }
+            }
+
+
+            single_roundward.freeSlot = freeSlot;
+            returning.push(single_roundward);
+        });
+      return returning;
+    }).then(function(){
+      //SORTING 
+      var comp = function (a,b){
+            if(a.date.getFullYear() !== b.date.getFullYear())return a.date.getFullYear() < b.date.getFullYear()?-1:1;
+            if(a.date.getMonth() !== b.date.getMonth())return a.date.getMonth() < b.date.getMonth()?-1:1;
+            if(a.date.getDate() !== b.date.getDate())return a.date.getDate() < b.date.getDate()?-1:1;
+            if(a.time !== b.time)return a.time === 'AM'?-1:1;
+            return a.freeSlot[0] < b.freeSlot[0]?-1:1;
+          };
+      returning.sort(comp);
+      console.log("DOCTOR"+doctor_id+ "= "+returning.length);
+      return callback(null,returning);
+      
+    }); 
+};
+
+
 //Find Available time for single Doctor
-module.exports.getAvailableDateTime = function (doctor_id,month,year,callback) {
+module.exports.getAvailableDateTime2 = function (doctor_id,month,year,callback) {
 	//Find Correspondent Doctor
-  //console.log(doctor_id);
-  //console.log(month);
   var roundward_return = [];
   var roundward = [];
 	Doctor.findOne({'userId' : mongoose.Types.ObjectId(doctor_id)})
   .populate('onDutyRoundward')
-  .exec(function(err,result){
+  .then(function(result){
+    console.log(result);
     result.onDutyRoundward.forEach(function(e,index){
       var daypack = {
         day : e.date.getDate() ,
         month :  e.date.getMonth()+1 ,
         year : e.date.getFullYear(),
       };
+      console.log(daypack.month +"___"+month);
+      console.log(daypack.year +"___"+year);
       //Specific Month
       //with the roundward of that doctor_id
       if(month===daypack.month && year === daypack.year){
@@ -179,14 +280,15 @@ module.exports.getAvailableDateTime = function (doctor_id,month,year,callback) {
                     freeSlot_query.push(a);
                   }
               }
-              if(freeSlot_query.length > 0 && (new Date(daypack.year,daypack.month,daypack.day) >= new Date())){
+              if(freeSlot_query.length > 0 /*&& (new Date(daypack.year,daypack.month,daypack.day) >= new Date())*/){
                 //PACKED DATA HERE 
                 var single_roundward = {
                   date : daypack,
-                  time : e.time,
+                  time : e.time, //AMPM
                   freeSlot : freeSlot_query,
                   doctorid : doctor_id
                 };
+                //console.log(single_roundward);
                 roundward_return.push(single_roundward);
               }
         }).then(function(){
@@ -202,6 +304,8 @@ module.exports.getAvailableDateTime = function (doctor_id,month,year,callback) {
           return callback(null,roundward);
         });
       }
+        console.log(roundward_return.length);
+      
     });
   });
 };
@@ -244,7 +348,6 @@ module.exports.getDepartmentFreeMonth = function(month,year,department,callback)
       })
     .then(
       function havingTimes(doctors) {
-        //console.log('arguments:', arguments);
         var doctorAvailableTimes = arguments;
         for (var i = 0; i < doctorAvailableTimes.length; ++i) {
           var doctorTimes = doctorAvailableTimes[i];
@@ -258,9 +361,9 @@ module.exports.getDepartmentFreeMonth = function(month,year,department,callback)
 
       function finished() {
         var comp = function (a,b){
-            if(a.date.year !== b.date.year)return a.date.year < b.date.year?-1:1;
-            if(a.date.month !== b.date.month)return a.date.month < b.date.month?-1:1;
-            if(a.date.day !== b.date.day)return a.date.day < b.date.day?-1:1;
+            if(a.date.getFullYear() !== b.date.getFullYear())return a.date.getFullYear() < b.date.getFullYear()?-1:1;
+            if(a.date.getMonth() !== b.date.getMonth())return a.date.getMonth() < b.date.getMonth()?-1:1;
+            if(a.date.getDate() !== b.date.getDate())return a.date.getDate() < b.date.getDate()?-1:1;
             if(a.time !== b.time)return a.time === 'AM'?-1:1;
             if(a.freeSlot[0] !== b.freeSlot[0])return a.freeSlot[0] < b.freeSlot[0]?-1:1;
             return Math.random() < 0.5?-1:1;
