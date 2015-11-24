@@ -146,9 +146,11 @@ router.get('/appointment/create', function(req, res, next) {
 
 // Create appointment
 router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
-  if(req.user && req.session.role === '1')
+  //if(req.user && req.session.role === '1')
   {
     var doctorid = req.params.doctorId;
+    var month = 
+    RoundWardControl.getAvailableDateTime(doctorid,month,year,callback)
     res.render('patient/confirm_appointment', { doctorid: doctorid });
   }
 });

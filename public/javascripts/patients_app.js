@@ -231,7 +231,7 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 	var getKey = function(doctorId, month, year)
 	{
 		return doctorId + ' ' + month + ' ' + year;
-	}
+	};
 
 	o.getCalendar = function(doctorId, month, year, callback)
 	{
@@ -917,57 +917,125 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
  }]);
 
-app.controller('confirmAppointmentCtrl', ['$scope', 'appointment_fac', function($scope, appointment_fac) {
-		$scope.dayFormat = "d";
-		$scope.selectedDate = null;
-		$scope.availableSlot =[
-			{id:"1",time:"9.30-9.40"},
-			{id:"2",time:"9.40-9.50"},
-			{id:"3",time:"9.50-10.00"},
-			{id:"4",time:"10.00-10.10"},
-			{id:"5",time:"10.10-10.20"},
-			{id:"6",time:"10.20-10.30"},
-			{id:"7",time:"10.30-10.40"}
-		];
-		$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', 'appointment_fac', function($scope, $mdDialog, appointment_fac) {
+		
+		$scope.selectedAvailableDate = null;
+		$scope.appointmentDate = null;
+		
 		
 		$scope.init = function(doctorId)
 		{	
 			var currentDate = new Date();
 			appointment_fac.getCalendar(doctorId, currentDate.getMonth(), currentDate.getFullYear(), () => {});
-		}
-
-		$scope.setDirection = function(direction) {
-			$scope.direction = direction;
-			$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
 		};
 
-        $scope.dayClick = function(date) {
-          $scope.msg = "You clicked " + date;
-          console.log($scope.msg);
+        
+        var DialogController = function($scope, $mdDialog)
+        {
+        	$scope.dayFormat = "d";
+			$scope.selectedDate = null;
+        	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+
+        	$scope.close = function()
+        	{
+        		$mdDialog.cancel();
+        	};
+
+        	$scope.setDirection = function(direction) {
+				$scope.direction = direction;
+				$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
+			};
+
+	        $scope.dayClick = function(date) {
+	        	$scope.msg = "You clicked " + date;
+				console.log($scope.msg);
+				var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+				        "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+				       "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
+		        // To select a single date, make sure the ngModel is not an array.
+	            if (dateList.indexOf(date+"") > -1){
+	              	$scope.selectedAvailableDate = date;
+	              	console.log('selected date ' + date.getMonth());
+	          	}
+	            else{
+	              	$scope.selectedAvailableDate = null;
+	            }
+	        };
+
+	        $scope.prevMonth = function(data) {
+	          $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+	        };
+
+	        $scope.nextMonth = function(data) {
+	          $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+	        };
+
+	        $scope.tooltips = true;
+	        $scope.setDayContent = function(date) {
+		        var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+		                "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
+		               "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
+		        // To select a single date, make sure the ngModel is not an array.
+	            if (dateList.indexOf(date+"") > -1){
+	              return "<i class='material-icons'>assignment_turned_in</i>";
+	              }
+	            else{
+	              return "<p></p>";
+	            }
+	        };
+
+	        $scope.changeDate = function()
+	        {
+	        	$mdDialog.hide($scope.selectedAvailableDate);
+	        };
+
+
         };
 
-        $scope.prevMonth = function(data) {
-          $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
-        };
+        $scope.showDialog = function(ev) {
+		    $mdDialog.show({
+		    	controller: DialogController,
+		      templateUrl: '/dialog/selectDateDialog.html',
+		      parent: angular.element(document.body),
+		      targetEvent: ev,
+		      clickOutsideToClose:true
+		    }).then(function(selectedAppDate)
+		    {
+		    	$scope.appointmentDate = selectedAppDate;
+		    });
+	  	};
 
-        $scope.nextMonth = function(data) {
-          $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
-        };
+	  	var SelectTimeDialogController = function($scope, $mdDialog, availableSlots)
+	  	{
+	  		$scope.availableSlots = availableSlots;
+	  		$scope.selectedSlot = availableSlots[0];
+	  		$scope.select = function()
+	  		{
+	  			$mdDialog.hide($scope.selectedSlot);
+	  		};
+	  		$scope.close = function()
+	  		{
+	  			$mdDialog.cancel();
+	  		};
+	  	};
 
-        $scope.tooltips = true;
-        $scope.setDayContent = function(date) {
-        var dateList = ["Tue Dec 08 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-                "Wed Dec 09 2015 00:00:00 GMT+0700 (SE Asia Standard Time)",
-               "Wed Dec 02 2015 00:00:00 GMT+0700 (SE Asia Standard Time)"];
-        // To select a single date, make sure the ngModel is not an array.
-            if (dateList.indexOf(date+"") > -1){
-              return "<i class='material-icons'>assignment_turned_in</i>";
-              }
-            else{
-              return "<p></p>";
-            }
-        };
+	  	$scope.availableSlots = [0,1,3,5,7,8,12];
+
+	  	$scope.showSelectTimeDialog = function(ev)
+	  	{
+	  		$mdDialog.show({
+	  			locals: { availableSlots: $scope.availableSlots },
+		    	controller: SelectTimeDialogController,
+		      templateUrl: '/dialog/selectAppTimeDialog.html',
+		      parent: angular.element(document.body),
+		      targetEvent: ev,
+		      clickOutsideToClose:true
+		    }).then(function(selectedSlot)
+		    {
+		    	$scope.selectedSlot = selectedSlot;
+		    });
+	  	};
+
 
 }]);
 
