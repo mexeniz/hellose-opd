@@ -374,6 +374,7 @@ module.exports.getDepartmentFreeMonth = function(month,year,department,callback)
 };
 
 module.exports.importRoundWard = function (startDate,data,callback) {
+  console.log("importRoundWard Called");
   //Read the CSVs and Put it into DATABASE
   var beginningMonth = startDate;
   var endMonth = new Date(startDate.getFullYear(),startDate.getMonth()+1,0);
@@ -395,14 +396,14 @@ data.forEach(function(e){
                     if(e.sun1 == '1'){
                         //console.log('sunday morning'+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         pack = {};
                     }
                     if(e.sun2 == '1'){
                         //console.log('sunday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -411,14 +412,14 @@ data.forEach(function(e){
                     if(e.mon1 === '1'){
                         //console.log('monday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.mon2 === '1'){
                         //console.log('monday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -427,14 +428,14 @@ data.forEach(function(e){
                     if(e.tue1 == '1'){
                         //console.log('tuesday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.tue2 == '1'){
                         //console.log('tuesday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -443,14 +444,14 @@ data.forEach(function(e){
                     if(e.wed1 == '1'){
                        // console.log('wednesday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.wed2 == '1'){
                        // console.log('wednesday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -459,14 +460,14 @@ data.forEach(function(e){
                     if(e.thr1 == '1'){
                        // console.log('thursday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.thr2 == '1'){
                        // console.log('thursday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -476,14 +477,14 @@ data.forEach(function(e){
                     if(e.fri1 == '1'){
                         //console.log('friday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.fri2 == '1'){
                        // console.log('friday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -492,14 +493,14 @@ data.forEach(function(e){
                     if(e.sat1 == '1'){
                        // console.log('saturday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.sat2 == '1'){
                        // console.log('saturday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
