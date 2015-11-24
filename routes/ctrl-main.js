@@ -264,10 +264,11 @@ router.get('/roundward/add', function(req, res, next) {
 
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
+  //if(req.user && req.session.role === '2')
+  //{
     var roundward = {date:req.body['date'],
           time:req.body['time']};
+    //var userId = req.body['doctor_id'];
     var userId = req.user._id; //GetFromSession
     RoundWardControl.addRoundWard(userId,roundward,function(err,result){
       if(err){
@@ -275,7 +276,7 @@ router.post('/addRoundward', function(req,res,next){
       }
       return res.json(result);
     });
-  }
+  //}
 });
 
 // Create appointment

@@ -30,12 +30,15 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
     }else{ 
       //Found Doctor
       var roundward_entity = new Roundward(rwinfo);  //Create Roundward 
-      Roundward.findOne({date:roundward_entity.date,time:roundward_entity.time},
+      //console.log(rwinfo);
+      Roundward.findOne({date : roundward_entity.date , time : roundward_entity.time},
         function(err2,result){
         if(err2){
           return callback(err2);
         }else if(result){
           //Already Exist ! : Add To Array
+          //console.log('already Exist');
+          //console.log(result);
           Doctor.findByIdAndUpdate(
                     thisDoctor._id,
                     { $addToSet: {"onDutyRoundward": result._id}},
@@ -44,11 +47,13 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
                if(err){
                 return callback(err4);
                }
-                callback(err4,result);
+                callback(null,result);
           });
         }else if(!result){
           //New Roundward ! : Add To Array
+          //console.log('NEW');
           roundward_entity.save(function(err3,res){
+            //console.log("TRYING TO SAVE");
             if(err3){
               return callback(err3);
             }else{
@@ -61,9 +66,11 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
                if(err){
                 return callback(err4);
                }
-                callback(err4,res);
+               //console.log('SAVED');
+                callback(null,res);
           });
             }
+            
           });
         }
       });
@@ -381,6 +388,7 @@ module.exports.importRoundWard = function (startDate,data,callback) {
 data.forEach(function(e){
   var my_stack = [];
       User.findOne({firstname:e.docfirstname,lastname:e.doclastname},function(err,thisDoctor){
+        console.log("Data Add To "+thisDoctor.firstname+" "+thisDoctor.lastname);
         if(err){
           return callback(err);
         }else if(!thisDoctor){
@@ -509,15 +517,15 @@ data.forEach(function(e){
                     console.log('m.day Error');
             }
           }
-           console.log(my_stack);
+           //console.log(my_stack);
            my_stack.forEach(function(e){
-              module.exports.addRoundWard(thisDoctor._id,e,function(){
-                //Nothing
+              module.exports.addRoundWard(thisDoctor._id,e,function(err,result){
+                //console.log(result);
               });
            });
         }
       }).exec(function(){
-        console.log('Roundward entry added : '+ my_stack.length);
+        console.log('Roundward entry read : '+ my_stack.length);
         console.log('Endloop');
       });
   });  
