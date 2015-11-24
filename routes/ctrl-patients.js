@@ -53,12 +53,14 @@ router.put('/update/:patid', function(req, res, next) {
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
-    Patient.findOne({patient_id: id})
+  console.log(id);
+    Patient.findOne({userId: id})
           .populate('physical_record')
           .populate('medical_record')
           .populate('prescription_record')
           .populate('userId')
           .exec(function(err, patient) {
+              console.log(patient);
               if(err) {
                 return res.json(500, {
                     message: 'Error getting patient.'
@@ -84,6 +86,7 @@ router.get('/info/:patid', function(req, res, next) {
                 // Get medicine info
                 Patient.populate(patient, options2, function(err, patient) {
                   if(err) return next(err);
+                  console.log(patient);
                   res.json(patient);
                 });
                 

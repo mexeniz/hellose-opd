@@ -26,6 +26,8 @@ module.exports.login = function(req, username, password, done) {
 		case '5':
 			query.isNurse = true;
 			break;
+		case '6':
+			query.isAdmin = true;
 	}
 	User.findOne(query, 
 		function(err, user) {
