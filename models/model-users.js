@@ -14,7 +14,10 @@ var UserSchema = new mongoose.Schema({
   email: {type: String, required: true, unique: true},
   isPatient: Boolean,
   isDoctor: Boolean,
-  isStaff: Boolean
+  isStaff: Boolean,
+  isPharmacist: Boolean,
+  isNurse: Boolean,
+  isAdmin: Boolean
 });
 
 UserSchema.methods.setPassword = function(password){

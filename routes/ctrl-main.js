@@ -100,6 +100,8 @@ router.get('/home', function(req, res, next) {
       res.render('pharmacist/home');
     } else if(role === '5') {
       res.render('nurse/home');
+    } else if(role === '6') {
+      res.render('admin/home');
     } else {
       res.render('patient/home');
     }
@@ -509,3 +511,29 @@ router.get('/prescription', function(req, res, next) {
   }
   res.redirect('/login');
 });
+
+/* ------------------------------------------------------- */
+
+// Admin only
+router.get('/user', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/user');
+  }
+  res.redirect('/login');
+});
+
+
+router.get('/medicine', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/medicine');
+  }
+  res.redirect('/login');
+});
+
+router.get('/disease', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/disease');
+  }
+  res.redirect('/login'); 
+});
+
