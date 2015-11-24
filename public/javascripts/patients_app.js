@@ -244,9 +244,8 @@ app.factory('appointment_fac', ['$http', '$timeout', function($http, $timeout){
 			{_id: 4, date: new Date(year, month, 4, 0, 0, 0, 0), time: 'PM'}
 		];*/
 		
-
 		$http.post('/getAvailableDateTime', { doctor_id: doctorId, month: month, year: year }).success(function(result){
-			
+			console.log("SUCCESS");
 			console.log(result);
 
 			/*
@@ -402,7 +401,9 @@ app.controller('InfoCtrl', [
 			$scope.patient_id = patient_id;
 			
 			patients_fac.getPatient($scope.patient_id).success(function(data){
-				$scope.patient = data;
+				$scope.patient = data.userId;
+				$scope.patient.blood_type = data.blood_type;
+				$scope.patient.patient_id = data.patient_id;
 				$scope.physicalRecordList = data.physical_record ;
 				$scope.medicalRecordList = data.medical_record ;
 				$scope.prescriptionList = data.prescription_record ;

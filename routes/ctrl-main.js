@@ -100,6 +100,8 @@ router.get('/home', function(req, res, next) {
       res.render('pharmacist/home');
     } else if(role === '5') {
       res.render('nurse/home');
+    } else if(role === '6') {
+      res.render('admin/home');
     } else {
       res.render('patient/home');
     }
@@ -208,14 +210,16 @@ router.post('/cancelRoundward', function(req,res,next){
 //GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
 //BUSY ROUNDWARD WILL NOT BE FETCHED
 router.post('/getAvailableDateTime', function(req,res,next){
-  if(req.user && (req.session.role === '1' || req.session.role === '2' || req.session.role === '3'))
+  console.log("request");
+  if(true)
+  //if(req.user && (req.session.role === '1' || req.session.role === '2' || req.session.role === '3'))
   {
 
     var doctor_id = req.session.role === '2' ? req.user._id : req.body['doctor_id']; // If doctor, use user id of doctor, else must pass doctorid(userid of doctor)
     var month = req.body['month'];
     var year = req.body['year'];
 
-    console.log(doctor_id + month + year);
+    console.log('ctrl-main.js[218] : '+doctor_id);
 
     RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
       if(err){
@@ -511,3 +515,29 @@ router.get('/prescription', function(req, res, next) {
   }
   res.redirect('/login');
 });
+
+/* ------------------------------------------------------- */
+
+// Admin only
+router.get('/user', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/user');
+  }
+  res.redirect('/login');
+});
+
+
+router.get('/medicine', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/medicine');
+  }
+  res.redirect('/login');
+});
+
+router.get('/disease', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/disease');
+  }
+  res.redirect('/login'); 
+});
+
