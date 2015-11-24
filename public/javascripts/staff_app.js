@@ -256,7 +256,7 @@ app.controller('ListCtrl', [
   
 	  	$scope.query = {
 	 	   order: 'patient_id',
-	 	   limit: 5,
+	 	   limit: 10,
 		    page: 1
 		};
 
@@ -346,7 +346,7 @@ app.controller('InfoCtrl', [
 							$mdDialog.hide($scope.patient);}
 		      	};
 		      $scope.updateProfile = function(){	
-	        	console.log(patient);
+
 		      };
 		    };
 		//Copy important value (User model)
@@ -372,15 +372,13 @@ app.controller('InfoCtrl', [
 	        clickOutsideToClose:true
 	      })
 	      .then(function(editedPatient) {
-	      	$scope.patient.age = function(){
+	      	$scope.patient.age = (function(){
 				    return (new Date().getFullYear() - editedPatient.birthdate.getFullYear());
-			};
+			}());
 	        patients_fac.update($scope.patient , editedPatient);
-	      }, function() {
-
 	      });
 
-	    } 	;
+	    } ;
 	}
 	
 ]);

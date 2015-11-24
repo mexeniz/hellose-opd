@@ -242,7 +242,7 @@ app.controller('ListCtrl', [
   
 	  	$scope.query = {
 	 	   order: 'patient_id',
-	 	   limit: 5,
+	 	   limit: 10,
 		    page: 1
 		};
 
@@ -293,7 +293,6 @@ app.controller('InfoCtrl', [
 		$scope.init = function(patient_id) {
 			// Get patient info
 			$scope.patient_id = patient_id;
-			console.log("Req" + patient_id);
 			patients_fac.getPatient($scope.patient_id).success(function(data){
 				var obj_id = data._id ; 
 				$scope.patient = data.userId;
@@ -319,7 +318,7 @@ app.controller('InfoCtrl', [
 
 		$scope.showPhysicalRecordForm = function(ev,mode,physicalRecord){
 
-			var createPhysCtrl = function($scope , physical_records_fac ,patient ,physicalRecord){
+			var createPhysCtrl = function($scope ,physicalRecord){
 				$scope.physicalRecord = {} ;
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
@@ -337,8 +336,17 @@ app.controller('InfoCtrl', [
 				}
 		      	};
 		      };
-		    var editPhysCtrl = function($scope , physical_records_fac ,patient , physicalRecord){
-				$scope.physicalRecord = physicalRecord ;
+		    var editPhysCtrl = function($scope ,physicalRecord){
+				$scope.physicalRecord = {
+		    		_id : physicalRecord._id ,
+		    		weight : physicalRecord.weight ,
+		        	height : physicalRecord.height ,
+		        	temperature : physicalRecord.temperature ,
+		        	pulse : physicalRecord.pulse
+		    	};
+		    	var b = physicalRecord.blood_pressure.split('/');
+				$scope.blood_pressure_sys = Number(b[0]) ;
+				$scope.blood_pressure_di = Number(b[1]) ;
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
@@ -346,7 +354,8 @@ app.controller('InfoCtrl', [
 		        	if ($scope.physicalRecord.weight !== null &&
 		        		$scope.physicalRecord.height !== null &&
 		        		$scope.physicalRecord.temperature !== null &&
-		        		$scope.physicalRecord.blood_pressure !== null &&
+		        		$scope.blood_pressure_sys !== null &&
+		        		$scope.blood_pressure_di !== null &&
 		        		$scope.physicalRecord.pulse !== null ){
 		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
 					$mdDialog.hide({mode :'edit',physicalRecord : $scope.physicalRecord});
@@ -360,8 +369,12 @@ app.controller('InfoCtrl', [
 		    else{
 		    	pCtrl = createPhysCtrl ;
 		    }
+
+		    //Copy value
+		    
+
 			$mdDialog.show({
-	        locals:{physical_records_fac : physical_records_fac  , patient : $scope.patient , physicalRecord : physicalRecord},
+	        locals:{physicalRecord : physicalRecord},
 	        controller: pCtrl,
 	        templateUrl: '/dialog/createPhysicalRecord.html',
 	        parent: angular.element(document.body),
@@ -369,16 +382,12 @@ app.controller('InfoCtrl', [
 	        clickOutsideToClose:true
 	      })
 	      .then(function( response ) {
-	        //Do something after close dialog
-	        //Switch to another page
-	        console.log("Debug : "+ response.mode);
-	        console.log($scope.patient);
-	        console.log(response.physicalRecord);
-	        console.log("End Debug");
-	        if(response.mode === "create")
+	        if(response.mode === "create"){
 	        	physical_records_fac.add($scope.patient, response.physicalRecord);
-	        else if (response.mode === "edit")
+	        }
+	        else if (response.mode === "edit"){
 				physical_records_fac.update($scope.patient, response.physicalRecord);
+	        }
 	      });
 
 		};
@@ -406,7 +415,7 @@ app.controller('InfoCtrl', [
 		//Pagination Function
 		$scope.query = {
 	 	   order: 'physicalRecord.date',
-	 	   limit: 5,
+	 	   limit: 10,
 		    page: 1
 		};
 
