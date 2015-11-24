@@ -17,28 +17,33 @@
         <md-content layout-padding class="autoScroll">
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
-            <label>น้ำหนัก</label>
-            <input ng-model="physicalRecord.weight" type="text" required>
+            <label>น้ำหนัก (กก.)</label>
+            <input ng-model="physicalRecord.weight" type="number" step="0.1" required>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
-            <label>ส่วนสูง</label>
-            <input ng-model="physicalRecord.height" type="text" required>
+            <label>ส่วนสูง (ซม.)</label>
+            <input ng-model="physicalRecord.height" type="number" step="0.1" required>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
-            <label>ความดันโลหิต</label>
-            <input ng-model="physicalRecord.blood_pressure" type="text" required>
+            <label>ความดันโลหิต(ล่าง)</label>
+            <input ng-model="blood_pressure_sys" type="number" step="1" required>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
-            <label>ชีพจร</label>
-            <input ng-model="physicalRecord.pulse" type="text" required>
+            <label>ความดันโลหิต(บน)</label>
+            <input ng-model="blood_pressure_di" type="number" step="1" required>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
-            <label>อุณหภูมิรางกาย</label>
-            <input ng-model="physicalRecord.temperature" type="text" required>
+            <label>ชีพจร (ครั้งต่อนาที)</label>
+            <input ng-model="physicalRecord.pulse" type="number" step="0.1" required>
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>อุณหภูมิรางกาย (องศาเซลเซียส)</label>
+            <input ng-model="physicalRecord.temperature" type="number" step="0.01" required>
           </md-input-container>
     </md-dialog-content>
     <md-dialog-actions layout="row">

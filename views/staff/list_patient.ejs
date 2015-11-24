@@ -22,11 +22,11 @@
         <md-input-container class="md-icon-float md-block ">
           <label>ค้นหา (รหัสผู้ป่วย, ชื่อ, นามสกุล)</label>
           <md-icon md-font-library="material-icons">search</md-icon>
-          <input ng-model="fullnameOrIdFilterItem.store" type="text">
+          <input ng-model="fullnameOrIdFilterItem.store" class="md-accent" type="text">
         </md-input-container>
       </md-card>
     <md-data-table-container>
-      <table md-data-table class="md-primary" md-progress="deferred">
+      <table md-data-table class="md-accent" md-progress="deferred">
         <thead md-order="query.order" md-trigger="onorderchange">
           <tr>
             <th order-by="patient_id" name="รหัสผู้ป่วย"></th>
@@ -40,7 +40,7 @@
             <td>{{p.patient_id}}</td>
             <td>{{p.userId.firstname}}</td>
             <td>{{p.userId.lastname}}</td>
-            <td><md-button class="md-primary md-raised" href="/patient_profile/{{p.patient_id}}"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
+            <td><md-button class="md-accent md-hue-1 md-raised" href="/patient/{{p.patient_id}}"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
           </tr>
 
         </tbody>

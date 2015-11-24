@@ -1,5 +1,5 @@
 (function(){
-var app = angular.module('staff', ['ui.router', 'ngMaterial', 'materialCalendar', 'ngCsvImport' ,'md.data.table']) ;
+var app = angular.module('nurse', ['ui.router', 'ngMaterial', 'materialCalendar', 'ngCsvImport' ,'md.data.table']) ;
 
 // Angular Material Config
 app.config(function($mdThemingProvider, $mdIconProvider){
@@ -52,7 +52,7 @@ app.factory('physical_records_fac', ['$http', function($http){
 		o.add = function(patient, pRecord)
 		{
 			return $http.post('/records/physical/insert/'+ patient._id , pRecord).success(function(data){
-		    patient.physical_record.push(data);
+		    	patient.physical_record.push(data);
 			});
 		};
 	  o.update = function(patient, pRecord)
@@ -278,103 +278,158 @@ app.controller('ListCtrl', [
 		};
 	}
 ]);
+app.controller('InfoCtrl', [
+	'$scope',
+	'patients_fac',
+	'physical_records_fac',
+	'medical_records_fac',
+	'prescription_records_fac',
+	'medicines_fac',
+	'$mdDialog',
+	'$q',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$mdDialog,$q){
+      	$scope.bloodList = ["A","B","AB","O"];
+		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		$scope.init = function(patient_id) {
+			// Get patient info
+			$scope.patient_id = patient_id;
+			console.log("Req" + patient_id);
+			patients_fac.getPatient($scope.patient_id).success(function(data){
+				var obj_id = data._id ; 
+				$scope.patient = data.userId;
+				$scope.patient.blood_type = data.blood_type;
+				$scope.patient.patient_id = data.patient_id;
+				$scope.patient.physical_record = data.physical_record ;
+				$scope.patient.medical_record = data.medical_record ;
+				$scope.patient.prescription_record = data.prescription_record ;
+				$scope.patient._id = obj_id ; 
+				
+				$scope.patient.birthdate = new Date(data.birthdate);
 
-//Staff
+				$scope.patient.age = (function(){
+			    	// var ageDifMs = Date.now() - $scope.patient.birthdate.getTime();
+				    // var ageDate = new Date(ageDifMs); // miliseconds from epoch
+				    return (new Date().getFullYear() - $scope.patient.birthdate.getFullYear());
+				    // return Math.abs(ageDate.getUTCFullYear() - 1970);
+			    }());
 
-//Importing CSV Here
-app.controller('ImportCtrl', [	'$scope', '$parse', 'schedule_fac',
-		function($scope,$parse,schedule_fac){
+				// console.log(data);
+		    });
+		};
 
-			$scope.csv = {
-					content: null,
-				header: true,
-				headerVisible: false,
-				separator: ',',
-				separatorVisible: false,
-				result: 'json.result',
-				encoding: 'ISO-8859-1',
-				encodingVisible: false,
-			};
+		$scope.showPhysicalRecordForm = function(ev,mode,physicalRecord){
 
-			$scope.monthList = [];
+			var createPhysCtrl = function($scope , physical_records_fac ,patient ,physicalRecord){
+				$scope.physicalRecord = {} ;
+		        $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.submitPhysicalRecord = function(){
+		        	if ($scope.physicalRecord.weight != null &&
+		        		$scope.physicalRecord.height != null &&
+		        		$scope.physicalRecord.temperature != null &&
+		        		$scope.blood_pressure_sys != null &&
+		        		$scope.blood_pressure_di != null &&
+		        		$scope.physicalRecord.pulse != null ){
+		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
 
-			$scope.yearList = [];
-
-
-
-			$scope.init = function()
-			{
-				var currentDate = new Date();
-				$scope.startYear = currentDate.getFullYear();
-				$scope.monthList = [
-					{
-						value: 1,
-						msg: 'มกราคม'
-					},
-					{
-						value: 2,
-						msg: 'กุมภาพันธ์'
-					},
-					{
-						value: 3,
-						msg: 'มีนาคม'
-					},
-					{
-						value: 4,
-						msg: 'เมษายน'
-					},
-					{
-						value: 5,
-						msg: 'พฤษภาคม'
-					},
-					{
-						value: 6,
-						msg: 'มิถุนายน'
-					},
-					{
-						value: 7,
-						msg: 'กรกฎาคม'
-					},
-					{
-						value: 8,
-						msg: 'สิงหาคม'
-					},
-					{
-						value: 9,
-						msg: 'กันยายน'
-					},
-					{
-						value: 10,
-						msg: 'ตุลาคม'
-					},
-					{
-						value: 11,
-						msg: 'พฤศจิกายน'
-					},
-					{
-						value: 12,
-						msg: 'ธันวาคม'
-					}
-				];
-				for(var i = $scope.startYear; i < $scope.startYear + 10; i++)
-				{
-					$scope.yearList.push(i);
+					$mdDialog.hide({mode :'create',physicalRecord : $scope.physicalRecord});
 				}
+		      	};
+		      };
+		    var editPhysCtrl = function($scope , physical_records_fac ,patient , physicalRecord){
+				$scope.physicalRecord = physicalRecord ;
+		        $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.submitPhysicalRecord = function(){
+		        	if ($scope.physicalRecord.weight !== null &&
+		        		$scope.physicalRecord.height !== null &&
+		        		$scope.physicalRecord.temperature !== null &&
+		        		$scope.physicalRecord.blood_pressure !== null &&
+		        		$scope.physicalRecord.pulse !== null ){
+		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
+					$mdDialog.hide({mode :'edit',physicalRecord : $scope.physicalRecord});
+					}
+		      	};
+		      };
+		    var pCtrl = {};
+		    if (mode === 'edit'){
+		    	pCtrl = editPhysCtrl ;
+		    }
+		    else{
+		    	pCtrl = createPhysCtrl ;
+		    }
+			$mdDialog.show({
+	        locals:{physical_records_fac : physical_records_fac  , patient : $scope.patient , physicalRecord : physicalRecord},
+	        controller: pCtrl,
+	        templateUrl: '/dialog/createPhysicalRecord.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function( response ) {
+	        //Do something after close dialog
+	        //Switch to another page
+	        console.log("Debug : "+ response.mode);
+	        console.log($scope.patient);
+	        console.log(response.physicalRecord);
+	        console.log("End Debug");
+	        if(response.mode === "create")
+	        	physical_records_fac.add($scope.patient, response.physicalRecord);
+	        else if (response.mode === "edit")
+				physical_records_fac.update($scope.patient, response.physicalRecord);
+	      });
 
-				$scope.year = $scope.startYear;
-				$scope.month = currentDate.getMonth();
-			};
+		};
+		$scope.submitPhysicalRecord = function()
+		{
 
-			
-			$scope.genMes = function(){
-					var year_input = $scope.year;
-					var months_input = $scope.month;
-					var jsondata = {};
-					jsondata = {'month': months_input , 'year' : year_input , data :$scope.csv.result };
-					//Parse to Backend
-					schedule_fac.create(jsondata);
-			};
+			if($scope.mode === 'create'){
+				physical_records_fac.add($scope.patient, $scope.physicalRecord);
+			}
 
-		}]);
+			else if($scope.mode === 'edit')
+			{
+				physical_records_fac.update($scope.patient, $scope.physicalRecord);
+			}
 
+			$scope.showPhysModal = !$scope.showPhysModal ;
+		};
+
+		$scope.removePhysicalRecord = function(pRecord, index){
+			if(confirm("Are you sure?") ){
+				physical_records_fac.delete($scope.patient, pRecord, index);
+			}
+		};
+
+		//Pagination Function
+		$scope.query = {
+	 	   order: 'physicalRecord.date',
+	 	   limit: 5,
+		    page: 1
+		};
+
+		$scope.onpagechange = function(page, limit) {
+		    var deferred = $q.defer();
+		    
+		    setTimeout(function () {
+		      deferred.resolve();
+		    }, 2000);
+		    
+		    return deferred.promise;
+		  };
+	  
+		$scope.onorderchange = function(order) {
+		    var deferred = $q.defer();
+		    
+		    setTimeout(function () {
+		      deferred.resolve();
+		    }, 2000);
+		    
+		    return deferred.promise;
+		  };
+	}
+	
+]);
 })();

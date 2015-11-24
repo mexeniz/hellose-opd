@@ -12,6 +12,7 @@ var UserSchema = new mongoose.Schema({
   lastname: {type: String, required: true},
   telNum: String,
   email: {type: String, required: true, unique: true},
+  address: String, 
   isPatient: Boolean,
   isDoctor: Boolean,
   isStaff: Boolean,
