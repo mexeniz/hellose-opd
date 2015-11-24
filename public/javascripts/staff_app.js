@@ -266,7 +266,16 @@ app.controller('ListCtrl', [
 		    return deferred.promise;
 		  };
 
+		  //Filter
+		 $scope.fullnameOrIdFilterItem = {
+			store : ''
+		};
 
+		$scope.fullnameOrIdFilter = function(data){
+			var fullname = (data.userId.firstname + " " + data.userId.lastname).toLowerCase();
+			var input = $scope.fullnameOrIdFilterItem.store.trim().toLowerCase();
+			return fullname.indexOf(input) !== -1 || data.patient_id.indexOf(input) !== -1;
+		};
 	}
 ]);
 //Importing CSV Here
