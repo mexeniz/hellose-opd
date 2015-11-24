@@ -11,6 +11,7 @@ var UserSchema = new mongoose.Schema({
   firstname: {type: String, required: true},
   lastname: {type: String, required: true},
   telNum: String,
+  birthdate : Date,
   email: {type: String, required: true, unique: true},
   address: String, 
   isPatient: Boolean,

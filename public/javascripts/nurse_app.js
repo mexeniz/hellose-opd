@@ -304,7 +304,7 @@ app.controller('InfoCtrl', [
 				$scope.patient.prescription_record = data.prescription_record ;
 				$scope.patient._id = obj_id ; 
 				
-				$scope.patient.birthdate = new Date(data.birthdate);
+				$scope.patient.birthdate = new Date(data.userId.birthdate);
 
 				$scope.patient.age = (function(){
 			    	// var ageDifMs = Date.now() - $scope.patient.birthdate.getTime();

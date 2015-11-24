@@ -38,7 +38,21 @@ app.factory('patients_fac', ['$http', function($http){
 		    o.patients.push(data);
 			});
 	  };
-
+	  o.update = function(patient ,editedPatient) {
+	  		console.log("test update");
+	  		patient.firstname = editedPatient.firstname;
+	  		patient.lastname = editedPatient.lastname;
+	  		patient.birthdate = editedPatient.birthdate;
+	  		patient.gender = editedPatient.gender;
+	  		patient.blood_type = editedPatient.blood_type;
+	  		patient.ssn = editedPatient.ssn;
+	  		patient.email = editedPatient.email;
+	  		patient.telNum = editedPatient.telNum;
+	  		patient.address = editedPatient.address;
+		  /*return $http.put('/patients/updateProfile/'+editedPatient.user_id, patient).success(function(data){
+		    	o.patients.push(data);
+			});*/
+	  };
 
 		o.getPatient = function(patient_id) {
 			return $http.get('/patients/info/' +patient_id);
@@ -277,6 +291,98 @@ app.controller('ListCtrl', [
 			return fullname.indexOf(input) !== -1 || data.patient_id.indexOf(input) !== -1;
 		};
 	}
+]);
+
+//Controller for Patient Profile
+app.controller('InfoCtrl', [
+	'$scope',
+	'patients_fac',
+	'$mdDialog',
+	'$http',
+	function($scope, patients_fac,$mdDialog,$http){
+      	$scope.bloodList = ["A","B","AB","O"];
+		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		$scope.init = function(patient_id) {
+			// Get patient info
+			$scope.patient_id = patient_id;
+			patients_fac.getPatient($scope.patient_id).success(function(data){
+				var obj_id = data._id ; 
+				var user_id = data.userId._id ; 
+				$scope.patient = data.userId;
+				$scope.patient.blood_type = data.blood_type;
+				$scope.patient.patient_id = data.patient_id;
+				$scope.patient._id = obj_id ; 
+				$scope.patient.user_id = user_id ;
+				$scope.patient.birthdate = new Date(data.userId.birthdate);
+
+				$scope.patient.age = (function(){
+			    	// var ageDifMs = Date.now() - $scope.patient.birthdate.getTime();
+				    // var ageDate = new Date(ageDifMs); // miliseconds from epoch
+				    return (new Date().getFullYear() - $scope.patient.birthdate.getFullYear());
+				    // return Math.abs(ageDate.getUTCFullYear() - 1970);
+			    }());
+		    });
+		};
+		$scope.showEditProfile = function(ev){
+			var editCtrl = function($scope,patient){
+		      	$scope.cancel = function() {
+			         $mdDialog.cancel();
+			    };
+		      	$scope.patient = patient;
+		      	$scope.bloodList = ["A","B","AB","O"];
+	    		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		      	console.log("Update profile!");
+		      	$scope.submitProfile = function(){
+		        	if ($scope.patient.firstname !== null &&
+		        		$scope.patient.lastname !== null &&
+		        		$scope.patient.gender !== null &&
+		        		$scope.patient.email !== null &&
+		        		$scope.patient.address !== null &&
+		        		$scope.patient.ssn !== null &&
+		        		$scope.patient.blood_type !== null &&
+		        		$scope.patient.birthdate !== null &&
+		        		$scope.patient.tel_number !== null
+		        		){
+							$mdDialog.hide($scope.patient);}
+		      	};
+		      $scope.updateProfile = function(){	
+	        	console.log(patient);
+		      };
+		    };
+		//Copy important value (User model)
+		var editedPatient = {
+			_id : $scope.patient.user_id,
+			firstname : $scope.patient.firstname,
+			lastname : $scope.patient.lastname,
+			ssn : $scope.patient.ssn ,
+			email : $scope.patient.email ,
+			birthdate : $scope.patient.birthdate ,
+			telNum : $scope.patient.telNum ,
+			address : $scope.patient.address, 
+			gender : $scope.patient.gender, 
+			blood_type : $scope.patient.blood_type 
+		};
+
+		$mdDialog.show({
+	        locals:{patient: editedPatient},
+	        controller: editCtrl,
+	        templateUrl: '/dialog/editProfile.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(editedPatient) {
+	      	$scope.patient.age = function(){
+				    return (new Date().getFullYear() - editedPatient.birthdate.getFullYear());
+			};
+	        patients_fac.update($scope.patient , editedPatient);
+	      }, function() {
+
+	      });
+
+	    } 	;
+	}
+	
 ]);
 
 //Staff
