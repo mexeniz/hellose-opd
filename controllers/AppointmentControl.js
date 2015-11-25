@@ -39,7 +39,7 @@ module.exports.createAppointment = function(appInfo, callback){
 		}else{
 		//Have Roundward
 			thisRoundward = roundward;
-			return Appointment.findOne({'roundWard' : roundward._id,'slot':appInfo.slot}).exec();
+			return Appointment.findOne({'roundWard' : roundward._id,'slot':appInfo.slot, 'status': 'confirmed'}).exec();
 		}
 	})
 	.then(function(appointments){
@@ -97,32 +97,140 @@ module.exports.createAppointment = function(appInfo, callback){
 //Appointments Which has roundWard = roundward._id 
 //must be canceled
 //DOCTOR USE UPDATEAPPOINTMENTS ( Chain from RoundwardControl . CancleRoundward)
-module.exports.updateAppointments = function(rwid,callback)
-{
-	var promise = Appointment.find({roundWard : rwid}).exec();
+module.exports.updateAppointments = function(department,rwid,callback){
+	console.log("Update Appointment on Patient with Department = " + department);
 
-	promise.then(function(appointments){
-		appointments.forEach(function(e){
-			e.status = 'canceled';
-			e.save();
+	var patientList = [];
+	//FUNCTIONS
+	function findAppointmentById(roundwardId){
+		return new Promise(
+			function (resolve,reject){
+				Appointment.find({roundWard : rwid})
+				.populate({ path : 'roundWard' , select : 'date time'})
+				.populate({ path : 'patient', select : 'userId'})
+				.populate({ path : 'doctor' , select : 'userId'})
+				.exec()
+				.then(function(result){
+					resolve(result);
+				});
+			}
+		);
+	}
+
+	function populatedSingle(detail){
+		return new Promise(function(resolve,reject){
+			var options = {
+				path : 'patient.userId' ,
+				model : 'User',
+				select : 'firstname lastname email'
+			};
+			Appointment.populate(detail,options,function(err,appointments){
+				resolve(appointments);
+			});	
 		});
-		/*
-		NotificationControl.sendSMS();
-		*/
+	}
+	function populatedDoctor(detail){
+		return new Promise(function(resolve,reject){
+			var options = {
+				path : 'doctor.userId' ,
+				model : 'User',
+				select : 'firstname lastname email'
+			};
+			Appointment.populate(detail,options,function(err,appointments){
+				resolve(appointments);
+			});	
+		});
+	}
+
+	function findByIdAndPopulate(patient_id){
+		//console.log(patient_id);
+		return new Promise(
+			function ( resolve , reject ){
+				Patient.findById(patient_id).populate('userId','email')
+				.exec().then(function(result){
+					//console.log(result);
+					resolve(result);
+				});
+			}
+		);
+	}
+
+	//FLOW GOES HERE
+	findAppointmentById(rwid)
+		.then(function havingAppointmentsInvolveThis_rwId(appointments){
+			var promises = [];
+			for (var i = 0 ; i < appointments.length ; ++i){
+				appointments[i].status = 'canceled';
+				appointments[i].save();
+				promises.push(populatedSingle(appointments[i]));
+			}
+			return Promise.all(promises);
+		}).then(function letPopulateDoctors(appointments){
+			var objects = arguments;
+			var promises = [];
+			for (var i = 0 ; i < appointments.length ; ++i){
+				promises.push(populatedDoctor(objects[i]));
+			}
+			return Promise.all(promises);
+		}).then(function afterPopulation(patient_list){
+			var myList = arguments;
+			//Every Occurence
+			for (var i = 0 ; i < myList.length ; ++i){
+				console.log(myList[i]);
+				//getAppointmentWithEarliestDatetime(department)
+			}
+			return callback(null,'success');
+		});
+
+}
+
+module.exports.getAppointmentWithEarliestDatetime = function(department,callback){
+	function findWholeMonth(department){
+		return new Promise(
+			function(resolve,reject){
+				var date = new Date();
+				RoundWardControl.getDepartmentFreeMonth(
+					date.getFullYear(),
+					date.getMonth(),
+					department,
+					function(err,result){
+						resolve(result);
+				});
+		});
+	}
+
+	//FLOW GOES HERE
+	findWholeMonth(department)
+	.then(function gotWholeMonth(){
+		var result = arguments;
+		console.log(arguments);
 	});
-};
+
+}
+
 
 //PATIENT 
 module.exports.cancelAppointment = function(appId,callback)
 {
-	console.log(appId);
+	/*console.log(appId);
 	//Function
 	var appointmentFind_promise = Appointment.findOne({_id:mongoose.Types.ObjectId(appId)}).exec();
 	//Flow Here
 	appointmentFind_promise.then(function(appointment){
-		appointment.status = 'canceled'
+		appointment.status = 'canceled';
 		appointment.save();
+		return appointment;
+	}).then(function(appointment){
+		console.log("NOTIFICATION HERE TO MAILER "+appointment);
+	});*/
+
+	Appointment.findOneAndUpdate({ '_id': appId}, { status: 'canceled' }, { new: true }, function(err, result)
+	{
+		if(err) { callback(err, null); }
+		console.log("NOTIFICATION HERE TO MAILER "+result);
+		callback(err, result);
 	});
+
 };
 
 module.exports.editAppointment = function(userId,doctor_userId,callback)
@@ -176,4 +284,21 @@ module.exports.getAppointment = function(userId,month,year,callback){
   		callback(null,returning);
   	});
 
+};
+
+module.exports.getAppointmentByPatientId = function(patientId, callback)
+{
+	Appointment.find({patient : patientId})
+		.populate({ path : 'roundWard' , select : 'date time'})
+		.populate({ path : 'doctor', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.exec(callback);
+};
+
+module.exports.getAppointmentById = function(appId, callback)
+{
+	Appointment.findById(appId)
+		.populate({ path : 'roundWard' , select : 'date time'})
+		.populate({ path : 'doctor', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.populate({ path : 'patient', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.exec(callback);
 };
