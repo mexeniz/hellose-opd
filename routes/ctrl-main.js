@@ -253,8 +253,8 @@ router.post('/getRoundward',function(req,res,next){
 router.post('/cancelRoundward', function(req,res,next){
   //if(req.user && req.session.role === '2')
   //{
-    //var userId = req.user._id; //GetFromSession
-    var userId = req.body['userId'];
+    var userId = req.user._id; //GetFromSession
+    //var userId = req.body['userId']; //doctor's userId FROM User Schema
     var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
     RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
       if(err){

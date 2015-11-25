@@ -30,7 +30,7 @@ module.exports.login = function(req, username, password, done) {
 			query.isAdmin = true;
 	}
 
-	/*
+	
 	User.findOne(query, 
 		function(err, user) {
 			// In case of any error, return using the done method
@@ -59,9 +59,9 @@ module.exports.login = function(req, username, password, done) {
 			}
 			
 		}
-	);*/
+	);
 
-	User.findOne(query)
+	/*User.findOne(query)
 	.then(function(user){
 		if(!user)
 		{
@@ -112,7 +112,7 @@ module.exports.login = function(req, username, password, done) {
 	})
 	.catch(function(err) {
 		return done(null, false, req.flash('message', 'Something wrong!'));
-	});
+	});*/
 
 };
 
