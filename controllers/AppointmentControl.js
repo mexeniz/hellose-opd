@@ -76,18 +76,53 @@ module.exports.createAppointment = function(appInfo, callback){
 //Appointments Which has roundWard = roundward._id 
 //must be canceled
 //DOCTOR USE UPDATEAPPOINTMENTS ( Chain from RoundwardControl . CancleRoundward)
-module.exports.updateAppointments = function(rwid,callback)
+module.exports.updateAppointments = function(department,rwid,callback)
 {
-	var promise = Appointment.find({roundWard : rwid}).exec();
+	console.log(department);
+	
+	function findByIdAndPopulate(patient_id){
+		//console.log(patient_id);
+		return new Promise(
+			function ( resolve , reject ){
+				Patient.findById(patient_id).populate('userId','email')
+				.exec().then(function(result){
+					//console.log(result);
+					resolve(result);
+				});
+			}
+		);
+	}
 
+	var promise = Appointment.find({roundWard : rwid}).populate('roundWard').exec();
 	promise.then(function(appointments){
+		var patientList =[];
 		appointments.forEach(function(e){
+
 			e.status = 'canceled';
 			e.save();
+			var single_entry = { 'patient_id' : e.patient ,
+								 'date' : e.roundWard.date };
+			patientList.push(single_entry);	
 		});
-		/*
-		NotificationControl.sendSMS();
-		*/
+		return patientList;
+	}).then(function populatePatientList(patient_list){
+		var promises = [];
+		for(var i = 0 ; i < patient_list.length ; ++i){
+			console.log("PATIENT_ID = " + patient_list[i].patient_id );
+			promises.push(
+				findByIdAndPopulate(mongoose.Types.ObjectId(patient_list[i].patient_id))
+			);
+		}
+		return Promise.all(promises);
+			
+	}).then(function afterGotEmail(){
+		console.log(arguments);
+		//FOR EVERYPATIENT get
+		//GET DEPARTMENT FREETIME SLOT 0
+		//CREATE APPOINTMENT FOR HIM 
+		//LOOP
+		console.log("GETFREEDEP in "+department);
+		
 	});
 };
 
@@ -101,6 +136,9 @@ module.exports.cancelAppointment = function(appId,callback)
 	appointmentFind_promise.then(function(appointment){
 		appointment.status = 'canceled'
 		appointment.save();
+		return appointment;
+	}).then(function(appointment){
+		console.log("NOTIFICATION HERE TO MAILER "+appointment)
 	});
 };
 

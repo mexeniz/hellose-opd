@@ -117,10 +117,12 @@ module.exports.getRoundward = function(userId,month,year,callback){
 module.exports.cancelRoundward = function (userId,rwId_input,callback) {
   //Doctor Wants to CancelRoundward
   //Find Correspondent Doctor
+
   Doctor.findOne({userId : userId},function(err1,thisDoctor){
   		if(!err1 && thisDoctor){
   			Roundward.findById(rwId_input,function(err2,thisRoundward){
   				if(!err2&&thisRoundward){
+            // Have Roundward and Doctor :3 
   					// Delete Roundward From Doctor's Roundward Array List
             Doctor.update({_id:thisDoctor._id},{$pull : {onDutyRoundward:thisRoundward._id}},
               {},
@@ -129,16 +131,16 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
                   console.log('no doc found in order to update array');
                   return callback(err3);
                 }else{
+                  //FINISHING UPDATE THE ONDUTY ROUNDWARD
                   console.log("Update With Doctor Success");
                     //Appointment.findAndUpdate to Canceled
-                    AppointmentControl.updateAppointment(thisRoundward._id,function(err5,app_result){
+          
+                    AppointmentControl.updateAppointments(thisDoctor.department,thisRoundward._id,function(err5,app_result){
                       if(err5){
                         return callback(err5)
                       }
                       callback(null,result);
-                    });
-                        
-
+                    });                        
                 }
               });
   				}else{
@@ -219,7 +221,7 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
               for(var j = 0 ; j< appointments[i].length ; ++j){
                 for(var k = 0 ; k < appointments[i][j].length ; ++k){
                     var data = appointments[i][j][k];
-                    if(String(data.roundWard._id) === String(e._id)){
+                    if(String(data.roundWard._id) === String(e._id) && data.status !='canceled'){
                         busySlot.push(data.slot);
                     }
                 }
