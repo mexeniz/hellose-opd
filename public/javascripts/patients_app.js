@@ -363,6 +363,31 @@ app.controller('ListCtrl', [
 	}
 ]);
 
+app.controller('ListAppointmentCtrl', [
+	'$scope', 
+	'$filter', 
+	'$http', 
+	'$mdDialog', 
+	function($scope, $filter, $http, $mdDialog) {
+
+		$scope.getAppointmentData = function()
+		{
+			$http.get('/appointment/list').success(function(data){
+
+			});
+		};
+
+		// Initial page by getting appointment data
+		$scope.init = function()
+		{
+
+		};
+
+
+
+	}
+]);
+
 app.controller('InfoCtrl', [
 	'$scope',
 	'patients_fac',
