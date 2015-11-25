@@ -34,7 +34,7 @@
         <thead md-order="query.order" md-trigger="onorderchange">
           <tr>
             <th order-by="date" name="วันที่"></th>
-            <th order-by="fullname" name="ชื่อนามสกุล"></th>
+            <th order-by="fullname" name="ชื่อ-นามสกุลผู้ป่วย"></th>
             <th order-by="doctor" name="แพทย์ผู้จ่าย"></th>
             <th order-by="status" name="สถานะ"></th>
             <th name="จัดการ"></th>
@@ -43,8 +43,12 @@
         <tbody >
           <tr ng-repeat="p in prescriptions | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit  | filter:fullnameFilter |  filter:statusFilter | orderBy:'date':true">
             <td>{{ p.date | date: 'medium' }}</td>
-            <td>{{ p.patient.firstname }} {{ p.patient.lastname }}</td>
-            <td>{{p.doctor}}</td>
+            <td><md-button aria-label="PatientInfo" class="md-fab md-raised md-mini md-accent" href="/patient/{{p.patient.patient_id}}">
+                      <md-icon md-font-library="material-icons">account_circle</md-icon>
+              </md-button>
+              {{ p.patient.userId.firstname }} {{ p.patient.userId.lastname }}
+            </td>
+            <td>{{ p.doctor}}</td>
             <td ng-style="{'color':p.status === 'รอการจ่าย'?'red':'green'}">{{p.status}}</td>
             <td>
               <md-button class="md-primary md-raised" ng-click="showPresDetail($event,p)"><md-icon md-font-library="material-icons">info</md-icon>แก้ไข</md-button>

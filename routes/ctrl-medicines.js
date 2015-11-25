@@ -13,3 +13,12 @@ router.get('/all', function(req, res, next) {
     res.json(medicines);
   });
 });
+
+router.get('/name/:id', function(req, res, next) {
+  var id = req.params.id ;
+  Medicine.findOne({_id : id}).exec(function(err, medicines) {
+    // Check if error
+    if(err) { return next(err); }
+    res.json(medicines);
+  });
+});

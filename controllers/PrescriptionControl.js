@@ -3,12 +3,17 @@
 var mongoose = require('mongoose');
 var Prescription = mongoose.model('Prescription');
 var Patient = mongoose.model('Patient');
+var Medicine = mongoose.model('Medicine');
 
 module.exports.getAllPrescriptions = function(callback)
 {
+	var options = {
+        path: 'med_dosage_list.medicine',
+        model: 'Medicine'
+      };
 	Prescription.find()
-		.populate('patient', 'firstname lastname')
-		.populate('med_dosage_list.medicine')
+		.populate('patient')
+		.populate('med_dosage_list')
 		.exec(callback);
 };
 

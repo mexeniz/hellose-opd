@@ -1,0 +1,52 @@
+
+
+<md-dialog aria-label="Confirm Register"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>รายละเอียดการจ่ายยา</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:1200px;max-height:810px;width:600px;height:400px; ">
+      <!-- Content -->
+      <md-content  flex layout-padding>
+          <md-data-table-container>
+            <table md-data-table>
+              <thead>
+                <tr>
+                  <th>ชื่อยา</th>
+                  <th>ปริมาณ</th>
+                  <th>วิธีใช้</th>
+                </tr>
+              </thead>
+              <tbody ng-repeat="m in prescription.med_dosage_list">
+                <tr>
+                  <td>{{m.name}}</td>
+                  <td>{{m.dosage}}</td>
+                  <td>{{m.howTo}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-data-table-container>
+      </md-content>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span> 
+      <md-button class="md-raised md-primary" ng-click="completePrescription(prescription)" ng-show="prescription.status === 'รอการจ่าย' ">
+        จ่ายยา
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
+
+
+      
+      
+
+
+
