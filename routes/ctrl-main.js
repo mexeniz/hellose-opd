@@ -146,6 +146,32 @@ router.get('/appointment/create', function(req, res, next) {
   }
 });
 
+router.get('/appointment/create/:patientId/:patientName/:patientLastname', function(req, res, next)
+{
+  if(req.user && req.session.role === '2')
+  {
+    var patientid = req.params.patientId;
+    var patientName = req.params.patientName;
+    var patientLastname = req.params.patientLastname;
+    var curDate = new Date();
+    console.log(patientid + patientName + patientLastname + req.session.doctor_id);
+    RoundWardControl.getAvailableDateTime(req.session.doctor_id,curDate.getMonth(),curDate.getFullYear(),function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        if(result.length > 0)
+        {
+          res.render('doctor/create_appointment', { earliestData: JSON.stringify(result[0]), patientId: patientid, patientName: patientName, patientLastname: patientLastname });
+        }
+        else
+        {
+          res.render('doctor/create_appointment', req.flash( {message: 'คุณไม่เหลือเวลาว่างแล้ว'}));
+        }
+      }
+    });
+  }
+});
+
 // Create appointment
 router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
   //if(req.user && req.session.role === '1')
