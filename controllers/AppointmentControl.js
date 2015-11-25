@@ -39,7 +39,7 @@ module.exports.createAppointment = function(appInfo, callback){
 		}else{
 		//Have Roundward
 			thisRoundward = roundward;
-			return Appointment.findOne({'roundWard' : roundward._id,'slot':appInfo.slot}).exec();
+			return Appointment.findOne({'roundWard' : roundward._id,'slot':appInfo.slot, 'status': 'confirmed'}).exec();
 		}
 	})
 	.then(function(appointments){
@@ -278,17 +278,25 @@ module.exports.getAppointmentWithEarliestDatetime = function(department,callback
 //PATIENT 
 module.exports.cancelAppointment = function(appId,callback)
 {
-	console.log(appId);
+	/*console.log(appId);
 	//Function
 	var appointmentFind_promise = Appointment.findOne({_id:mongoose.Types.ObjectId(appId)}).exec();
 	//Flow Here
 	appointmentFind_promise.then(function(appointment){
-		appointment.status = 'canceled'
+		appointment.status = 'canceled';
 		appointment.save();
 		return appointment;
 	}).then(function(appointment){
-		console.log("NOTIFICATION HERE TO MAILER "+appointment)
+		console.log("NOTIFICATION HERE TO MAILER "+appointment);
+	});*/
+
+	Appointment.findOneAndUpdate({ '_id': appId}, { status: 'canceled' }, { new: true }, function(err, result)
+	{
+		if(err) { callback(err, null); }
+		console.log("NOTIFICATION HERE TO MAILER "+result);
+		callback(err, result);
 	});
+
 };
 
 module.exports.editAppointment = function(userId,doctor_userId,callback)
@@ -349,5 +357,14 @@ module.exports.getAppointmentByPatientId = function(patientId, callback)
 	Appointment.find({patient : patientId})
 		.populate({ path : 'roundWard' , select : 'date time'})
 		.populate({ path : 'doctor', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.exec(callback);
+};
+
+module.exports.getAppointmentById = function(appId, callback)
+{
+	Appointment.findById(appId)
+		.populate({ path : 'roundWard' , select : 'date time'})
+		.populate({ path : 'doctor', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.populate({ path : 'patient', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
 		.exec(callback);
 };

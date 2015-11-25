@@ -227,7 +227,7 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
               for(var j = 0 ; j< appointments[i].length ; ++j){
                 for(var k = 0 ; k < appointments[i][j].length ; ++k){
                     var data = appointments[i][j][k];
-                    if(String(data.roundWard._id) === String(e._id) && data.status !='canceled'){
+                    if(String(data.roundWard._id) === String(e._id) && data.status !== 'canceled'){
                         busySlot.push(data.slot);
                     }
                 }

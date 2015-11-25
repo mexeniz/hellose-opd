@@ -406,6 +406,72 @@ app.controller('ListAppointmentCtrl', [
 	}
 ]);
 
+app.controller('ViewAppointmentCtrl', [
+	'$scope', 
+	'$filter', 
+	'$http', 
+	function($scope, $filter, $http) {
+		$scope.appInfo = null;
+		$scope.appId = null;
+
+		var startAM = 9 * 60 + 30;
+		var startPM = 13 * 60;
+
+		$scope.getTimeMessage = function(time, slot)
+		{
+			var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+			var min = minutes % 60;
+			var hour = (minutes - min) / 60;
+			var dateTime = new Date();
+			dateTime.setHours(hour);
+			dateTime.setMinutes(min);
+			return $filter('date')(dateTime, "H:mm");
+		};
+
+		$scope.getAppointmentData = function()
+		{
+			$http.get('/appointment/info/' + $scope.appId).success(function(data){
+				console.log(data);
+				$scope.appInfo = data;
+			});
+		};
+
+		// Initial page by getting appointment data
+		$scope.init = function(appId)
+		{	$scope.appId = appId;
+			$scope.getAppointmentData();
+		};
+
+		// Confirm appointment
+		$scope.confirm = function()
+		{
+
+		};
+		// Postpone appointment
+		$scope.postpone = function()
+		{
+
+		};
+		// Cancel appointment
+		$scope.cancel = function()
+		{
+			console.log('canceling...');
+			$http.delete('/appointment/' + $scope.appId + '/cancel')
+			.success(function(result){
+				console.log('Successfully cancelled');
+				console.log(result);
+				$scope.appInfo.status = result.status;
+			})
+			.error(function(err)
+			{
+				console.log('Error cancelling ' + err);
+			});
+		};
+
+
+	}
+]);
+
 app.controller('InfoCtrl', [
 	'$scope',
 	'patients_fac',

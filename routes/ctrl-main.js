@@ -220,6 +220,32 @@ router.post('/appointment/create', function(req, res, next) {
   });
 });
 
+// Cancel appointment
+router.delete('/appointment/:appId/cancel', function(req, res, next)
+{
+  if(req.user)
+  {
+    if(req.session.role === '1' || req.session.role === '3') // Patient or Staff
+    {
+      var appId = req.params.appId;
+      AppointmentControl.cancelAppointment(appId, function(err, result)
+      {
+        if(err) { return next(err); }
+        console.log('successfully cancelled');
+        return res.json(result);
+      });
+    }
+    else
+    {
+      return res.sendStatus(404);
+    }
+  }
+  else
+  {
+    return res.sendStatus(404);
+  }
+});
+
 /* ------------------------------------------------------- */
 // Doctor Only Route
 
@@ -434,14 +460,38 @@ router.post('/appointment/:appId/edit', function(req, res, next) {
 // View appointment
 router.get('/appointment/:appId', function(req, res, next) {
   if(req.user) {
+    var appId = req.params.appId;
+
     if(req.session.role === '1') {
-      res.render('patient/view_appointment');
+      return res.render('patient/view_appointment', { appId: appId });
     }
     else if(req.session.role === '3') {
       res.render('staff/view_appointment');
     }
+    else
+    {
+      res.redirect('/login');
+    }
   }
-  res.redirect('/login');
+  else
+  {
+    res.redirect('/login');
+  }  
+});
+
+// Get appointment info by id
+router.get('/appointment/info/:appId', function(req, res, next) {
+  if(req.user) {
+    var appId = req.params.appId;
+
+    AppointmentControl.getAppointmentById(appId, function(err, result){
+      res.json(result);
+    });
+  }
+  else
+  {
+    res.json();
+  }
 });
 
 /* ------------------------------------------------------- */
