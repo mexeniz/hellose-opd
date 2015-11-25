@@ -241,7 +241,7 @@ router.post('/appointment/create', function(req, res, next) {
     causes : req.body['causes']
   };
 
-  console.log(appInfo);
+  //console.log(appInfo);
 
   AppointmentControl.createAppointment(appInfo,function(err,result){
     if(err){
@@ -382,7 +382,7 @@ router.get('/roundward/add', function(req, res, next) {
 
 router.post('/kuy',function(req,res,next){
     var department = req.body['department'];
-    AppointmentControl.getAppointmentWithEarliestDatetime (department,function(err,result){
+    RoundWardControl.getEarliest (department,function(err,result){
       if(err){
         return next(err);
       }

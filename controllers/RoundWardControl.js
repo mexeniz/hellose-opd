@@ -37,7 +37,7 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
           return callback(err2);
         }else if(result){
           //Already Exist ! : Add To Array
-          //console.log('already Exist');
+          console.log('already Exist');
           //console.log(result);
           Doctor.findByIdAndUpdate(
                     thisDoctor._id,
@@ -78,6 +78,21 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
   });
 };
 
+module.exports.getEarliest = function(department,callback){
+  var date = new Date();
+  module.exports.getDepartmentFreeMonth(
+          date.getMonth(),
+          date.getFullYear(),
+          department,
+          function(err,result){
+            if(err){
+              return callback(err)
+            }
+            console.log(result[0]);
+            callback(null,result[0]);
+        });
+};
+
 module.exports.getRoundward = function(userId,month,year,callback){
   console.log("getting Roudward"+userId);
   var returning = [];
@@ -116,7 +131,7 @@ module.exports.getRoundward = function(userId,month,year,callback){
 module.exports.cancelRoundward = function (userId,rwId_input,callback) {
   //Doctor Wants to CancelRoundward
   //Find Correspondent Doctor
-
+  console.log('CC CALLED');
   Doctor.findOne({userId : userId},function(err1,thisDoctor){
   		if(!err1 && thisDoctor){
   			Roundward.findById(rwId_input,function(err2,thisRoundward){
@@ -131,7 +146,7 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
                   return callback(err3);
                 }else{
                   //FINISHING UPDATE THE ONDUTY ROUNDWARD
-                  console.log("Update With Doctor Success");
+                  console.log("Going to Appointment Update");
                     //Appointment.findAndUpdate to Canceled
           
                     AppointmentControl.updateAppointments(thisDoctor.department,thisRoundward._id,function(err5,app_result){
@@ -148,7 +163,7 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
   				}
   			});
   		}else{
-  			console.log('Cannot Find Doctor with user_id = '+doctorId_input);
+  			console.log('Cannot Find Doctor with user_id ');
   			callback(err1);
   		}
   });
@@ -165,7 +180,7 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
     return new Promise(
       function (resolve,reject){
           Doctor.findOne({'userId' : mongoose.Types.ObjectId(userId)})
-          .populate({path : 'onDutyRoundward' , match: {date : {"$gte": new Date(year, month), "$lt": new Date(year, month+1)} }})
+          .populate({path : 'onDutyRoundward' , match: {date : {"$gte": new Date(year, month), "$lt": new Date(year, month+2)} }})
           .populate('userId' , 'firstname lastname')
           .exec(function(err,result){
               if(err)reject(err);
