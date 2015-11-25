@@ -3,7 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 module.exports = router;
 var nodemailer = require('nodemailer');
-
+var randomizer =  require('just.randomstring');
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var PhysicalRecord = mongoose.model('PhysicalRecord');
@@ -77,7 +77,19 @@ router.get('/reset_password', function(req, res){
 });
 
 router.post('/reset_password', function(req, res, next) {
-  var email = req.body.email ;
+  var email = req.body['email'] ;
+  console.log(email);
+  User.findOne({'email':email}).exec().then(function(result){
+    var newPassword = randomizer(6);
+    console.log(result);
+    console.log(newPassword);
+    result.setPassword(newPassword);
+    result.save();  
+    var content = "พบการเปลี่ยนแปลง Password ของ \n User : "+result.username+"\n New Password : "+newPassword;
+      NotificationControl.sendEmail(result.email,content,'Password Reset',function(err,ress){
+        callback(null,result);
+      });
+  });
   // Do something to reset password
   res.json({status:'success'});
 });
