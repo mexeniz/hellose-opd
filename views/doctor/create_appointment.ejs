@@ -15,7 +15,7 @@
       </div>
     </md-toolbar>
 
-    <md-content ng-controller="confirmAppointmentCtrl" ng-init="init('<%= earliestData %>', <%= patientId %>, <%= patientName %>, <%= patientLastname %>)" class="md-padding">
+    <md-content ng-controller="confirmAppointmentCtrl" ng-init="init('<%= earliestData %>', '<%= patientId %>', '<%= patientName %>', '<%= patientLastname %>')" class="md-padding">
 
       <div class="h2-th" ng-hide="success">กรุณากรอกรายละเอียดและยืนยันการนัดหมาย</div>
       <div ng-show="loadingCount > 0" layout="row" layout-align="space-around">

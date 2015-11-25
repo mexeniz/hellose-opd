@@ -96,15 +96,14 @@ module.exports.login = function(req, username, password, done) {
 		}
 		else if(role === '2')
 		{
-			console.log("HI SDKAODKAOSDKSKDOSK    2");
 			console.log(user._id);
-			Doctor.findOne({ userId: user._id }, function(err, patient)
+			Doctor.findOne({ userId: user._id }, function(err, doctor)
 			{
-				console.log(patient);
-				if(err || !patient) {
-					return done(null, false, req.flash('message', 'Not found patient data'));
+				console.log(doctor);
+				if(err || !doctor) {
+					return done(null, false, req.flash('message', 'Not found doctor data'));
 				}
-				req.session.doctor_id = patient._id;
+				req.session.doctor_id = doctor._id;
 				console.log(req.session.doctor_id);
 				return done(null, user, req.flash('message', role));
 			});

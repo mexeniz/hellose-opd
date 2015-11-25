@@ -161,11 +161,14 @@ router.get('/appointment/create/:patientId/:patientName/:patientLastname', funct
       }else{
         if(result.length > 0)
         {
+          console.log(result);
           res.render('doctor/create_appointment', { earliestData: JSON.stringify(result[0]), patientId: patientid, patientName: patientName, patientLastname: patientLastname });
         }
         else
         {
-          res.render('doctor/create_appointment', req.flash( {message: 'คุณไม่เหลือเวลาว่างแล้ว'}));
+          console.log('wtf');
+          //res.render('doctor/create_appointment', req.flash( {message: 'คุณไม่เหลือเวลาว่างแล้ว'}));
+          res.sendStatus(404);
         }
       }
     });
@@ -212,6 +215,7 @@ router.post('/appointment/create', function(req, res, next) {
     {
       patientId = req.body['patient_id'];
       doctorId = req.user._id;
+      console.log('pat = ' + patientId + ' doc ' + doctorId);
     } 
     else if(req.session.role === '3') // Staff
     {
@@ -222,6 +226,10 @@ router.post('/appointment/create', function(req, res, next) {
     {
       res.send('No permission');
     }
+  }
+  else
+  {
+    return res.redirect('/login');
   }
   var appInfo = {
     doctor_id : mongoose.Types.ObjectId(doctorId),
@@ -607,16 +615,17 @@ router.post('/profile/edit', function(req, res, next) {
 router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '2') {
-      res.render('doctor/patient_profile', { patient_id : req.params.patientId });
+      console.log('patient profile doctor view');
+      return res.render('doctor/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '3') {
-      res.render('staff/patient_profile', { patient_id : req.params.patientId });
+      return res.render('staff/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '4') {
-      res.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
+      return es.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '5') {
-      res.render('nurse/patient_profile', { patient_id : req.params.patientId });
+      return res.render('nurse/patient_profile', { patient_id : req.params.patientId });
     }
   }
   res.redirect('/login');
