@@ -305,8 +305,8 @@ router.post('/getRoundward',function(req,res,next){
 router.post('/cancelRoundward', function(req,res,next){
   //if(req.user && req.session.role === '2')
   //{
-    //var userId = req.user._id; //GetFromSession
-    var userId = req.body['userId'];
+    var userId = req.user._id; //GetFromSession
+    //var userId = req.body['userId']; //doctor's userId FROM User Schema
     var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
     RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
       if(err){
@@ -371,6 +371,16 @@ router.get('/roundward/add', function(req, res, next) {
   res.redirect('/login');
 });
 
+
+router.post('/kuy',function(req,res,next){
+    var department = req.body['department'];
+    AppointmentControl.getAppointmentWithEarliestDatetime (department,function(err,result){
+      if(err){
+        return next(err);
+      }
+      return res.json(result);
+    });
+});
 
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){

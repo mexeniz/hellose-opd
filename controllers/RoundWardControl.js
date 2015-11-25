@@ -98,7 +98,6 @@ module.exports.getRoundward = function(userId,month,year,callback){
   }
 
 //FLOW GOES HERE
-
   findDoctor(userId)
   .then(function afterFoundDoctor(doctor){
     doctor.onDutyRoundward.forEach(function(rw){

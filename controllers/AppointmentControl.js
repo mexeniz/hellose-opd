@@ -141,17 +141,6 @@ module.exports.updateAppointments = function(department,rwid,callback){
 			});	
 		});
 	}
-	/*
-var options = {
-      path: 'pages.components',
-      model: 'Component'
-    };
-
-    if (err) return res.json(500);
-    Project.populate(docs, options, function (err, projects) {
-      res.json(projects);
-    });
-	*/
 
 	function findByIdAndPopulate(patient_id){
 		//console.log(patient_id);
@@ -188,9 +177,11 @@ var options = {
 			//Every Occurence
 			for (var i = 0 ; i < myList.length ; ++i){
 				console.log(myList[i]);
-				//createAppointmentWithEarliestDatetime(department)
+				//getAppointmentWithEarliestDatetime(department)
 			}
+			return callback(null,'success');
 		});
+
 }
 
 module.exports.getAppointmentWithEarliestDatetime = function(department,callback){
@@ -208,72 +199,15 @@ module.exports.getAppointmentWithEarliestDatetime = function(department,callback
 		});
 	}
 
+	//FLOW GOES HERE
+	findWholeMonth(department)
+	.then(function gotWholeMonth(){
+		var result = arguments;
+		console.log(arguments);
+	});
+
 }
 
-/*module.exports.updateAppointments = function(department,rwid,callback)
-{
-	console.log(department);
-	
-	function findByIdAndPopulate(patient_id){
-		//console.log(patient_id);
-		return new Promise(
-			function ( resolve , reject ){
-				Patient.findById(patient_id).populate('userId','email')
-				.exec().then(function(result){
-					//console.log(result);
-					resolve(result);
-				});
-			}
-		);
-	}
-
-	function addPatientDetail(patient_input){
-		return new Promise(
-			function(resolve,reject){
-
-			}
-		);
-	}
-
-	var promise = Appointment.find({roundWard : rwid}).populate('roundWard').exec();
-	var patientList =[];
-	promise.then(function(appointments){
-		
-		appointments.forEach(function(e){
-
-			e.status = 'canceled';
-			e.save();
-			var single_entry = { 'patient_id' : e.patient ,
-								 'date' : e.roundWard.date };
-			patientList.push(single_entry);	
-		});
-		return patientList;
-	}).then(function populatePatientList(patient_list){
-		var promises = [];
-		for(var i = 0 ; i < patient_list.length ; ++i){
-			console.log("PATIENT_ID = " + patient_list[i].patient_id );
-			promises.push(
-				findByIdAndPopulate(mongoose.Types.ObjectId(patient_list[i].patient_id))
-			);
-		}
-		return Promise.all(promises);
-			
-	}).then(function afterGotEmail(){
-		var populatedList = arguments;
-		for(var i = 0 ; i < populatedList.length ; ++i){
-			console.log(populatedList[i]);
-		}
-		console.log(patientList);
-
-		//addPatientDetail()
-		//FOR EVERYPATIENT get
-		//GET DEPARTMENT FREETIME SLOT 0
-		//CREATE APPOINTMENT FOR HIM 
-		//LOOP
-		console.log("GETFREEDEP in "+department);
-
-	});
-};*/
 
 //PATIENT 
 module.exports.cancelAppointment = function(appId,callback)
