@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 module.exports = router;
-
+var nodemailer = require('nodemailer');
 
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
@@ -19,6 +19,7 @@ var DepartmentControl = require('../controllers/DepartmentControl');
 var DiseaseControl = require('../controllers/DiseaseControl');
 
 /* ------------------------------------------------------- */
+
 // Guest Route
 router.get('/', function(req, res, next) {
   if(req.user)
@@ -149,6 +150,35 @@ router.get('/appointment/create', function(req, res, next) {
   }
 });
 
+router.get('/appointment/create/:patientId/:patientName/:patientLastname', function(req, res, next)
+{
+  if(req.user && req.session.role === '2')
+  {
+    var patientid = req.params.patientId;
+    var patientName = req.params.patientName;
+    var patientLastname = req.params.patientLastname;
+    var curDate = new Date();
+    console.log(patientid + patientName + patientLastname + req.session.doctor_id);
+    RoundWardControl.getAvailableDateTime(req.session.doctor_id,curDate.getMonth(),curDate.getFullYear(),function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        if(result.length > 0)
+        {
+          console.log(result);
+          res.render('doctor/create_appointment', { earliestData: JSON.stringify(result[0]), patientId: patientid, patientName: patientName, patientLastname: patientLastname });
+        }
+        else
+        {
+          console.log('wtf');
+          //res.render('doctor/create_appointment', req.flash( {message: 'คุณไม่เหลือเวลาว่างแล้ว'}));
+          res.sendStatus(404);
+        }
+      }
+    });
+  }
+});
+
 // Create appointment
 router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
   //if(req.user && req.session.role === '1')
@@ -189,6 +219,7 @@ router.post('/appointment/create', function(req, res, next) {
     {
       patientId = req.body['patient_id'];
       doctorId = req.user._id;
+      console.log('pat = ' + patientId + ' doc ' + doctorId);
     } 
     else if(req.session.role === '3') // Staff
     {
@@ -200,6 +231,10 @@ router.post('/appointment/create', function(req, res, next) {
       res.send('No permission');
     }
   }
+  else
+  {
+    return res.redirect('/login');
+  }
   var appInfo = {
     doctor_id : mongoose.Types.ObjectId(doctorId),
     patient_id : mongoose.Types.ObjectId(patientId), 
@@ -210,7 +245,7 @@ router.post('/appointment/create', function(req, res, next) {
     causes : req.body['causes']
   };
 
-  console.log(appInfo);
+  //console.log(appInfo);
 
   AppointmentControl.createAppointment(appInfo,function(err,result){
     if(err){
@@ -221,6 +256,32 @@ router.post('/appointment/create', function(req, res, next) {
       return res.json(result);
     }
   });
+});
+
+// Cancel appointment
+router.delete('/appointment/:appId/cancel', function(req, res, next)
+{
+  if(req.user)
+  {
+    if(req.session.role === '1' || req.session.role === '3') // Patient or Staff
+    {
+      var appId = req.params.appId;
+      AppointmentControl.cancelAppointment(appId, function(err, result)
+      {
+        if(err) { return next(err); }
+        console.log('successfully cancelled');
+        return res.json(result);
+      });
+    }
+    else
+    {
+      return res.sendStatus(404);
+    }
+  }
+  else
+  {
+    return res.sendStatus(404);
+  }
 });
 
 /* ------------------------------------------------------- */
@@ -254,18 +315,21 @@ router.post('/getRoundward',function(req,res,next){
 
 //DELETE ROUNDWARD FROM A SINGLE DOCTOR
 router.post('/cancelRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
+  //if(req.user && req.session.role === '2')
+  //{
     var userId = req.user._id; //GetFromSession
+    //var userId = req.body['userId']; //doctor's userId FROM User Schema
     var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
     RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
       if(err){
         return next(err);
       }else{
+        //Result is PatientARRAY
+        
         return res.json(result);
       }
     });
-  }
+  //}
 });
 
 //GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
@@ -320,12 +384,23 @@ router.get('/roundward/add', function(req, res, next) {
 });
 
 
+router.post('/kuy',function(req,res,next){
+    var department = req.body['department'];
+    RoundWardControl.getEarliest (department,function(err,result){
+      if(err){
+        return next(err);
+      }
+      return res.json(result);
+    });
+});
+
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
+  //if(req.user && req.session.role === '2')
+  //{
     var roundward = {date:req.body['date'],
           time:req.body['time']};
+    //var userId = req.body['doctor_id'];
     var userId = req.user._id; //GetFromSession
     RoundWardControl.addRoundWard(userId,roundward,function(err,result){
       if(err){
@@ -333,7 +408,7 @@ router.post('/addRoundward', function(req,res,next){
       }
       return res.json(result);
     });
-  }
+  //}
 });
 
 // Create appointment
@@ -359,13 +434,65 @@ router.post('/patient/:patientId/create_appointment', function(req, res, next) {
 router.get('/appointment', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '1') {
-      res.render('patient/list_appointment');
+      return res.render('patient/list_appointment');
     }
     else if(req.session.role === '2') {
-      res.render('doctor/list_appointment');
+      return res.render('doctor/list_appointment');
     }
   }
   res.redirect('/login');
+});
+
+
+// Get list of appointment
+router.get('/appointment/list', function(req, res, next) {
+  if(req.user) {
+    var returnFunction = function(err, result)
+    {
+      if(err) { next(err); }
+      return res.json(result);
+    };
+
+    if(req.session.role === '1') { // Patient
+      AppointmentControl.getAppointmentByPatientId(req.session.patient_id, returnFunction);
+    }
+    else if(req.session.role === '2') { // Doctor
+      AppointmentControl.getAppointment(req.session.doctor_id, returnFunction);
+    }
+    else
+    {
+      res.json([]);
+    }
+  }
+  else
+  {
+    res.json([]);
+  }
+});
+
+// Get list of appointment
+router.get('/appointment/list/:year/:month', function(req, res, next) {
+  if(req.user) {
+    var returnFunction = function(err, result)
+    {
+      if(err) { next(err); }
+      return res.json(result);
+    };
+
+    if(req.session.role === '2') { // Doctor
+      var month = req.params.month;
+      var year = req.params.year;
+      AppointmentControl.getAppointment(mongoose.Types.ObjectId(req.session.doctor_id), month, year, returnFunction);
+    }
+    else
+    {
+      res.json([]);
+    }
+  }
+  else
+  {
+    res.json([]);
+  }
 });
 
 /* ------------------------------------------------------- */
@@ -406,14 +533,42 @@ router.post('/appointment/:appId/edit', function(req, res, next) {
 // View appointment
 router.get('/appointment/:appId', function(req, res, next) {
   if(req.user) {
+    var appId = req.params.appId;
+
     if(req.session.role === '1') {
-      res.render('patient/view_appointment');
+      return res.render('patient/view_appointment', { appId: appId });
+    }
+    else if(req.session.role === '2')
+    {
+      return res.render('doctor/view_appointment', { appId: appId });
     }
     else if(req.session.role === '3') {
       res.render('staff/view_appointment');
     }
+    else
+    {
+      res.redirect('/login');
+    }
   }
-  res.redirect('/login');
+  else
+  {
+    res.redirect('/login');
+  }  
+});
+
+// Get appointment info by id
+router.get('/appointment/info/:appId', function(req, res, next) {
+  if(req.user) {
+    var appId = req.params.appId;
+
+    AppointmentControl.getAppointmentById(appId, function(err, result){
+      res.json(result);
+    });
+  }
+  else
+  {
+    res.json();
+  }
 });
 
 /* ------------------------------------------------------- */
@@ -493,16 +648,17 @@ router.post('/profile/edit', function(req, res, next) {
 router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '2') {
-      res.render('doctor/patient_profile', { patient_id : req.params.patientId , user_id : req.session.passport.user});
+      console.log('patient profile doctor view');
+      return res.render('doctor/patient_profile', { patient_id : req.params.patientId , user_id : req.session.passport.user});
     }
     else if (req.session.role === '3') {
-      res.render('staff/patient_profile', { patient_id : req.params.patientId });
+      return res.render('staff/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '4') {
-      res.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
+      return res.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '5') {
-      res.render('nurse/patient_profile', { patient_id : req.params.patientId });
+      return res.render('nurse/patient_profile', { patient_id : req.params.patientId });
     }
   }
   res.redirect('/login');
@@ -634,7 +790,7 @@ router.post('/user/:userId/delete', function(req, res, next) {
   });
 });
 
-// List medicine
+//List Medicine
 router.get('/medicine', function(req, res, next) {
   if(req.user && req.session.role === '6') {
     res.render('admin/medicine');
@@ -831,3 +987,4 @@ router.get('/user/fullname/:userId', function(req, res) {
     } 
   });
 });
+

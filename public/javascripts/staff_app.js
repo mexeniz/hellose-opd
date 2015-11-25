@@ -235,7 +235,7 @@ app.factory('schedule_fac', ['$http', function($http){
 	  };
 	  
 	  o.create = function(schedule) {
-		  return $http.post('/appointment/importRoundward', schedule).success(function(data){
+		  return $http.post('/importRoundward', schedule).success(function(data){
 		    o.schedule.push(data);
 		    console.log(o.schedule);
 			});

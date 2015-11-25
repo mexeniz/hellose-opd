@@ -224,14 +224,23 @@ app.factory('appointment_fac', ['$http', function($http){
 		busyDate: []
 	};
 
-	o.getCalendar = function(month)
+	o.getCalendar = function(month, year, callback)
 	{
-		var bd = [];
+		/*var bd = [];
 		angular.copy(bd, o.busyDate);
 		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
 		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
 		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
-		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);*/
+		$http.get('/appointment/list/' + year + '/' + month)
+		.success(function(data){
+			angular.copy(data, o.appointmentList);
+			console.log(data);
+			callback();
+		})
+		.error(function(err){
+
+		});
 	};
 
 	o.getAppointmentListByDate = function(date)
@@ -884,18 +893,78 @@ app.controller('InfoCtrl', [
 	}
 ]);
 
-app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', function($scope, $filter, appointment_fac) {
+app.controller('symptomCtrl', function($scope, $mdSidenav) {
+                $scope.departmentList = [
+                  {id:"10",name:"Comp"},
+                  {id:"11",name:"Elec"},
+                  {id:"12",name:"Chem"},
+                  {id:"13",name:"Civil"},
+                  {id:"14",name:"Mech"},
+                ];
+                $scope.doctorList = [
+                  {id:"1",name:"Santa",department:"Comp"},
+                  {id:"2",name:"Gale",department:"Elec"},
+                  {id:"2",name:"Kirk",department:"Mech"},
+                  {id:"3",name:"Tutor",department:"Mech"},
+                  {id:"4",name:"Mma",department:"Mech"},
+                ];
+                $scope.submit = function(){
+                    console.log($scope.department + $scope.symptoms);
+                };
+             });
+
+app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', 'CalendarData', function($scope, $filter, appointment_fac, CalendarData) {
 	$scope.dayFormat = "d";
 	$scope.selectedDate = null;
 	$scope.tooltips = true;
 
 	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
 	$scope.appointmentList = appointment_fac.appointmentList;
-	$scope.busyDate = appointment_fac.busyDate;
+	$scope.selectedAppointmentData = [];
+
+	var startAM = 9 * 60 + 30;
+	var startPM = 13 * 60;
+
+	$scope.getTimeMessage = function(time, slot)
+	{
+		var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+		var min = minutes % 60;
+		var hour = (minutes - min) / 60;
+		var dateTime = new Date();
+		dateTime.setHours(hour);
+		dateTime.setMinutes(min);
+		return $filter('date')(dateTime, "H:mm");
+	};
+
+	var getAppointmentListByDate = function(date)
+	{
+		var result = [];
+		var sDate = new Date(date);
+
+		$scope.appointmentList.forEach(function(app){
+			var appDate = new Date(app.roundWard.date);
+			if(appDate.getMonth() === sDate.getMonth() && appDate.getFullYear() === sDate.getFullYear() && appDate.getDate() === sDate.getDate())
+			{
+				result.push(app);
+			}
+		});
+		angular.copy(result, $scope.selectedAppointmentData);
+	};
+
+	$scope.setCalendar = function()
+	{
+		console.log('Set calendar');
+		$scope.loadingCount--;
+		if($scope.loadingCount > 0) { return; }
+		$scope.appointmentList.forEach(function(app){
+			CalendarData.setDayContent(new Date(app.roundWard.date), "<i class='material-icons'>event</i>");
+		});
+	};
 
 	$scope.init = function()
 	{
-		appointment_fac.getCalendar(11);
+		var curDate = new Date();
+		appointment_fac.getCalendar(curDate.getMonth(), curDate.getFullYear(), $scope.setCalendar);
 	};
 
 	$scope.setDirection = function(direction) {
@@ -906,29 +975,24 @@ app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', f
     $scope.dayClick = function(date) {
       $scope.msg = "You clicked " + date;
       $scope.selectedDate = date;
-      appointment_fac.getAppointmentListByDate(date);
+      getAppointmentListByDate(date);
     };
 
     $scope.prevMonth = function(data) {
       $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
-      appointment_fac.getCalendar(data.month);
+      $scope.loadingCount++;
+      appointment_fac.getCalendar(data.month - 1, data.year, $scope.setCalendar);
     };
 
     $scope.nextMonth = function(data) {
       $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
-      appointment_fac.getCalendar(data.month);
+      $scope.loadingCount++;
+      appointment_fac.getCalendar(data.month - 1, data.year, $scope.setCalendar);
     };
 
     
     $scope.setDayContent = function(date) {
-    	var d = $filter("date")(date, "d");
-        if ($scope.busyDate.indexOf(parseInt(d)) > -1){
-
-          return "<i class='material-icons'>assignment_turned_in</i>";
-          }
-        else{
-          return "<p></p>";
-        }
+        return "<p></p>";
     };
 
 }]);
@@ -1125,6 +1189,343 @@ app.controller('roundWardCtrl', ['$scope', '$filter', '$mdDialog', '$http', 'rou
 
 	    });
 	};
+
+}]);
+
+app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$http', function($scope, $q, $timeout, $log, $http) {
+
+	$scope.selectedType = 'Doctor';
+
+    $scope.departmentList = [
+      {name:"Comp"},
+      {name:"Elec"},
+      {name:"Chem"},
+      {name:"Civil"},
+      {name:"Mech"},
+    ];
+    $scope.doctorList = [
+      {id:"1",name:"Santa",department:"Comp"},
+      {id:"2",name:"Gale",department:"Elec"},
+      {id:"3",name:"Kirk",department:"Mech"},
+      {id:"4",name:"Tutor",department:"Mech"},
+      {id:"5",name:"Mma",department:"Mech"},
+    ];
+    $scope.submit = function(){
+        
+    };
+
+
+
+    $scope.querySearch = function (query) {
+      	deferred = $q.defer();
+      	$http.get('/doctor/find/' + query).success(function(data){
+      		deferred.resolve(data);
+      	});
+      	return deferred.promise;
+    };
+
+
+ }]);
+
+app.controller('ViewAppointmentCtrl', [
+	'$scope', 
+	'$filter', 
+	'$http', 
+	function($scope, $filter, $http) {
+		$scope.appInfo = null;
+		$scope.appId = null;
+
+		var startAM = 9 * 60 + 30;
+		var startPM = 13 * 60;
+
+		$scope.getTimeMessage = function(time, slot)
+		{
+			var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+			var min = minutes % 60;
+			var hour = (minutes - min) / 60;
+			var dateTime = new Date();
+			dateTime.setHours(hour);
+			dateTime.setMinutes(min);
+			return $filter('date')(dateTime, "H:mm");
+		};
+
+		$scope.getAppointmentData = function()
+		{
+			$http.get('/appointment/info/' + $scope.appId).success(function(data){
+				console.log(data);
+				$scope.appInfo = data;
+			});
+		};
+
+		// Initial page by getting appointment data
+		$scope.init = function(appId)
+		{	$scope.appId = appId;
+			$scope.getAppointmentData();
+		};
+		/*
+		// Confirm appointment
+		$scope.confirm = function()
+		{
+
+		};
+		// Postpone appointment
+		$scope.postpone = function()
+		{
+
+		};
+		// Cancel appointment
+		$scope.cancel = function()
+		{
+			console.log('canceling...');
+			$http.delete('/appointment/' + $scope.appId + '/cancel')
+			.success(function(result){
+				console.log('Successfully cancelled');
+				console.log(result);
+				$scope.appInfo.status = result.status;
+			})
+			.error(function(err)
+			{
+				console.log('Error cancelling ' + err);
+			});
+		};*/
+
+
+	}
+]);
+
+app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$filter', 'CalendarData', function($scope, $mdDialog, $http, $filter, CalendarData) {
+		
+		$scope.selectedAvailableDate = null;
+		$scope.appointmentDate = null;
+		$scope.selectedData = [];
+		$scope.freeSlots = [];
+		$scope.loadingCount = 0;
+		$scope.doctorName = '';
+		$scope.selectedSlot = {};
+		$scope.sending = false;
+		$scope.success = false;
+
+		var startAM = 9 * 60 + 30;
+		var startPM = 13 * 60;
+		var getFreeSlots = function(selectedData)
+		{
+			var freeSlots = [];
+			selectedData.forEach(function(data){
+	    		data.freeSlot.forEach(function(slot)
+	    		{	
+	    			var minutes = data.time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+	    			var min = minutes % 60;
+	    			var hour = (minutes - min) / 60;
+	    			var time = new Date();
+	    			time.setHours(hour);
+	    			time.setMinutes(min);
+	    			var slotObj = { time: data.time, slot: slot, displayMsg: $filter('date')(time, "H:mm") };
+	    			console.log(slotObj);
+	    			freeSlots.push(slotObj);
+	    		});
+	    	});
+	    	return freeSlots;
+		};
+
+		$scope.init = function(earliestData, patient_id, patientName, patientLastname)
+		{	
+			var data = JSON.parse(earliestData);
+			$scope.doctor_id = data.doctor_id;
+			$scope.patient_id = patient_id;
+			$scope.doctorName = data.firstname + ' ' + data.lastname;
+			$scope.patientName = patientName;
+			$scope.patientLastname = patientLastname;
+			$scope.selectedData.push(data);
+			$scope.appointmentDate = new Date(data.date);
+			angular.copy(getFreeSlots($scope.selectedData), $scope.freeSlots);
+			$scope.selectedSlot = $scope.freeSlots[0];
+		};
+
+		$scope.submit = function()
+		{
+			if($scope.sending)
+			{
+				return;
+			}
+			$scope.sending = true;
+			var app = {
+				patient_id: $scope.patient_id,
+				date: $scope.appointmentDate,
+				status: 'confirmed',
+				slot: $scope.selectedSlot.slot,
+				time: $scope.selectedSlot.time,
+				causes: $scope.causes
+			};
+			console.log('sending...');
+			console.log(app);
+			$http.post('/appointment/create', app).success(function(data){
+				console.log('Successs');
+				console.log(data);
+				$scope.sending = false;
+				$scope.success = true;
+			}).error(function(err){
+				console.log('Error');
+				console.log(err);
+				$scope.sending = false;
+			});
+		};
+
+        
+        var DialogController = function($scope, $mdDialog, $http, CalendarData, doctor_id)
+        {
+        	$scope.dayFormat = "d";
+			$scope.selectedDate = null;
+        	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
+        	$scope.loadingCount = 0;
+        	$scope.availableData = [];
+
+        	$scope.init = function()
+        	{
+        		console.log('getting current month data');
+        		var cur_date = new Date();
+        		$scope.getData(cur_date.getMonth() + 1, cur_date.getFullYear(), $scope.setCalendar);
+        	};
+
+			$scope.getData = function(month, year, callback)
+			{
+				$scope.loadingCount++;
+				$http.post('/getAvailableDateTime', { doctor_id: doctor_id, month: month-1, year: year }).success(function(result){
+	        		// result: date, firstname, lastname, time, doctor_id, roundward, freeslot
+	        		console.log(result);
+	        		angular.copy(result, $scope.availableData);
+	        		$scope.loadingCount--;
+	        		callback();
+	        	});
+			};
+
+			$scope.checkAvailable = function(date)
+			{
+				for(var i in $scope.availableData)
+				{
+					var data = $scope.availableData[i];
+					var dataDate = new Date(data.date);
+					if(dataDate.getDate() === date.getDate() && dataDate.getMonth() === date.getMonth() && dataDate.getFullYear() && date.getFullYear())
+					{
+						return true;
+					}
+				}
+				return false;
+			};
+
+			$scope.setCalendar = function()
+			{
+				console.log('Set calendar');
+				if($scope.loadingCount > 0) { return; }
+				$scope.availableData.forEach(function(data){
+					console.log(data);
+					CalendarData.setDayContent(new Date(data.date), "<i class='material-icons'>event</i>");
+				});
+			};
+
+        	$scope.close = function()
+        	{
+        		$mdDialog.cancel();
+        	};
+
+        	$scope.setDirection = function(direction) {
+				$scope.direction = direction;
+				$scope.dayFormat = direction === "vertical" ? "EEEE, MMMM d" : "d";
+			};
+
+	        $scope.dayClick = function(date) {
+	            if ($scope.checkAvailable(date)){
+	              	$scope.selectedDate = date;
+	          	}
+	            else{
+	              	$scope.selectedDate = null;
+	            }
+	        };
+
+	        $scope.prevMonth = function(data) {
+	          $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
+	          $scope.getData(data.month, data.year, $scope.setCalendar);
+	        };
+
+	        $scope.nextMonth = function(data) {
+	          $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
+	          $scope.getData(data.month, data.year, $scope.setCalendar);
+	        };
+
+	        $scope.tooltips = true;
+	        $scope.setDayContent = function(date) {
+	        	return "<p></p>";
+	        };
+
+	        $scope.changeDate = function()
+	        {
+	        	var date = $scope.selectedDate;
+	        	var result = [];
+	        	// Find freeslot data
+	        	for(var i in $scope.availableData)
+				{
+					var data = $scope.availableData[i];
+					var dataDate = new Date(data.date);
+					if(dataDate.getDate() === date.getDate() && dataDate.getMonth() === date.getMonth() && dataDate.getFullYear() && date.getFullYear())
+					{
+						result.push(data);
+					}
+				}
+	        	$mdDialog.hide(result);
+	        };
+
+
+        };
+
+       
+        $scope.showDialog = function(ev) {
+		    $mdDialog.show({
+		    	locals: { doctor_id: $scope.doctor_id },
+		    	controller: DialogController,
+		      templateUrl: '/dialog/selectDateDialog.html',
+		      parent: angular.element(document.body),
+		      targetEvent: ev,
+		      clickOutsideToClose:true
+		    }).then(function(selectedData)
+		    {
+		    	angular.copy(getFreeSlots(selectedData), $scope.freeSlots);
+		    	$scope.selectedData = selectedData;
+		    	$scope.appointmentDate = new Date(selectedData[0].date);
+		    	$scope.selectedSlot = $scope.freeSlots[0];
+		    });
+	  	};
+
+	  	var SelectTimeDialogController = function($scope, $mdDialog, availableSlots)
+	  	{
+	  		$scope.availableSlots = availableSlots;
+	  		$scope.selectedSlot = 0;
+	  		$scope.select = function(selectedSlot)
+	  		{
+	  			console.log(selectedSlot);
+	  			$mdDialog.hide(availableSlots[selectedSlot]);
+	  		};
+	  		$scope.close = function()
+	  		{
+	  			$mdDialog.cancel();
+	  		};
+	  	};
+
+	  	$scope.showSelectTimeDialog = function(ev)
+	  	{
+	  		$mdDialog.show({
+	  			locals: { availableSlots: $scope.freeSlots },
+		    	controller: SelectTimeDialogController,
+		      templateUrl: '/dialog/selectAppTimeDialog.html',
+		      parent: angular.element(document.body),
+		      targetEvent: ev,
+		      clickOutsideToClose:true
+		    }).then(function(selectedSlot)
+		    {
+		    	$scope.selectedSlot.slot = selectedSlot.slot;
+		    	$scope.selectedSlot.displayMsg = selectedSlot.displayMsg;
+		    	console.log(selectedSlot.displayMsg);
+		    });
+	  	};
+
 
 }]);
 

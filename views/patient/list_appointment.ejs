@@ -1,20 +1,43 @@
-<!doctype html>
-	<!-- HEADER (including) -->
-	<%- include ../include/header.ejs %>
-	<!-- BODY -->
-	<body ng-app="appointment" ng-controller="AppointmentCtrl">
-		<!-- Menu Layout -->
-		<%- include ../include/snap_header.ejs %>
+<% layout('layout') -%>
 
-		<div class="container" style="width: auto">
-			<h1 style="color : black">{{title}}</h1>
+<!-- Heading -->
+<md-content flex id="content" ng-controller="ListAppointmentCtrl">
+<md-toolbar>
+  <div class="md-toolbar-tools">
+    <md-button class="md-icon-button" ng-click="toggleNav('left')" hide-gt-md aria-label="Menu">
+      <md-icon md-font-library="material-icons">menu</md-icon>
+    </md-button>
+    <h2>
+      <span>Appointment List</span>
+    </h2>
+  </div>
+</md-toolbar>
 
-		</div>
-	</body>
-	<!-- FOOTER -->
-	<%- include ../include/snap_footer.ejs %>
-	<!-- APP -->
-	<script type="text/javascript" src="/javascripts/appointment/appointment_app.js"></script>
-	<!-- SERVICES -->
-	
-</html>
+<!-- Content -->
+<md-content flex layout-padding ng-init="init()" >
+  <h1>รายการนัดหมายกับแพทย์</h1>
+
+  	<md-data-table-container ng-show="appointmentList.length > 0">
+	  	<table md-data-table>
+		    <thead>
+		      <tr>
+		        <th>วันที่</th>
+		        <th>เวลา</th>
+		        <th>ชื่อแพทย์</th>
+		        <th>Actions</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr ng-repeat="app in appointmentList" | orderBy: 'date' >
+		        <td>{{ app.roundWard.date | date: 'dd/MM/yyyy' }}</td>
+		        <td>{{ getTimeMessage(app.roundWard.time, app.slot) }}</td>
+		        <td>{{ app.doctor.userId.firstname }} {{ app.doctor.userId.lastname }}</td>
+		        <td><md-button class="md-primary" href="/appointment/{{app._id}}">ดูรายละเอียด</md-button></td>
+		      </tr>
+		    </tbody>
+  		</table>
+	</md-data-table-container>
+	<div ng-show="appointmentList.length == 0" align="center">
+		<md-icon md-font-library="material-icons">error</md-icon>ไม่มีนัดหมาย
+	</div>
+</md-content>
