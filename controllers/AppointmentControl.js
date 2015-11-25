@@ -76,7 +76,120 @@ module.exports.createAppointment = function(appInfo, callback){
 //Appointments Which has roundWard = roundward._id 
 //must be canceled
 //DOCTOR USE UPDATEAPPOINTMENTS ( Chain from RoundwardControl . CancleRoundward)
-module.exports.updateAppointments = function(department,rwid,callback)
+module.exports.updateAppointments = function(department,rwid,callback){
+	console.log("Update Appointment on Patient with Department = " + department);
+
+	var patientList = [];
+	//FUNCTIONS
+	function findAppointmentById(roundwardId){
+		return new Promise(
+			function (resolve,reject){
+				Appointment.find({roundWard : rwid})
+				.populate({ path : 'roundWard' , select : 'date time'})
+				.populate({ path : 'patient', select : 'userId'})
+				.populate({ path : 'doctor' , select : 'userId'})
+				.exec()
+				.then(function(result){
+					resolve(result);
+				});
+			}
+		);
+	}
+
+	function populatedSingle(detail){
+		return new Promise(function(resolve,reject){
+			var options = {
+				path : 'patient.userId' ,
+				model : 'User',
+				select : 'firstname lastname email'
+			};
+			Appointment.populate(detail,options,function(err,appointments){
+				resolve(appointments);
+			});	
+		});
+	}
+	function populatedDoctor(detail){
+		return new Promise(function(resolve,reject){
+			var options = {
+				path : 'doctor.userId' ,
+				model : 'User',
+				select : 'firstname lastname email'
+			};
+			Appointment.populate(detail,options,function(err,appointments){
+				resolve(appointments);
+			});	
+		});
+	}
+	/*
+var options = {
+      path: 'pages.components',
+      model: 'Component'
+    };
+
+    if (err) return res.json(500);
+    Project.populate(docs, options, function (err, projects) {
+      res.json(projects);
+    });
+	*/
+
+	function findByIdAndPopulate(patient_id){
+		//console.log(patient_id);
+		return new Promise(
+			function ( resolve , reject ){
+				Patient.findById(patient_id).populate('userId','email')
+				.exec().then(function(result){
+					//console.log(result);
+					resolve(result);
+				});
+			}
+		);
+	}
+
+	//FLOW GOES HERE
+	findAppointmentById(rwid)
+		.then(function havingAppointmentsInvolveThis_rwId(appointments){
+			var promises = [];
+			for (var i = 0 ; i < appointments.length ; ++i){
+				appointments[i].status = 'canceled';
+				appointments[i].save();
+				promises.push(populatedSingle(appointments[i]));
+			}
+			return Promise.all(promises);
+		}).then(function letPopulateDoctors(appointments){
+			var objects = arguments;
+			var promises = [];
+			for (var i = 0 ; i < appointments.length ; ++i){
+				promises.push(populatedDoctor(objects[i]));
+			}
+			return Promise.all(promises);
+		}).then(function afterPopulation(patient_list){
+			var myList = arguments;
+			//Every Occurence
+			for (var i = 0 ; i < myList.length ; ++i){
+				console.log(myList[i]);
+				//createAppointmentWithEarliestDatetime(department)
+			}
+		});
+}
+
+module.exports.getAppointmentWithEarliestDatetime = function(department,callback){
+	function findWholeMonth(department){
+		return new Promise(
+			function(resolve,reject){
+				var date = new Date();
+				RoundWardControl.getDepartmentFreeMonth(
+					date.getFullYear(),
+					date.getMonth(),
+					department,
+					function(err,result){
+						resolve(result);
+				});
+		});
+	}
+
+}
+
+/*module.exports.updateAppointments = function(department,rwid,callback)
 {
 	console.log(department);
 	
@@ -93,9 +206,18 @@ module.exports.updateAppointments = function(department,rwid,callback)
 		);
 	}
 
+	function addPatientDetail(patient_input){
+		return new Promise(
+			function(resolve,reject){
+
+			}
+		);
+	}
+
 	var promise = Appointment.find({roundWard : rwid}).populate('roundWard').exec();
+	var patientList =[];
 	promise.then(function(appointments){
-		var patientList =[];
+		
 		appointments.forEach(function(e){
 
 			e.status = 'canceled';
@@ -116,15 +238,21 @@ module.exports.updateAppointments = function(department,rwid,callback)
 		return Promise.all(promises);
 			
 	}).then(function afterGotEmail(){
-		console.log(arguments);
+		var populatedList = arguments;
+		for(var i = 0 ; i < populatedList.length ; ++i){
+			console.log(populatedList[i]);
+		}
+		console.log(patientList);
+
+		//addPatientDetail()
 		//FOR EVERYPATIENT get
 		//GET DEPARTMENT FREETIME SLOT 0
 		//CREATE APPOINTMENT FOR HIM 
 		//LOOP
 		console.log("GETFREEDEP in "+department);
-		
+
 	});
-};
+};*/
 
 //PATIENT 
 module.exports.cancelAppointment = function(appId,callback)
