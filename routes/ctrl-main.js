@@ -150,6 +150,14 @@ router.get('/appointment/create', function(req, res, next) {
   }
 });
 
+// Create appointment by staff
+router.get('/appointment/create/:patientId', function(req, res, next) {
+  if(req.user && req.session.role === '3')
+  {
+    res.render('staff/create_appointment', { patientId: req.params.patientId });
+  }
+});
+
 router.get('/appointment/create/:patientId/:patientName/:patientLastname', function(req, res, next)
 {
   if(req.user && req.session.role === '2')
@@ -170,7 +178,6 @@ router.get('/appointment/create/:patientId/:patientName/:patientLastname', funct
         }
         else
         {
-          console.log('wtf');
           //res.render('doctor/create_appointment', req.flash( {message: 'คุณไม่เหลือเวลาว่างแล้ว'}));
           res.sendStatus(404);
         }
@@ -181,7 +188,7 @@ router.get('/appointment/create/:patientId/:patientName/:patientLastname', funct
 
 // Create appointment
 router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
-  //if(req.user && req.session.role === '1')
+  if(req.user && req.session.role === '1')
   {
     var doctorid = req.params.doctorId;
     var curDate = new Date();
@@ -199,9 +206,33 @@ router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
         }
       }
     });
-    
   }
 });
+
+// Create appointment by staff
+router.get('/appointment/confirm_Doctor/:doctorId/:patientId', function(req, res, next) {
+  if(req.user && req.session.role === '3')
+  {
+    var doctorid = req.params.doctorId;
+    var patientid = req.params.patientId;
+    var curDate = new Date();
+    RoundWardControl.getAvailableDateTime(doctorid,curDate.getMonth(),curDate.getFullYear(),function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        if(result.length > 0)
+        {
+          res.render('staff/confirm_appointment', { earliestData: JSON.stringify(result[0]), patientId: patientid });
+        }
+        else
+        {
+          res.render('staff/create_appointment', req.flash( {message: 'แพทย์ไม่ว่างเลย'}));
+        }
+      }
+    });
+  }
+});
+
 
 // Create appointment post
 router.post('/appointment/create', function(req, res, next) {
