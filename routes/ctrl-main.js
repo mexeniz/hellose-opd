@@ -320,6 +320,16 @@ router.get('/roundward/add', function(req, res, next) {
 });
 
 
+router.post('/kuy',function(req,res,next){
+    var department = req.body['department'];
+    AppointmentControl.getAppointmentWithEarliestDatetime (department,function(err,result){
+      if(err){
+        return next(err);
+      }
+      return res.json(result);
+    });
+});
+
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){
   //if(req.user && req.session.role === '2')

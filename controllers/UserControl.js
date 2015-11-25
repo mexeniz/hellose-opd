@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Patient = mongoose.model('Patient');
+var Doctor = mongoose.model('Doctor');
 
 module.exports.login = function(req, username, password, done) { 
 	// check in mongo if a user with username exists or not
@@ -80,7 +81,7 @@ module.exports.login = function(req, username, password, done) {
 		// done method which will be treated like success
 		// Set role
 		req.session.role = role;
-
+		console.log("ROLE IS"+role);
 		if(role === '1')
 		{
 			Patient.findOne({ userId: user._id }, function(err, patient)
@@ -95,31 +96,28 @@ module.exports.login = function(req, username, password, done) {
 		}
 		else if(role === '2')
 		{
-			Doctor.findOne({ userId: user._id }, function(err, doctor)
+			console.log("HI SDKAODKAOSDKSKDOSK    2");
+			console.log(user._id);
+			Doctor.findOne({ userId: user._id }, function(err, patient)
 			{
-				if(err || !doctor) {
-					return done(null, false, req.flash('message', 'Not found doctor data'));
+				console.log(patient);
+				if(err || !patient) {
+					return done(null, false, req.flash('message', 'Not found patient data'));
 				}
-				req.session.doctor_id = doctor._id;
+				req.session.doctor_id = patient._id;
+				console.log(req.session.doctor_id);
 				return done(null, user, req.flash('message', role));
 			});
 		}
 		else
 		{
 			return done(null, user, req.flash('message', role));
-		}
-
-		
-		
-	}).then(null,function(err){
-		return done(null, false, req.flash('message', 'Something wrong!'));	
+		}	
 	});
-
-
-/*.catch(function(err){
+	/*.catch(function(err){
 		return done(null, false, req.flash('message', 'Something wrong!'));
-	});
-*/
+	});*/
+
 };
 
 module.exports.register = function(req, username, password, done) {

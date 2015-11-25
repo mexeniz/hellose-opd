@@ -177,7 +177,7 @@ module.exports.updateAppointments = function(department,rwid,callback){
 			//Every Occurence
 			for (var i = 0 ; i < myList.length ; ++i){
 				console.log(myList[i]);
-				//createAppointmentWithEarliestDatetime(department)
+				//getAppointmentWithEarliestDatetime(department)
 			}
 			return callback(null,'success');
 		});
@@ -198,6 +198,13 @@ module.exports.getAppointmentWithEarliestDatetime = function(department,callback
 				});
 		});
 	}
+
+	//FLOW GOES HERE
+	findWholeMonth(department)
+	.then(function gotWholeMonth(){
+		var result = arguments;
+		console.log(arguments);
+	});
 
 }
 
