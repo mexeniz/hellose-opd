@@ -346,5 +346,8 @@ module.exports.getAppointment = function(userId,month,year,callback){
 
 module.exports.getAppointmentByPatientId = function(patientId, callback)
 {
-
+	Appointment.find({patient : patientId})
+		.populate({ path : 'roundWard' , select : 'date time'})
+		.populate({ path : 'doctor', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.exec(callback);
 };

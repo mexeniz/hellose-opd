@@ -360,10 +360,10 @@ router.post('/patient/:patientId/create_appointment', function(req, res, next) {
 router.get('/appointment', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '1') {
-      res.render('patient/list_appointment');
+      return res.render('patient/list_appointment');
     }
     else if(req.session.role === '2') {
-      res.render('doctor/list_appointment');
+      return res.render('doctor/list_appointment');
     }
   }
   res.redirect('/login');
@@ -384,6 +384,10 @@ router.get('/appointment/list', function(req, res, next) {
     }
     else if(req.session.role === '2') { // Doctor
       return res.json([]);
+    }
+    else
+    {
+      res.json([]);
     }
   }
   else
