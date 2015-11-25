@@ -1,0 +1,39 @@
+<md-dialog aria-label="Create Disease"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>เพิ่มแผนก</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:1200px;max-height:810px;width:300px;height:300px; ">
+      <!-- Content -->
+      <md-content  flex layout-padding>
+        <md-content layout-padding class="autoScroll">
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>ประเภทโรค</label>
+            <input ng-model="disease.disease_id_type" type="text" >
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>รหัสโรค</label>
+            <input ng-model="disease.disease_id" type="text" >
+          </md-input-container>
+          <md-input-container class="md-icon-float md-block" flex="100" >
+            <!-- Use floating label instead of placeholder -->
+            <label>ชื่อโรค</label>
+            <input ng-model="disease.name" type="text" >
+          </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button type="submit" class="md-raised md-primary" ng-click="submitDisease()">
+        ยืนยัน
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

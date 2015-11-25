@@ -14,7 +14,7 @@ module.exports.addMedicine = function(name, done) {
 	  	return done(null,medicine);
 	  }
 	});
-}
+};
 
 module.exports.getMedicine = function(done) {
 	Medicine.find(function(err, medicines) {
@@ -26,12 +26,12 @@ module.exports.getMedicine = function(done) {
 			return done(null,medicines);
 		}
 	});
-}
+};
 
 module.exports.updateMedicine = function(med_id, name, done) {
 	var query = {};
 	query._id = med_id;
-	Medicine.findOne(function(err, medicine) {
+	Medicine.findOne(query, function(err, medicine) {
 		if (err) {
 			return done(null, false);
 		}
@@ -47,7 +47,7 @@ module.exports.updateMedicine = function(med_id, name, done) {
 			});
 		}
 	});
-}
+};
 
 module.exports.deleteMedicine = function(med_id, done) {
 	var query = {};
@@ -60,4 +60,4 @@ module.exports.deleteMedicine = function(med_id, done) {
         return done(null, true);
     }
 });
-}
+};

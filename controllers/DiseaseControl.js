@@ -14,7 +14,7 @@ module.exports.addDisease = function(disease_id_type,disease_id, disease_name, d
 	  	return done(null,disease);
 	  }
 	});
-}
+};
 
 module.exports.getDisease = function(done) {
 	Disease.find(function(err, diseases) {
@@ -26,13 +26,15 @@ module.exports.getDisease = function(done) {
 			return done(null,diseases);
 		}
 	});
-}
+};
 
 module.exports.updateDisease = function(dis_unique_id, dis_id_type, dis_id, dis_name, done) {
 	var query = {};
-	Disease.update({ _id: dis_unique_id, })
+	// Disease.update({ _id: dis_unique_id, });
 	query._id = dis_unique_id;
-	Disease.findOne(function(err, disease) {
+	console.log("Before Find");
+	Disease.findOne(query, function(err, disease) {
+		console.log("Find One");
 		if (err) {
 			return done(null, false);
 		}
@@ -40,17 +42,19 @@ module.exports.updateDisease = function(dis_unique_id, dis_id_type, dis_id, dis_
 			disease.disease_id_type = dis_id_type;
 			disease.disease_id = dis_id;
 			disease.name = dis_name;
+			console.log(disease);
 			disease.save(function(err, result) {
 				if (err) {
 					return done(null, false);
 				}
 				if(result) {
+					console.log(result);
 					return done(null, result);
 				}
 			});
 		}
 	});
-}
+};
 
 module.exports.deleteDisease = function(dis_id, done) {
 	var query = {};
@@ -63,4 +67,4 @@ module.exports.deleteDisease = function(dis_id, done) {
         return done(null, true);
     }
 });
-}
+};

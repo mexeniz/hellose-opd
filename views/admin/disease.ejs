@@ -14,9 +14,44 @@
 </md-toolbar>
 
 <!-- Content -->
-<md-content flex layout-padding>
-  <h1>Disease Page</h1>
-  <p>
-    เย้ๆๆๆๆ
-  </p>
+<md-content ng-controller="DiseaseListCtrl" flex layout-padding>
+  <md-card >
+    <div>
+      <md-button class="md-fab md-primary" ng-click="showDiseaseForm($event,'create',{})">
+        <md-icon md-font-library="material-icons">add</md-icon>
+      </md-button> เพิ่มโรค</div>
+    <md-card >
+      <md-input-container class="md-icon-float md-block ">
+        <label>ค้นหา (ชื่อโรค)</label>
+        <md-icon md-font-library="material-icons">search</md-icon>
+        <input ng-model="diseasesSearchItem" type="text">
+      </md-input-container>
+    </md-card>
+    <md-data-table-container>
+      <table md-data-table class="md-primary" md-progress="deferred">
+        <thead md-order="query.order" md-trigger="onorderchange">
+          <tr>
+            <th order-by="disease_id_type" name="ประเภทของโรค"></th>
+            <th order-by="disease_id" name="รหัสโรค"></th>
+            <th order-by="name" name="ชื่อโรค"></th>
+            <th name="จัดการ"></th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr ng-repeat="d in diseases | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit | filter: diseasesSearchItem">
+            <td>{{d.disease_id_type}}</td>
+            <td>{{d.disease_id}}</td>
+            <td>{{d.name}}</td>
+            <td>
+              <md-button class="md-primary md-raised" ng-click="showDiseaseForm($event,'edit',d)"><md-icon md-font-library="material-icons">info</md-icon>แก้ไข</md-button>
+              <md-button class="md-fab md-mini md-warn"  ng-click="removeDisease(d)">
+              <md-icon md-font-library="material-icons">delete</md-icon>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </md-data-table-container>
+    <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{diseases.length}}" md-trigger="onpagechange"></md-data-table-pagination>
+  </md-card>
 </md-content>

@@ -545,7 +545,6 @@ router.get('/store/user', function(req, res, next) {
 // Update user
 router.post('/user/:userId', function(req, res, next) {
   var user_id = req.params.userId;
-  console.log(user_id);
   var role = {};
   role.isPatient = req.body.isPatient;
   role.isDoctor = req.body.isDoctor;
@@ -556,7 +555,6 @@ router.post('/user/:userId', function(req, res, next) {
     role.department = req.body.department;
   }
   UserControl.updateUser(user_id, role, function(err, result) {
-    console.log(result);
     if (err) {
       res.json({result: 'Error'});
     }
@@ -627,7 +625,7 @@ router.post('/medicine/:medId/delete', function(req, res, next) {
 
 // Update Medicine
 router.post('/medicine/:medId/edit', function(req, res, next) {
-  var med_id = req.param.medId;
+  var med_id = req.params.medId;
   var name = req.body.name;
   MedicineControl.updateMedicine(med_id, name, function(err, result) {
     if (err) {
@@ -752,7 +750,7 @@ router.post('/department/:deptId/delete', function(req, res, next) {
 
 // Update Department
 router.post('/department/:deptId/edit', function(req, res, next) {
-  var dept_id = req.param.deptId;
+  var dept_id = req.params.deptId;
   var dept_name = req.body.name;
   DepartmentControl.updateDepartment(dept_id, dept_name, function(err, result) {
     if (err) {

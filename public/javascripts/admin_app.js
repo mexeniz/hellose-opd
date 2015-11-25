@@ -97,7 +97,7 @@ app.factory('diseases_fac', ['$http', function($http){
   o.update = function(disease)
   {
     return $http.post('disease/' + disease._id + '/edit', disease).success(function(result){
-      for(var i = 0; i < o.disease.length; i++)
+      for(var i = 0; i < o.diseases.length; i++)
       {
         if(o.diseases[i]._id === disease._id)
         {
@@ -472,6 +472,95 @@ app.controller('DepartmentListCtrl', [
       
       if(confirm("Are you sure?") ){
         departments_fac.delete(department);
+      }
+    };
+}]);
+
+
+app.controller('DiseaseListCtrl', [
+  '$scope',
+  '$q',
+  'diseases_fac',
+  '$mdDialog',
+
+  function($scope,$q, diseases_fac,$mdDialog){
+    diseases_fac.getList();
+    $scope.diseases = diseases_fac.diseases;
+    $scope.selected = [];
+  
+      $scope.query = {
+       order: 'username',
+       limit: 5,
+        page: 1
+    };
+
+    $scope.onpagechange = function(page, limit) {
+        var deferred = $q.defer();
+        
+        setTimeout(function () {
+          deferred.resolve();
+        }, 2000);
+        
+        return deferred.promise;
+      };
+    
+    $scope.onorderchange = function(order) {
+        var deferred = $q.defer();
+        
+        setTimeout(function () {
+          deferred.resolve();
+        }, 2000);
+        
+        return deferred.promise;
+      };
+
+    $scope.showDiseaseForm = function(ev,mode, disease){
+        var createDiseaseCtrl = function($scope , diseases_fac , disease){
+          $scope.disease = {disease_id:[],disease_id_type:[],name:[]};
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.submitDisease = function(){
+              diseases_fac.add($scope.disease);
+              $mdDialog.cancel();
+            };
+          };
+        var editDiseaseCtrl = function($scope , diseases_fac , disease){
+          $scope.disease = disease ;
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.submitDisease = function(){
+              diseases_fac.update($scope.disease);
+              $mdDialog.cancel();
+            };
+          };
+        var mCtrl = {};
+        if (mode === 'edit'){
+          mCtrl = editDiseaseCtrl ;
+        }
+        else{
+          mCtrl = createDiseaseCtrl ;
+        }
+        $mdDialog.show({
+          locals:{diseases_fac : diseases_fac , disease : JSON.parse(JSON.stringify(disease))},
+          controller: mCtrl,
+          templateUrl: '/dialog/createDisease.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose:true
+        })
+        .then(function(answer) {
+          //Do something after close dialog
+          //Switch to another page
+        }, function() {
+        });
+    };
+
+    $scope.removeDisease = function(disease){
+      
+      if(confirm("Are you sure?") ){
+        diseases_fac.delete(disease);
       }
     };
 }]);

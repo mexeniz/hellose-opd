@@ -14,7 +14,7 @@ module.exports.addDepartment = function(name, done) {
 	  	return done(null,department);
 	  }
 	});
-}
+};
 
 module.exports.getDepartment = function(done) {
 	Department.find(function(err, departments) {
@@ -26,12 +26,12 @@ module.exports.getDepartment = function(done) {
 			return done(null,departments);
 		}
 	});
-}
+};
 
 module.exports.updateDepartment = function(dept_id, dept_name, done) {
 	var query = {};
 	query._id = dept_id;
-	Department.findOne(function(err, department) {
+	Department.findOne(query, function(err, department) {
 		if (err) {
 			return done(null, false);
 		}
@@ -47,7 +47,7 @@ module.exports.updateDepartment = function(dept_id, dept_name, done) {
 			});
 		}
 	});
-}
+};
 
 module.exports.deleteDepartment = function(dept_id, done) {
 	var query = {};
@@ -60,4 +60,4 @@ module.exports.deleteDepartment = function(dept_id, done) {
 	        return done(null, true);
 	    }
 	});
-}
+};
