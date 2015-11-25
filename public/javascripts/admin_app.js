@@ -33,10 +33,8 @@ app.factory('users_fac', ['$http', function($http){
     //   isStaff : user.isStaff,
     //   department : user.department
     // };
-    console.log(user.id);
     return $http.post('/user/' + user.id, user).success(function(result){
         // o.users.push(data);
-      console.log(result);
       for(var i = 0; i < o.users.length; i++)
       {
         if(o.users[i].id === user.id)
@@ -50,7 +48,6 @@ app.factory('users_fac', ['$http', function($http){
 
   o.getList = function()
   {
-    console.log('getHere');
     return $http.get('/store/user').success(function(data){
         for(var i = 0  ; i < data.length  ; i++){
           o.users.push(data[i]);
@@ -79,6 +76,15 @@ app.factory('users_fac', ['$http', function($http){
 app.factory('diseases_fac', ['$http', function($http){
   var o = {
     diseases: []
+  };
+
+  o.getList = function()
+  {
+    return $http.get('/store/disease').success(function(data){
+        for(var i = 0  ; i < data.length  ; i++){
+          o.diseases.push(data[i]);
+        }
+      });
   };
 
   o.add = function(disease)
@@ -121,6 +127,15 @@ app.factory('diseases_fac', ['$http', function($http){
 app.factory('medicines_fac', ['$http', function($http){
   var o = {
     medicines: []
+  };
+
+  o.getList = function()
+  {
+    return $http.get('/store/medicine').success(function(data){
+        for(var i = 0  ; i < data.length  ; i++){
+          o.medicines.push(data[i]);
+        }
+      });
   };
 
   o.add = function(medicine)
@@ -275,5 +290,92 @@ app.controller('ListCtrl', [
   }
 ]);
 
+app.controller('MedicineListCtrl', [
+  '$scope',
+  '$q',
+  'medicines_fac',
+  '$mdDialog',
+
+  function($scope,$q, medicines_fac,$mdDialog){
+    medicines_fac.getList();
+    $scope.medicines = medicines_fac.medicines;
+    $scope.selected = [];
+  
+      $scope.query = {
+       order: 'username',
+       limit: 5,
+        page: 1
+    };
+
+    $scope.onpagechange = function(page, limit) {
+        var deferred = $q.defer();
+        
+        setTimeout(function () {
+          deferred.resolve();
+        }, 2000);
+        
+        return deferred.promise;
+      };
+    
+    $scope.onorderchange = function(order) {
+        var deferred = $q.defer();
+        
+        setTimeout(function () {
+          deferred.resolve();
+        }, 2000);
+        
+        return deferred.promise;
+      };
+
+    $scope.showMedicineForm = function(ev,mode, medicine){
+      var createMedicineCtrl = function($scope , medicines_fac , medicine){
+          $scope.medicine = {name:[]};
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.submitMedicine = function(){
+              medicines_fac.add($scope.medicine);
+              $mdDialog.cancel();
+            };
+          };
+        var editMedicineCtrl = function($scope , medicines_fac , medicine){
+          console.log(medicine);
+          $scope.medicine = medicine ;
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.submitMedicine = function(){
+              medicines_fac.update($scope.medicine);
+              $mdDialog.cancel();
+            };
+          };
+        var mCtrl = {};
+        if (mode === 'edit'){
+          mCtrl = editMedicineCtrl ;
+        }
+        else{
+          mCtrl = createMedicineCtrl ;
+        }
+        $mdDialog.show({
+          locals:{medicines_fac : medicines_fac , medicine : JSON.parse(JSON.stringify(medicine))},
+          controller: mCtrl,
+          templateUrl: '/dialog/createMedicine.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose:true
+        })
+        .then(function(answer) {
+          //Do something after close dialog
+          //Switch to another page
+        }, function() {
+        });
+    };
+    
+    $scope.removeMedicine = function(medicine){
+      if(confirm("Are you sure?") ){
+        medicines_fac.delete(medicine);
+      }
+    };
+}]);
 
 })();

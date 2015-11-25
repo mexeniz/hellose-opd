@@ -459,7 +459,7 @@ app.controller('InfoCtrl', [
 	            });*/
 		      $scope.updateProfile = function(){	
 	        	console.log(patient);
-		      }
+		      };
 		      };	
 		$mdDialog.show({
 	        locals:{patient: $scope.patient},
@@ -937,7 +937,7 @@ app.controller('confirmAppointmentCtrl', ['$scope', 'appointment_fac', function(
 		{	
 			var currentDate = new Date();
 			appointment_fac.getCalendar(doctorId, currentDate.getMonth(), currentDate.getFullYear(), () => {});
-		}
+		};
 
 		$scope.setDirection = function(direction) {
 			$scope.direction = direction;
