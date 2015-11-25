@@ -385,6 +385,49 @@ app.controller('ListCtrl', [
 	}
 ]);
 
+app.controller('ListAppointmentCtrl', [
+	'$scope', 
+	'$filter', 
+	'$http', 
+	'$filter', 
+	function($scope, $filter, $http, $filter) {
+		$scope.appointmentList = [];
+
+		var startAM = 9 * 60 + 30;
+		var startPM = 13 * 60;
+
+		$scope.getTimeMessage = function(time, slot)
+		{
+			var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+			var min = minutes % 60;
+			var hour = (minutes - min) / 60;
+			var dateTime = new Date();
+			dateTime.setHours(hour);
+			dateTime.setMinutes(min);
+			return $filter('date')(dateTime, "H:mm");
+		};
+
+		$scope.getAppointmentData = function()
+		{
+			console.log('get');
+			$http.get('/appointment/list').success(function(data){
+				console.log('wtf');
+				console.log(data);
+				angular.copy(data, $scope.appointmentList);
+			});
+		};
+
+		// Initial page by getting appointment data
+		$scope.init = function()
+		{
+			$scope.getAppointmentData();
+		};
+
+
+
+	}
+]);
+
 app.controller('InfoCtrl', [
 	'$scope',
 	'patients_fac',

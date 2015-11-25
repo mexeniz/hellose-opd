@@ -30,12 +30,15 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
     }else{ 
       //Found Doctor
       var roundward_entity = new Roundward(rwinfo);  //Create Roundward 
-      Roundward.findOne({date:roundward_entity.date,time:roundward_entity.time},
+      //console.log(rwinfo);
+      Roundward.findOne({date : roundward_entity.date , time : roundward_entity.time},
         function(err2,result){
         if(err2){
           return callback(err2);
         }else if(result){
           //Already Exist ! : Add To Array
+          //console.log('already Exist');
+          //console.log(result);
           Doctor.findByIdAndUpdate(
                     thisDoctor._id,
                     { $addToSet: {"onDutyRoundward": result._id}},
@@ -44,11 +47,13 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
                if(err){
                 return callback(err4);
                }
-                callback(err4,result);
+                callback(null,result);
           });
         }else if(!result){
           //New Roundward ! : Add To Array
+          //console.log('NEW');
           roundward_entity.save(function(err3,res){
+            //console.log("TRYING TO SAVE");
             if(err3){
               return callback(err3);
             }else{
@@ -61,9 +66,11 @@ module.exports.addRoundWard = function(userId,rwinfo,callback) {
                if(err){
                 return callback(err4);
                }
-                callback(err4,res);
+               //console.log('SAVED');
+                callback(null,res);
           });
             }
+            
           });
         }
       });
@@ -110,10 +117,12 @@ module.exports.getRoundward = function(userId,month,year,callback){
 module.exports.cancelRoundward = function (userId,rwId_input,callback) {
   //Doctor Wants to CancelRoundward
   //Find Correspondent Doctor
+
   Doctor.findOne({userId : userId},function(err1,thisDoctor){
   		if(!err1 && thisDoctor){
   			Roundward.findById(rwId_input,function(err2,thisRoundward){
   				if(!err2&&thisRoundward){
+            // Have Roundward and Doctor :3 
   					// Delete Roundward From Doctor's Roundward Array List
             Doctor.update({_id:thisDoctor._id},{$pull : {onDutyRoundward:thisRoundward._id}},
               {},
@@ -122,16 +131,16 @@ module.exports.cancelRoundward = function (userId,rwId_input,callback) {
                   console.log('no doc found in order to update array');
                   return callback(err3);
                 }else{
+                  //FINISHING UPDATE THE ONDUTY ROUNDWARD
                   console.log("Update With Doctor Success");
                     //Appointment.findAndUpdate to Canceled
-                    AppointmentControl.updateAppointment(thisRoundward._id,function(err5,app_result){
+          
+                    AppointmentControl.updateAppointments(thisDoctor.department,thisRoundward._id,function(err5,app_result){
                       if(err5){
                         return callback(err5)
                       }
                       callback(null,result);
-                    });
-                        
-
+                    });                        
                 }
               });
   				}else{
@@ -218,7 +227,7 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
               for(var j = 0 ; j< appointments[i].length ; ++j){
                 for(var k = 0 ; k < appointments[i][j].length ; ++k){
                     var data = appointments[i][j][k];
-                    if(String(data.roundWard._id) === String(e._id)){
+                    if(String(data.roundWard._id) === String(e._id) && data.status !='canceled'){
                         busySlot.push(data.slot);
                     }
                 }
@@ -383,12 +392,14 @@ module.exports.getDepartmentFreeMonth = function(month,year,department,callback)
 };
 
 module.exports.importRoundWard = function (startDate,data,callback) {
+  console.log("importRoundWard Called");
   //Read the CSVs and Put it into DATABASE
   var beginningMonth = startDate;
   var endMonth = new Date(startDate.getFullYear(),startDate.getMonth()+1,0);
 data.forEach(function(e){
   var my_stack = [];
       User.findOne({firstname:e.docfirstname,lastname:e.doclastname},function(err,thisDoctor){
+        console.log("Data Add To "+thisDoctor.firstname+" "+thisDoctor.lastname);
         if(err){
           return callback(err);
         }else if(!thisDoctor){
@@ -404,14 +415,14 @@ data.forEach(function(e){
                     if(e.sun1 == '1'){
                         //console.log('sunday morning'+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         pack = {};
                     }
                     if(e.sun2 == '1'){
                         //console.log('sunday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -420,14 +431,14 @@ data.forEach(function(e){
                     if(e.mon1 === '1'){
                         //console.log('monday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.mon2 === '1'){
                         //console.log('monday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -436,14 +447,14 @@ data.forEach(function(e){
                     if(e.tue1 == '1'){
                         //console.log('tuesday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.tue2 == '1'){
                         //console.log('tuesday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -452,14 +463,14 @@ data.forEach(function(e){
                     if(e.wed1 == '1'){
                        // console.log('wednesday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.wed2 == '1'){
                        // console.log('wednesday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -468,14 +479,14 @@ data.forEach(function(e){
                     if(e.thr1 == '1'){
                        // console.log('thursday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.thr2 == '1'){
                        // console.log('thursday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -485,14 +496,14 @@ data.forEach(function(e){
                     if(e.fri1 == '1'){
                         //console.log('friday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.fri2 == '1'){
                        // console.log('friday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -501,14 +512,14 @@ data.forEach(function(e){
                     if(e.sat1 == '1'){
                        // console.log('saturday morning '+m.date());
                         pack.time = 'AM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
                     if(e.sat2 == '1'){
                        // console.log('saturday afternoon '+m.date());
                         pack.time = 'PM';
-                        pack.date = m.format('YYYY-MM-DD').hour(1); 
+                        pack.date = m.hour(1).format('YYYY-MM-DD'); 
                         my_stack.push(pack); pack = {};
                         
                     }
@@ -517,15 +528,15 @@ data.forEach(function(e){
                     console.log('m.day Error');
             }
           }
-           console.log(my_stack);
+           //console.log(my_stack);
            my_stack.forEach(function(e){
-              module.exports.addRoundWard(thisDoctor._id,e,function(){
-                //Nothing
+              module.exports.addRoundWard(thisDoctor._id,e,function(err,result){
+                //console.log(result);
               });
            });
         }
       }).exec(function(){
-        console.log('Roundward entry added : '+ my_stack.length);
+        console.log('Roundward entry read : '+ my_stack.length);
         console.log('Endloop');
       });
   });  

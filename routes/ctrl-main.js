@@ -254,18 +254,21 @@ router.post('/getRoundward',function(req,res,next){
 
 //DELETE ROUNDWARD FROM A SINGLE DOCTOR
 router.post('/cancelRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
-    var userId = req.user._id; //GetFromSession
+  //if(req.user && req.session.role === '2')
+  //{
+    //var userId = req.user._id; //GetFromSession
+    var userId = req.body['userId'];
     var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
     RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
       if(err){
         return next(err);
       }else{
+        //Result is PatientARRAY
+        
         return res.json(result);
       }
     });
-  }
+  //}
 });
 
 //GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
@@ -322,10 +325,11 @@ router.get('/roundward/add', function(req, res, next) {
 
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
+  //if(req.user && req.session.role === '2')
+  //{
     var roundward = {date:req.body['date'],
           time:req.body['time']};
+    //var userId = req.body['doctor_id'];
     var userId = req.user._id; //GetFromSession
     RoundWardControl.addRoundWard(userId,roundward,function(err,result){
       if(err){
@@ -333,7 +337,7 @@ router.post('/addRoundward', function(req,res,next){
       }
       return res.json(result);
     });
-  }
+  //}
 });
 
 // Create appointment
@@ -359,13 +363,40 @@ router.post('/patient/:patientId/create_appointment', function(req, res, next) {
 router.get('/appointment', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '1') {
-      res.render('patient/list_appointment');
+      return res.render('patient/list_appointment');
     }
     else if(req.session.role === '2') {
-      res.render('doctor/list_appointment');
+      return res.render('doctor/list_appointment');
     }
   }
   res.redirect('/login');
+});
+
+
+// Get list of appointment
+router.get('/appointment/list', function(req, res, next) {
+  if(req.user) {
+    var returnFunction = function(err, result)
+    {
+      if(err) { next(err); }
+      return res.json(result);
+    };
+
+    if(req.session.role === '1') { // Patient
+      AppointmentControl.getAppointmentByPatientId(req.session.patient_id, returnFunction);
+    }
+    else if(req.session.role === '2') { // Doctor
+      return res.json([]);
+    }
+    else
+    {
+      res.json([]);
+    }
+  }
+  else
+  {
+    res.json([]);
+  }
 });
 
 /* ------------------------------------------------------- */
