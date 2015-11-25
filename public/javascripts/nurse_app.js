@@ -44,6 +44,9 @@ app.factory('patients_fac', ['$http', function($http){
 			return $http.get('/patients/info/' +patient_id);
 		};
 
+		o.getPatientUser = function(patient_id) {
+			return $http.get('/patients/info_user/' +patient_id);
+		};
 	  return o;
 	}]);
 app.factory('physical_records_fac', ['$http', function($http){
@@ -294,6 +297,170 @@ app.controller('InfoCtrl', [
 			// Get patient info
 			$scope.patient_id = patient_id;
 			patients_fac.getPatient($scope.patient_id).success(function(data){
+				var obj_id = data._id ; 
+				$scope.patient = data.userId;
+				$scope.patient.blood_type = data.blood_type;
+				$scope.patient.patient_id = data.patient_id;
+				$scope.patient.physical_record = data.physical_record ;
+				$scope.patient.medical_record = data.medical_record ;
+				$scope.patient.prescription_record = data.prescription_record ;
+				$scope.patient._id = obj_id ; 
+				
+				$scope.patient.birthdate = new Date(data.userId.birthdate);
+
+				$scope.patient.age = (function(){
+			    	// var ageDifMs = Date.now() - $scope.patient.birthdate.getTime();
+				    // var ageDate = new Date(ageDifMs); // miliseconds from epoch
+				    return (new Date().getFullYear() - $scope.patient.birthdate.getFullYear());
+				    // return Math.abs(ageDate.getUTCFullYear() - 1970);
+			    }());
+
+				// console.log(data);
+		    });
+		};
+
+		$scope.showPhysicalRecordForm = function(ev,mode,physicalRecord){
+
+			var createPhysCtrl = function($scope ,physicalRecord){
+				$scope.physicalRecord = {} ;
+		        $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.submitPhysicalRecord = function(){
+		        	if ($scope.physicalRecord.weight != null &&
+		        		$scope.physicalRecord.height != null &&
+		        		$scope.physicalRecord.temperature != null &&
+		        		$scope.blood_pressure_sys != null &&
+		        		$scope.blood_pressure_di != null &&
+		        		$scope.physicalRecord.pulse != null ){
+		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
+
+					$mdDialog.hide({mode :'create',physicalRecord : $scope.physicalRecord});
+				}
+		      	};
+		      };
+		    var editPhysCtrl = function($scope ,physicalRecord){
+				$scope.physicalRecord = {
+		    		_id : physicalRecord._id ,
+		    		weight : physicalRecord.weight ,
+		        	height : physicalRecord.height ,
+		        	temperature : physicalRecord.temperature ,
+		        	pulse : physicalRecord.pulse
+		    	};
+		    	var b = physicalRecord.blood_pressure.split('/');
+				$scope.blood_pressure_sys = Number(b[0]) ;
+				$scope.blood_pressure_di = Number(b[1]) ;
+		        $scope.cancel = function() {
+		            $mdDialog.cancel();
+		        };
+		        $scope.submitPhysicalRecord = function(){
+		        	if ($scope.physicalRecord.weight !== null &&
+		        		$scope.physicalRecord.height !== null &&
+		        		$scope.physicalRecord.temperature !== null &&
+		        		$scope.blood_pressure_sys !== null &&
+		        		$scope.blood_pressure_di !== null &&
+		        		$scope.physicalRecord.pulse !== null ){
+		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
+					$mdDialog.hide({mode :'edit',physicalRecord : $scope.physicalRecord});
+					}
+		      	};
+		      };
+		    var pCtrl = {};
+		    if (mode === 'edit'){
+		    	pCtrl = editPhysCtrl ;
+		    }
+		    else{
+		    	pCtrl = createPhysCtrl ;
+		    }
+
+		    //Copy value
+		    
+
+			$mdDialog.show({
+	        locals:{physicalRecord : physicalRecord},
+	        controller: pCtrl,
+	        templateUrl: '/dialog/createPhysicalRecord.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function( response ) {
+	        if(response.mode === "create"){
+	        	physical_records_fac.add($scope.patient, response.physicalRecord);
+	        }
+	        else if (response.mode === "edit"){
+				physical_records_fac.update($scope.patient, response.physicalRecord);
+	        }
+	      });
+
+		};
+		$scope.submitPhysicalRecord = function()
+		{
+
+			if($scope.mode === 'create'){
+				physical_records_fac.add($scope.patient, $scope.physicalRecord);
+			}
+
+			else if($scope.mode === 'edit')
+			{
+				physical_records_fac.update($scope.patient, $scope.physicalRecord);
+			}
+
+			$scope.showPhysModal = !$scope.showPhysModal ;
+		};
+
+		$scope.removePhysicalRecord = function(pRecord, index){
+			if(confirm("Are you sure?") ){
+				physical_records_fac.delete($scope.patient, pRecord, index);
+			}
+		};
+
+		//Pagination Function
+		$scope.query = {
+	 	   order: 'physicalRecord.date',
+	 	   limit: 10,
+		    page: 1
+		};
+
+		$scope.onpagechange = function(page, limit) {
+		    var deferred = $q.defer();
+		    
+		    setTimeout(function () {
+		      deferred.resolve();
+		    }, 2000);
+		    
+		    return deferred.promise;
+		  };
+	  
+		$scope.onorderchange = function(order) {
+		    var deferred = $q.defer();
+		    
+		    setTimeout(function () {
+		      deferred.resolve();
+		    }, 2000);
+		    
+		    return deferred.promise;
+		  };
+	}
+	
+]);
+
+app.controller('InfoUserCtrl', [
+	'$scope',
+	'patients_fac',
+	'physical_records_fac',
+	'medical_records_fac',
+	'prescription_records_fac',
+	'medicines_fac',
+	'$mdDialog',
+	'$q',
+	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$mdDialog,$q){
+      	$scope.bloodList = ["A","B","AB","O"];
+		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		$scope.init = function(patient_id) {
+			// Get patient info
+			$scope.patient_id = patient_id;
+			patients_fac.getPatientUser($scope.patient_id).success(function(data){
 				var obj_id = data._id ; 
 				$scope.patient = data.userId;
 				$scope.patient.blood_type = data.blood_type;

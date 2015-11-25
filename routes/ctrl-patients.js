@@ -93,6 +93,48 @@ router.get('/info/:patid', function(req, res, next) {
 
 });
 
+// Physical Record for individual patient
+router.get('/info_user/:patid', function(req, res, next) {
+  var id = req.params.patid;
+    Patient.findOne({userId: mongoose.Types.ObjectId(id)})
+          .populate('physical_record')
+          .populate('medical_record')
+          .populate('prescription_record')
+          .populate('userId')
+          .exec(function(err, patient) {
+              if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+              }
+              if(!patient) {
+                  return res.json(404, {
+                      message: 'Patient not found!'
+                  });
+              }
+              // var options = {
+              //   path: 'medical_record.diseases',
+              //   model: 'Disease'
+              // };
+              
+              // Get disease info and return it
+              // Patient.populate(patient, options, function (err, patient) {
+                var options2 = {
+                  path: 'prescription_record.med_dosage_list.medicine',
+                  model: 'Medicine'
+                };
+
+                // Get medicine info
+                Patient.populate(patient, options2, function(err, patient) {
+                  if(err) return next(err);
+                  res.json(patient);
+                });
+                
+              // });
+
+          });
+
+});
 
 /*
 router.param('patient', function(req, res, next, id) {
