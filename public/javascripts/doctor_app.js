@@ -221,14 +221,23 @@ app.factory('appointment_fac', ['$http', function($http){
 		busyDate: []
 	};
 
-	o.getCalendar = function(month)
+	o.getCalendar = function(month, year, callback)
 	{
-		var bd = [];
+		/*var bd = [];
 		angular.copy(bd, o.busyDate);
 		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
 		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
 		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
-		o.busyDate.push(Math.floor(Math.random() * 28) + 1);
+		o.busyDate.push(Math.floor(Math.random() * 28) + 1);*/
+		$http.get('/appointment/list/' + year + '/' + month)
+		.success(function(data){
+			angular.copy(data, o.appointmentList);
+			console.log(data);
+			callback();
+		})
+		.error(function(err){
+
+		});
 	};
 
 	o.getAppointmentListByDate = function(date)
@@ -859,18 +868,59 @@ app.controller('symptomCtrl', function($scope, $mdSidenav) {
                     console.log($scope.department + $scope.symptoms);
                 };
              });
-app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', function($scope, $filter, appointment_fac) {
+
+app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', 'CalendarData', function($scope, $filter, appointment_fac, CalendarData) {
 	$scope.dayFormat = "d";
 	$scope.selectedDate = null;
 	$scope.tooltips = true;
 
 	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
 	$scope.appointmentList = appointment_fac.appointmentList;
-	$scope.busyDate = appointment_fac.busyDate;
+	$scope.selectedAppointmentData = [];
+
+	var startAM = 9 * 60 + 30;
+	var startPM = 13 * 60;
+
+	$scope.getTimeMessage = function(time, slot)
+	{
+		var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+		var min = minutes % 60;
+		var hour = (minutes - min) / 60;
+		var dateTime = new Date();
+		dateTime.setHours(hour);
+		dateTime.setMinutes(min);
+		return $filter('date')(dateTime, "H:mm");
+	};
+
+	var getAppointmentListByDate = function(date)
+	{
+		var result = [];
+		var sDate = new Date(date);
+
+		$scope.appointmentList.forEach(function(app){
+			var appDate = new Date(app.roundWard.date);
+			if(appDate.getMonth() === sDate.getMonth() && appDate.getFullYear() === sDate.getFullYear() && appDate.getDate() === sDate.getDate())
+			{
+				result.push(app);
+			}
+		});
+		angular.copy(result, $scope.selectedAppointmentData);
+	};
+
+	$scope.setCalendar = function()
+	{
+		console.log('Set calendar');
+		$scope.loadingCount--;
+		if($scope.loadingCount > 0) { return; }
+		$scope.appointmentList.forEach(function(app){
+			CalendarData.setDayContent(new Date(app.roundWard.date), "<i class='material-icons'>event</i>");
+		});
+	};
 
 	$scope.init = function()
 	{
-		appointment_fac.getCalendar(11);
+		var curDate = new Date();
+		appointment_fac.getCalendar(curDate.getMonth(), curDate.getFullYear(), $scope.setCalendar);
 	};
 
 	$scope.setDirection = function(direction) {
@@ -881,29 +931,24 @@ app.controller('appointmentListCtrl', ['$scope', '$filter', 'appointment_fac', f
     $scope.dayClick = function(date) {
       $scope.msg = "You clicked " + date;
       $scope.selectedDate = date;
-      appointment_fac.getAppointmentListByDate(date);
+      getAppointmentListByDate(date);
     };
 
     $scope.prevMonth = function(data) {
       $scope.msg = "You clicked (prev) month " + data.month + ", " + data.year;
-      appointment_fac.getCalendar(data.month);
+      $scope.loadingCount++;
+      appointment_fac.getCalendar(data.month - 1, data.year, $scope.setCalendar);
     };
 
     $scope.nextMonth = function(data) {
       $scope.msg = "You clicked (next) month " + data.month + ", " + data.year;
-      appointment_fac.getCalendar(data.month);
+      $scope.loadingCount++;
+      appointment_fac.getCalendar(data.month - 1, data.year, $scope.setCalendar);
     };
 
     
     $scope.setDayContent = function(date) {
-    	var d = $filter("date")(date, "d");
-        if ($scope.busyDate.indexOf(parseInt(d)) > -1){
-
-          return "<i class='material-icons'>assignment_turned_in</i>";
-          }
-        else{
-          return "<p></p>";
-        }
+        return "<p></p>";
     };
 
 }]);

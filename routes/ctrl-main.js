@@ -453,7 +453,32 @@ router.get('/appointment/list', function(req, res, next) {
       AppointmentControl.getAppointmentByPatientId(req.session.patient_id, returnFunction);
     }
     else if(req.session.role === '2') { // Doctor
-      return res.json([]);
+      AppointmentControl.getAppointment(req.session.doctor_id, returnFunction);
+    }
+    else
+    {
+      res.json([]);
+    }
+  }
+  else
+  {
+    res.json([]);
+  }
+});
+
+// Get list of appointment
+router.get('/appointment/list/:year/:month', function(req, res, next) {
+  if(req.user) {
+    var returnFunction = function(err, result)
+    {
+      if(err) { next(err); }
+      return res.json(result);
+    };
+
+    if(req.session.role === '2') { // Doctor
+      var month = req.params.month;
+      var year = req.params.year;
+      AppointmentControl.getAppointment(mongoose.Types.ObjectId(req.session.doctor_id), month, year, returnFunction);
     }
     else
     {

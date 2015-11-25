@@ -36,7 +36,7 @@
 
       <br>
 
-      <div ng-show="selectedDate">
+      <div ng-show="selectedDate && selectedAppointmentData.length > 0">
         <div class="h2-th">ตารางนัดหมาย วันที่ {{ selectedDate | date:'dd-MM-yyyy' }}</div>
         <md-data-table-container>
           <table md-data-table>
@@ -49,11 +49,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="appointment in appointmentList">
-                <td>{{ appointment.time }}</td>
-                <td>{{ appointment.patient }}</td>
-                <td>{{ appointment.symptom }}</td>
-                <td><md-button class="md-primary md-raised" href="#"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
+              <tr ng-repeat="appointment in selectedAppointmentData">
+                <td>{{ getTimeMessage(appointment.roundWard.time, appointment.slot) }}</td>
+                <td>{{ appointment.patient.userId.firstname + ' ' + appointment.patient.userId.lastname }}</td>
+                <td>{{ appointment.causes }}</td>
+                <td><md-button class="md-primary md-raised" href="/patient/{{appointment.patient.patient_id}}"><md-icon md-font-library="material-icons">info</md-icon>ดูข้อมูลผู้ป่วย</md-button></td>
               </tr>
             </tbody>
           </table>
@@ -61,6 +61,7 @@
       </div>
 
       <h2 class="md-title" ng-hide="selectedDate">กรุณาเลือกวันเพื่อดูรายละเอียดการนัดหมาย</h2>
+      <h2 class="md-title" ng-show="selectedDate && selectedAppointmentData.length === 0">ไม่มีนัดหมาย</h2>
 
       </md-content>
 

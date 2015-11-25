@@ -432,17 +432,19 @@ module.exports.editAppointment = function(userId,doctor_userId,callback)
 
 	});
 	//CancelAppointment Derm
-	module.exports.cancelAppointment(appId)
+	module.exports.cancelAppointment(appId);
 	//Create New Appointment with Status " Pending "
 };
 
 
-module.exports.getAppointment = function(userId,month,year,callback){
+module.exports.getAppointment = function(doctorId,month,year,callback){
 	var returning = [];
 
-	function findAppointment(userId){
+	function findAppointment(doctorId){
     return new Promise(function(resolve,reject){
-       Appointment.find({'userId' : userId}).populate('roundWard')
+       Appointment.find({'doctor' : doctorId, 'status': 'confirmed'})
+       	.populate({ path : 'roundWard' , select : 'date time'})
+		.populate({ path : 'patient', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
         .exec(function(err,result){
             if(err){
               reject(err);
@@ -452,12 +454,13 @@ module.exports.getAppointment = function(userId,month,year,callback){
     });
   	}
   	//FLOW
-  	findAppointment(userId)
+  	findAppointment(doctorId)
   	.then(function goFindAppointment(appointments){
   		appointments.forEach(function(appointment){
-  			if(appointment.roundWard.date.getFullYear() === year 
-  				&& appointment.roundWard.date.getMonth()+1===month ){
+  			console.log(month + ' ' + year +' vs ' + appointment.roundWard.date.getFullYear() + ' ' + appointment.roundWard.date.getMonth());
+  			if(appointment.roundWard.date.getFullYear() == year && appointment.roundWard.date.getMonth()==month ){
   				returning.push(appointment);
+  				console.log(appointment);
   			}
   		});
   			
@@ -474,6 +477,14 @@ module.exports.getAppointmentByPatientId = function(patientId, callback)
 	Appointment.find({patient : patientId})
 		.populate({ path : 'roundWard' , select : 'date time'})
 		.populate({ path : 'doctor', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
+		.exec(callback);
+};
+
+module.exports.getAppointmentByDoctorId = function(doctorId, callback)
+{
+	Appointment.find({doctor : doctorId})
+		.populate({ path : 'roundWard' , select : 'date time'})
+		.populate({ path : 'patient', populate: { path: 'userId', model: 'User', select: 'firstname lastname' } })
 		.exec(callback);
 };
 
