@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 module.exports = router;
-
+var nodemailer = require('nodemailer');
 
 var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
@@ -19,6 +19,7 @@ var DepartmentControl = require('../controllers/DepartmentControl');
 var DiseaseControl = require('../controllers/DiseaseControl');
 
 /* ------------------------------------------------------- */
+
 // Guest Route
 router.get('/', function(req, res, next) {
   if(req.user)
