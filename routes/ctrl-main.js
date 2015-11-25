@@ -336,7 +336,7 @@ router.post('/addRoundward', function(req,res,next){
 // Create appointment
 router.get('/patient/:patientId/create_appointment', function(req, res, next) {
   if(req.user && req.session.role === '2') {
-    res.render('doctor/create_appointment', { patient_id : req.param.patientId });
+    res.render('doctor/create_appointment', { patient_id : req.params.patientId });
   }
   res.redirect('/login');
 });
@@ -490,16 +490,16 @@ router.post('/profile/edit', function(req, res, next) {
 router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '2') {
-      res.render('doctor/patient_profile', { patient_id : req.param.patientId });
+      res.render('doctor/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '3') {
-      res.render('staff/patient_profile', { patient_id : req.param.patientId });
+      res.render('staff/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '4') {
-      res.render('pharmacist/patient_profile', { patient_id : req.param.patientId });
+      res.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '5') {
-      res.render('nurse/patient_profile', { patient_id : req.param.patientId });
+      res.render('nurse/patient_profile', { patient_id : req.params.patientId });
     }
   }
   res.redirect('/login');

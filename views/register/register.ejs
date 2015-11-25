@@ -26,7 +26,7 @@
             <md-icon md-font-library="material-icons" class="material-icons">account_box</md-icon>
             <input ng-model="regData.username" type="text" name="username" required ng-minlength="6">
             <span style="color:red" ng-show="regForm.username.$dirty && regForm.username.$invalid">
-              <span ng-show="regForm.username.$error.required">กรุณากรอกชื่อผู้ใชช้งาน</span>
+              <span ng-show="regForm.username.$error.required">กรุณากรอกชื่อผู้ใช้งาน</span>
               <span ng-show="regForm.username.$error.minlength">ชื่อผู้ใช่งานต้องมีอย่างน้อย 6 อักขระ</span>
             </span>
           </md-input-container>
@@ -34,15 +34,17 @@
             <label>รหัสผ่าน</label>
             <md-icon md-font-library="material-icons" class="material-icons">https</md-icon>
             <input ng-model="regData.password" type="password" name="password" required ng-minlength="6" ng-change="resetNotMatchAlert()">
+            <!-- <p>Dirty: {{regForm.password.$dirty}} Invalid: {{regForm.password.$invalid}} Error: {{regForm.password.$error}}</p> -->
             <span style="color:red" ng-show="regForm.password.$dirty && regForm.password.$invalid">
-              <span ng-show="regForm.username.$error.required">กรุณากรอกรหัสผ่าน</span>
-              <span ng-show="regForm.username.$error.minlength">รหัสผ่านต้องมีอย่างน้อย 6 อักขระ</span>
+              <span ng-show="regForm.password.$error.required">กรุณากรอกรหัสผ่าน</span>
+              <span ng-show="regForm.password.$error.minlength">รหัสผ่านต้องมีอย่างน้อย 6 อักขระ</span>
             </span>
           </md-input-container>
           <md-input-container class="md-icon-float md-block" flex="50">
             <md-icon md-font-library="material-icons" class="material-icons">https</md-icon>
             <label>รหัสผ่านซ้ำ</label>
-            <input ng-model="regData.repeatPassword" type="password" name="password" required ng-change="resetNotMatchAlert()">
+            <input ng-model="regData.repeatPassword" type="password" name="repeatPassword" required ng-minlength="6" ng-change="resetNotMatchAlert()">
+            <!-- <p>Dirty: {{regForm.repeatPassword.$dirty}} Invalid: {{regForm.repeatPassword.$invalid}} Error: {{regForm.repeatPassword.$error}}</p> -->
             <span style="color:red" ng-show="regForm.repeatPassword.$dirty && regForm.repeatPassword.$invalid" >
               <span ng-show="regForm.repeatPassword.$error.required">กรุณากรอกรหัสผ่านอีกครั้ง</span>
               <span ng-show="regForm.repeatPassword.$error.pwMatch">กรุณาตรวจสอบรหัสผ่านอีกครั้ง</span>
@@ -86,7 +88,13 @@
                 <span ng-show="regForm.ssn.$error.pattern">กรุณากรอกเฉพาะตัวเลข</span>
               </span>
             </md-input-container>
-            <md-datepicker ng-model="regData.birthdate" md-placeholder="วันเกิด" flex="35" required></md-datepicker>
+            <md-content class="md-block" layout-sm="row" flex="100">
+            <md-datepicker ng-model="regData.birthdate" md-max-date="maxDate" md-placeholder="วันเกิด" flex="35" ng-required="true" required   name="birthdate"></md-datepicker>
+            <span style="color:red" ng-show="requireBirthdate">
+              <br>
+              <span style="margin-left: 70px;" ng-show="requireBirthdate">กรุณากรอกวันเกิด</span>
+            </span>
+            </md-content>
           </div>
           <div layout layout-sm="column">
           <md-input-container class="md-icon-float md-block" flex="65" >

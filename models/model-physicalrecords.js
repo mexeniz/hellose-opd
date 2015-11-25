@@ -11,7 +11,7 @@ var PhysicalRecordsSchema = new Schema({
     date: { type: Date, default: Date.now } ,
     weight: 'Number',
     height: 'Number',
-    blood_pressure: 'Number',
+    blood_pressure: String ,
     pulse: 'Number',
     temperature: 'Number'
 });
