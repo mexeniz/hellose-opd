@@ -897,13 +897,17 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
  }]);
 
-app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 'CalendarData', function($scope, $mdDialog, $http, $q, CalendarData) {
+app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$filter', 'CalendarData', function($scope, $mdDialog, $http, $filter, CalendarData) {
 		
 		$scope.selectedAvailableDate = null;
 		$scope.appointmentDate = null;
 		$scope.selectedData = [];
 		$scope.freeSlots = [];
 		$scope.loadingCount = 0;
+		$scope.doctorName = '';
+		$scope.selectedSlot = {};
+		$scope.sending = false;
+		$scope.success = false;
 
 		var startAM = 9 * 60 + 30;
 		var startPM = 13 * 60;
@@ -916,7 +920,10 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 
 	    			var minutes = data.time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
 	    			var min = minutes % 60;
 	    			var hour = (minutes - min) / 60;
-	    			var slotObj = { time: data.time, slot: slot, display: hour + '.' + min };
+	    			var time = new Date();
+	    			time.setHours(hour);
+	    			time.setMinutes(min);
+	    			var slotObj = { time: data.time, slot: slot, displayMsg: $filter('date')(time, "H:mm") };
 	    			console.log(slotObj);
 	    			freeSlots.push(slotObj);
 	    		});
@@ -928,10 +935,39 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 
 		{	
 			var data = JSON.parse(earliestData);
 			$scope.doctor_id = data.doctor_id;
+			$scope.doctorName = data.firstname + ' ' + data.lastname;
 			$scope.selectedData.push(data);
 			$scope.appointmentDate = new Date(data.date);
 			angular.copy(getFreeSlots($scope.selectedData), $scope.freeSlots);
 			$scope.selectedSlot = $scope.freeSlots[0];
+		};
+
+		$scope.submit = function()
+		{
+			if($scope.sending)
+			{
+				return;
+			}
+			$scope.sending = true;
+			var app = {
+				doctor_id: $scope.doctor_id,
+				date: $scope.appointmentDate,
+				status: 'confirmed',
+				slot: $scope.selectedSlot.slot,
+				time: $scope.selectedSlot.time
+			};
+			console.log('sending...');
+			console.log(app);
+			$http.post('/appointment/create', app).success(function(data){
+				console.log('Successs');
+				console.log(data);
+				$scope.sending = false;
+				$scope.success = true;
+			}).error(function(err){
+				console.log('Error');
+				console.log(err);
+				$scope.sending = false;
+			});
 		};
 
         
@@ -942,8 +978,6 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 
         	$scope.firstDayOfWeek = 0; // First day of the week, 0 for Sunday, 1 for Monday, etc.
         	$scope.loadingCount = 0;
         	$scope.availableData = [];
-
-
 
         	$scope.init = function()
         	{
@@ -1056,27 +1090,23 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 
 		    	angular.copy(getFreeSlots(selectedData), $scope.freeSlots);
 		    	$scope.selectedData = selectedData;
 		    	$scope.appointmentDate = new Date(selectedData[0].date);
+		    	$scope.selectedSlot = $scope.freeSlots[0];
 		    });
 	  	};
 
 	  	var SelectTimeDialogController = function($scope, $mdDialog, availableSlots)
 	  	{
 	  		$scope.availableSlots = availableSlots;
-	  		$scope.selectedSlot = availableSlots[0];
+	  		$scope.selectedSlot = 0;
 	  		$scope.select = function(selectedSlot)
 	  		{
 	  			console.log(selectedSlot);
-	  			$mdDialog.hide(selectedSlot);
+	  			$mdDialog.hide(availableSlots[selectedSlot]);
 	  		};
 	  		$scope.close = function()
 	  		{
 	  			$mdDialog.cancel();
 	  		};
-	  	};
-
-	  	$scope.setSelectedSlotDisplay = function(selectedSlot)
-	  	{
-	  		$scope.selectedSlot = selectedSlot;
 	  	};
 
 	  	$scope.showSelectTimeDialog = function(ev)
@@ -1090,7 +1120,9 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$q', 
 		      clickOutsideToClose:true
 		    }).then(function(selectedSlot)
 		    {
-		    	$scope.setSelectedSlotDisplay(selectedSlot);
+		    	$scope.selectedSlot.slot = selectedSlot.slot;
+		    	$scope.selectedSlot.displayMsg = selectedSlot.displayMsg;
+		    	console.log(selectedSlot.displayMsg);
 		    });
 	  	};
 

@@ -21,51 +21,71 @@ module.exports.createAppointment = function(appInfo, callback){
 	*/
 	//Find Correspondent Doctor to add the Appointment with
 	var thisDoctor;
+	var thisRoundward;
 	var packed = {};
 
 	//FIND THE ROUNDWARD FIRST 
-	var promise = Roundward.findOne({'date':appInfo.date , 'time': appInfo.time}).exec();
-
+	//var promise = Roundward.findOne({'date':appInfo.date , 'time': appInfo.time}).exec();
+	var promise = Roundward.findOne({'date': {"$gte": new Date(appInfo.date.getFullYear(), appInfo.date.getMonth(), appInfo.date.getDate()), 
+		"$lt": new Date(appInfo.date.getFullYear(), appInfo.date.getMonth(), appInfo.date.getDate() + 1)},
+	 'time': appInfo.time}).exec();
+	//{"created_on": {"$gte": new Date(2012, 7, 14), "$lt": new Date(2012, 7, 15)}}
 	promise.then(function(roundward){
+		console.log('finish getting roundward');
 		if(roundward === null){
 			//No Roundward = no doctor = no appointment can be made
 			callback('no roundward');
 			throw new Error('no roundward');
 		}else{
 		//Have Roundward
+			thisRoundward = roundward;
 			return Appointment.findOne({'roundWard' : roundward._id,'slot':appInfo.slot}).exec();
 		}
 	})
 	.then(function(appointments){
+		console.log('finish getting appointment');
 		console.log(appointments);
 		if(appointments === null){
 			//EDITED
-			return User.findOne({'_id':appInfo.userId}).exec().then(function(user){
-				Doctor.findOne({userId:user._id}).exec();
-			});
+			return User.findOne({'_id':appInfo.doctor_id}).exec();
 		}else{
 			//There already have the appointment in the slot and roundward
 			callback('no slot');
 			throw new Error('no slot');
 		}
 	})
-	.then(function(thisDoctorFromDb){
-		thisDoctor = thisDoctorFromDb;
-		return Roundward.findOne({date: appInfo.date,time:appInfo.time}).exec();
+	.then(function(user){
+		console.log(user);
+		if(!user)
+		{
+			console.log('no user');
+			callback('no user');
+		}
+		else
+		{
+			console.log('finding doctor');
+			return Doctor.findOne({ 'userId': user._id }).exec();
+		}
+		
 	})
-	.then(function(roundward){
-		packed.roundWard = roundward._id;
+	.then(function(thisDoctorFromDb){
+		console.log('finish getting doctor');
+		thisDoctor = thisDoctorFromDb;
+		console.log(thisDoctor);
+		packed.roundWard = thisRoundward._id;
 		packed.doctor = thisDoctor._id;
 		packed.slot = appInfo.slot;
 		packed.status = appInfo.status;
-		return Patient.findOne({'userId':appInfo.patientid}).exec()
-	}).then(function(patient){
+		return Patient.findOne({userId:appInfo.patient_id}).exec();
+	})
+	.then(function(patient){
 		packed.patient = patient._id;
 		var appointment_input = new Appointment(packed);
 		appointment_input.save(function(err,result){
 			if(err){
 				return callback(err);
 			}
+			console.log('Finish saving appointment');
 			callback(null,result);
 		});
 

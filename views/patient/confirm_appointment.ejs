@@ -31,21 +31,26 @@
 
         <md-card-content layout="row" layout-sm="column" layout-align="start center">
           <div flex>
-            <span style="font-weight: bold">ชื่อแพทย์:</span> ติวเตอร์ เทพสิทธิ์
+            <span style="font-weight: bold">ชื่อแพทย์:</span> {{ doctorName }}
           </div>
           <div flex>
-            <span style="font-weight: bold">วันที่:</span> {{ appointmentDate | date: 'dd/MMM/yyyy' }}
+            <span style="font-weight: bold">วันที่: </span> {{ appointmentDate | date: 'dd/MMM/yyyy' }}
             <md-button class="md-primary" ng-click="showDialog($event)">เลือกวันอื่น</md-button>
           </div>
           <div flex>
-            <span style="font-weight: bold">เวลา:</span>{{ selectedSlot.display }}
+            <span style="font-weight: bold">เวลา: </span>{{ selectedSlot.displayMsg }}
             <md-button class="md-primary" ng-click="showSelectTimeDialog()">เลือกเวลา</md-button>
           </div>
+
         </md-card-content>
-        <md-card-actions layout="row" layout-align="center center">
-          <md-button class="md-raised md-primary" ><md-icon md-font-library="material-icons">check_circle</md-icon> ยืนยัน</md-button>
+        <md-card-actions layout="column" layout-align="center center">
+          <md-button class="md-raised md-primary" ng-hide="success" ng-disabled="sending" ng-click="submit()" ><md-icon md-font-library="material-icons">check_circle</md-icon> ยืนยัน</md-button>
+          <div flex ng-show="success">
+            <h2><md-icon md-font-library="material-icons" style="font-size: 64px; position: relative; left: -40px; top: -26px">check_circle</md-icon>สร้างการนัดหมายเรียบร้อยแล้ว</h2>
+          </div>
         </md-card-actions>
         <br>
+
       </md-card>
       
       

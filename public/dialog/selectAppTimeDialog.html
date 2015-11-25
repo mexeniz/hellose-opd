@@ -13,9 +13,9 @@
       <!-- Content -->
       <div layout>
         <md-input-container flex>
-          <md-select ng-model="selectedSlot" class="md-padding">{{selectedSlot}}
-            <md-option ng-repeat="slot in availableSlots" value="{{slot}}">
-              {{slot.display}}
+          <md-select ng-model="selectedSlot" class="md-padding" aria-label="กรุณาเลือกเวลา">
+            <md-option ng-value="$index" ng-repeat="slot in availableSlots">
+              {{availableSlots[$index].displayMsg}}
             </md-option>
           </md-select>
         </md-input-container>

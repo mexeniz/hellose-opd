@@ -172,7 +172,51 @@ router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
 
 // Create appointment post
 router.post('/appointment/create', function(req, res, next) {
-  res.send('create success');
+  var patientId = '';
+  var doctorId = '';
+  if(req.user)
+  {
+    if(req.session.role === '1') // Patient
+    {
+      patientId = req.user._id;
+      doctorId = req.body['doctor_id'];
+
+    }
+    else if(req.session.role === '2') // Doctor
+    {
+      patientId = req.body['patient_id'];
+      doctorId = req.user._id;
+    } 
+    else if(req.session.role === '3') // Staff
+    {
+      patientId = req.body['patient_id'];
+      doctorId = req.body['doctor_id'];
+    }
+    else
+    {
+      res.send('No permission');
+    }
+  }
+  var appInfo = {
+    doctor_id : mongoose.Types.ObjectId(doctorId),
+    patient_id : mongoose.Types.ObjectId(patientId), 
+    date : new Date(req.body['date']),
+    time : req.body['time'],
+    slot : req.body['slot'],
+    status : req.body['status']
+  };
+
+  console.log(appInfo);
+
+  AppointmentControl.createAppointment(appInfo,function(err,result){
+    if(err){
+      console.log(err);
+      return next(err);
+    }else{
+      console.log('success');
+      return res.json(result);
+    }
+  });
 });
 
 /* ------------------------------------------------------- */

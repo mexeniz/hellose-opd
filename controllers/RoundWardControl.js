@@ -226,7 +226,10 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
 
 
             single_roundward.freeSlot = freeSlot;
-            returning.push(single_roundward);
+            if(single_roundward.freeSlot.length > 0)
+            {
+              returning.push(single_roundward);
+            }
         });
       return returning;
     }).then(function(){
