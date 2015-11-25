@@ -25,7 +25,7 @@
       </md-input-container>
       <md-input-container class="md-icon-float md-block" flex="50">
         <md-select ng-model="statusFilterItem.store" aria-label="Prescription Status">
-            <md-option ng-value="{{st}}" ng-repeat="st in statusFilterOption.stores">{{ st.name }}</md-option>
+            <md-option ng-value="{{st}}" ng-repeat="st in statusFilterOption.stores" ng-selected="(st === statusFilterOption.stores[0]) ? true:false">{{ st.name }}</md-option>
         </md-select>
       </md-input-container>
     </md-card>

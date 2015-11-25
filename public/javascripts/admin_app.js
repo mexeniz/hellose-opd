@@ -183,9 +183,7 @@ app.factory('departments_fac', ['$http', function($http){
   o.getList = function()
   {
     return $http.get('/store/department').success(function(data){
-        for(var i = 0  ; i < data.length  ; i++){
-          o.departments.push(data[i]);
-        }
+        angular.copy(data,o.departments);
       });
   };
 
@@ -231,9 +229,9 @@ app.controller('ListCtrl', [
   '$scope',
   '$q',
   'users_fac',
-  '$timeout',
-
-  function($scope,$q, users_fac,$timeout){
+  'departments_fac',
+  '$mdDialog',
+  function($scope,$q, users_fac,departments_fac,$mdDialog){
     users_fac.getList();
     $scope.users = users_fac.users;
     $scope.selected = [];
@@ -275,14 +273,18 @@ app.controller('ListCtrl', [
       return fullname.indexOf(input) !== -1 || data.username.indexOf(input) !== -1;
     };
 
+    $scope.doctorToggle = function(ev, user){
+      if(user.isDoctor){
+        $scope.toggle(user,'Doctor');
+      }else{
+        $scope.selectDepartment(ev, user);
+      }
+    };
+
     $scope.toggle = function(user, toggleRole){
       //copy user to newUser
       var newUser = JSON.parse(JSON.stringify(user));
-      if(toggleRole === 'Doctor'){
-
-      }else{
-        $scope.changeRole(newUser, toggleRole);
-      }
+      $scope.changeRole(newUser, toggleRole);
     };
 
     $scope.changeRole = function(user, toggleRole){
@@ -295,6 +297,34 @@ app.controller('ListCtrl', [
       }
       // console.log(user);
       users_fac.changeRole(user);
+    };
+
+    $scope.selectDepartment = function(ev, user){
+      var selectDepartmentCtrl = function($scope , departments_fac, users_fac, user){
+          departments_fac.getList();
+          $scope.departmentList = departments_fac.departments;
+          $scope.department = $scope.departmentList[0];
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.select = function(){
+              user.department = $scope.department;
+              $mdDialog.hide(user);
+            };
+          };
+
+        $mdDialog.show({
+          locals:{users_fac : users_fac , departments_fac: departments_fac, user : user},
+          controller: selectDepartmentCtrl,
+          templateUrl: '/dialog/selectDepartment.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose:true
+        })
+        .then(function(user) {
+          $scope.toggle(user, 'Doctor');
+        }, function() {
+        });
     };
   }
 ]);

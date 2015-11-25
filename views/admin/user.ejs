@@ -40,7 +40,7 @@
             <td>{{u.id}}</td>
             <td>{{u.username}}</td>
             <td style="text-align:center">
-              <md-checkbox class="md-primary" ng-checked="u.isDoctor" aria-label="isDoctor" ng-click="toggle(u,'Doctor')">
+              <md-checkbox class="md-primary" ng-checked="u.isDoctor" aria-label="isDoctor" ng-click="doctorToggle($event,u)">
               </md-checkbox>
             </td>
             <td style="text-align:center">
