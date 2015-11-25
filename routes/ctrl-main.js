@@ -251,18 +251,21 @@ router.post('/getRoundward',function(req,res,next){
 
 //DELETE ROUNDWARD FROM A SINGLE DOCTOR
 router.post('/cancelRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
-    var userId = req.user._id; //GetFromSession
+  //if(req.user && req.session.role === '2')
+  //{
+    //var userId = req.user._id; //GetFromSession
+    var userId = req.body['userId'];
     var roundward_id = mongoose.Types.ObjectId(req.body['rwId']);
     RoundWardControl.cancelRoundward(userId,roundward_id,function(err,result){
       if(err){
         return next(err);
       }else{
+        //Result is PatientARRAY
+        
         return res.json(result);
       }
     });
-  }
+  //}
 });
 
 //GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
@@ -319,10 +322,11 @@ router.get('/roundward/add', function(req, res, next) {
 
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){
-  if(req.user && req.session.role === '2')
-  {
+  //if(req.user && req.session.role === '2')
+  //{
     var roundward = {date:req.body['date'],
           time:req.body['time']};
+    //var userId = req.body['doctor_id'];
     var userId = req.user._id; //GetFromSession
     RoundWardControl.addRoundWard(userId,roundward,function(err,result){
       if(err){
@@ -330,7 +334,7 @@ router.post('/addRoundward', function(req,res,next){
       }
       return res.json(result);
     });
-  }
+  //}
 });
 
 // Create appointment
