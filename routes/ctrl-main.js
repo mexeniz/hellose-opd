@@ -545,6 +545,7 @@ router.get('/store/user', function(req, res, next) {
 // Update user
 router.post('/user/:userId', function(req, res, next) {
   var user_id = req.params.userId;
+  console.log(user_id);
   var role = {};
   role.isPatient = req.body.isPatient;
   role.isDoctor = req.body.isDoctor;
@@ -554,8 +555,8 @@ router.post('/user/:userId', function(req, res, next) {
   if(role.isDoctor) {
     role.department = req.body.department;
   }
-
   UserControl.updateUser(user_id, role, function(err, result) {
+    console.log(result);
     if (err) {
       res.json({result: 'Error'});
     }

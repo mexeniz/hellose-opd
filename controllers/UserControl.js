@@ -76,7 +76,6 @@ module.exports.listUser = function(done) {
 				item.isStaff = user.isStaff;
 				item.isPharmacist = user.isPharmacist;
 				item.isNurse = user.isNurse;
-				
 				if(doctor) {
 					var query = doctor.department;
 					item.department_id = query;
@@ -98,23 +97,27 @@ module.exports.listUser = function(done) {
 			return done(null, result);
 		});
 	});
-}
+};
 
 module.exports.updateUser = function(userid, role, done) {
 	var query = {};
 	query._id = userid;
 	// Find that user 
+	console.log(userid);
+	console.log(role);
 	User.findOne(query, function(err, user) {
+		console.log(user);
 		if (err) {
 			return done(null, false);
 		}
-
+		console.log('findOne');
 		if (user) {
 			user.isPatient = role.isPatient;
 			user.isDoctor = role.isDoctor;
 			user.isStaff = role.isStaff;
 			user.isPharmacist = role.isPharmacist;
 			user.isNurse = role.isNurse;
+			console.log(user);
 			user.save(function (err) {
 				if (err) {
 					return done(null,false);
@@ -164,7 +167,7 @@ module.exports.updateUser = function(userid, role, done) {
 			});
 		}
 	});
-}
+};
 
 module.exports.deleteUser = function(userid, done) {
 	// Check if that user is a doctor
