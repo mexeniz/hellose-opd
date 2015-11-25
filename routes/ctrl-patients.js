@@ -53,8 +53,7 @@ router.put('/update/:patid', function(req, res, next) {
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
-  console.log(id);
-    Patient.findOne({userId: id})
+    Patient.findOne({patient_id: id})
           .populate('physical_record')
           .populate('medical_record')
           .populate('prescription_record')
