@@ -45,6 +45,7 @@
                 <div class="h2-th">{{patient.firstname}}  {{patient.lastname}}</div>
               </div>
             </md-list-item>
+            <md-divider></md-divider>
             <md-list-item class="md-2-line">
               <md-icon md-font-library="material-icons" class="material-icons">assignment_ind</md-icon>
               <div class="md-list-item-text">
@@ -60,7 +61,6 @@
                 <div class="h2-th">{{patient.ssn}}</div>
               </div>
             </md-list-item>
-
             <md-divider></md-divider>
             <md-list-item class="md-2-line">
               <md-icon md-font-library="material-icons" class="material-icons">wc</md-icon>
@@ -93,7 +93,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">today</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">วันเกิด</div>
-                <div class="h2-th">{{patient.birthdate}}</div>
+                <div class="h2-th">{{patient.birthdate | date:medium}}</div>
               </div>
             </md-list-item>
 
@@ -102,7 +102,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">เบอร์โทรศัพท์</div>
-                <div class="h2-th">{{patient.tel_number}}</div>
+                <div class="h2-th">{{patient.telNum}}</div>
               </div>
             </md-list-item>
 
@@ -130,4 +130,5 @@
         </md-content>
       </md-tab>
       
+    </md-tabs>
 </md-content>

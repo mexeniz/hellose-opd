@@ -47,9 +47,8 @@ app.factory('patients_fac', ['$http', function($http){
 	};
 
 		o.getPatient = function(patient_id) {
-			return $http.get('/patients/info/' +patient_id);
+			return $http.get('/patients/info_user/' +patient_id);
 		};
-
 	  return o;
 	}]);
 app.factory('physical_records_fac', ['$http', function($http){
@@ -518,7 +517,7 @@ app.controller('InfoCtrl', [
 				$scope.medicalRecordList = data.medical_record ;
 				$scope.prescriptionList = data.prescription_record ;
 				
-				$scope.patient.birthdate = new Date(data.birthdate);
+				$scope.patient.birthdate = new Date(data.userId.birthdate);
 				console.log(data);
 
 				$scope.patient.age = (function(){
