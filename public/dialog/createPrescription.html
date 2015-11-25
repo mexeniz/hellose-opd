@@ -18,8 +18,8 @@
           <md-input-container style="margin-right: 10px;" flex = "60">
             <label>ชื่อยา</label>
             <md-icon md-font-library="material-icons" class="material-icons">adb</md-icon>
-            <md-select ng-model="addedMedicine.name">
-              <md-option ng-repeat="m in medicineList " value="{{m.name}}">{{m.name}}</md-option>
+            <md-select ng-model="addedMedicine.medicine">
+              <md-option ng-repeat="m in medicineList " value="{{m._id}}">{{m.name}}</md-option>
             </md-select>
             <!-- <input ng-model="addedMedicine.name" type="text" > -->
           </md-input-container>

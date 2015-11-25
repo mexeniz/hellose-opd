@@ -5,7 +5,7 @@ var app = angular.module('doctor', ['ui.router', 'ngMaterial', 'materialCalendar
 app.config(function($mdThemingProvider){
 
                       $mdThemingProvider.theme('default')
-                          .primaryPalette('green')
+                          .primaryPalette('light-green')
                           .accentPalette('lime') //cyan 100
                           .warnPalette('red');
 
@@ -762,7 +762,6 @@ app.controller('InfoCtrl', [
 
 		$scope.med_dosage = {};
 		
-		$scope.showAddMedicineModal = false;
 
 		medicines_fac.getMedicineList() ;
 		$scope.medicineList = medicines_fac.medicineList;
@@ -829,8 +828,6 @@ app.controller('InfoCtrl', [
 		   		$scope.addedMedicine = {};
 		      	$scope.prescription = { med_dosage_list :[]} ;
 				$scope.medicineList = medicineList;
-				console.log("Med List");
-				console.log($scope.medicineList);
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
@@ -842,6 +839,7 @@ app.controller('InfoCtrl', [
 		      	};
 		      	$scope.addMedicine = function(){
 		   			$scope.prescription.med_dosage_list.push($scope.addedMedicine);
+
 		   			$scope.addedMedicine = {};
 		      	};
 		      	$scope.removeMedicine = function(index){
@@ -859,9 +857,10 @@ app.controller('InfoCtrl', [
 	        clickOutsideToClose:true
 	      })
 	      .then(function(response) {
-	        
+	        console.log(response);
 	        var medicineList = {patient: $scope.patient._id, doctor: $scope.doctorName , status: 'รอการจ่าย',
 	        		date: new Date(), med_dosage_list: response.med_dosage_list};
+	        	console.log(medicineList.med_dosage_list);
         	$http.post('/prescriptions/insert/' + $scope.patient._id, medicineList).success(function(){
         	
 				$scope.patient.prescription_record.push(medicineList);
@@ -869,30 +868,22 @@ app.controller('InfoCtrl', [
 	      }, function() {
 	      });
 	  	};
-		$scope.showPresDetail = function(ev,prescription){
+		$scope.showPresDetail = function(ev,p){
 		   var detailCtrl = function($scope,prescription,prescriptionList){
 		      	$scope.prescriptionList = prescriptionList;
-		      	console.log($scope.prescriptionList);
+		      	$scope.prescription={};
+		      	angular.copy(prescription , $scope.prescription);
+		      	$scope.prescription.status = "" ;
 		      	$scope.prescription =prescription ;
+		      	$scope.isPharmacist = false ;
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
-		        };
-		        $scope.completePrescription = function(prescription){
-				// update in db
-				$http.post('/prescriptions/complete/' + prescription._id).success(function(){
-					for(var i = 0  ; i < $scope.prescriptionList.length  ; i++){
-							if(prescription._id === $scope.prescriptionList[i]._id){
-								$scope.prescriptionList[i].status = 'จ่ายแล้ว';
-							}
-						}
-						$mdDialog.cancel();
-			  		});
-		      	};
-		      };
+		        };		      
+		    };
 			$mdDialog.show({
-	        locals:{prescription : prescription , prescriptionList : $scope.prescriptionList},
+	        locals:{prescription : p , prescriptionList : $scope.prescriptionList},
 	        controller: detailCtrl,
-	        templateUrl: '/dialog/prescriptionDetail.html',
+	        templateUrl: '/dialog/prescriptionDetailDoc.html',
 	        parent: angular.element(document.body),
 	        targetEvent: ev,
 	        clickOutsideToClose:true
@@ -900,7 +891,6 @@ app.controller('InfoCtrl', [
 	      .then(function(answer) {
 	        //Do something after close dialog
 	        //Switch to another page
-	      }, function() {
 	      });
 		
 

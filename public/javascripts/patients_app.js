@@ -954,6 +954,7 @@ app.controller('InfoCtrl', [
 	      }, function() {
 	      });
 	  	};
+	  	$scope.isOpen = false ;
 		$scope.showPresDetail = function(ev,prescription){
 		   var detailCtrl = function($scope,prescription,prescriptionList){
 		      	$scope.prescriptionList = prescriptionList;

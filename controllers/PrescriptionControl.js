@@ -3,12 +3,17 @@
 var mongoose = require('mongoose');
 var Prescription = mongoose.model('Prescription');
 var Patient = mongoose.model('Patient');
+var Medicine = mongoose.model('Medicine');
 
 module.exports.getAllPrescriptions = function(callback)
 {
+	var options = {
+        path: 'med_dosage_list.medicine',
+        model: 'Medicine'
+      };
 	Prescription.find()
-		.populate('patient', 'firstname lastname')
-		.populate('med_dosage_list.medicine')
+		.populate({path : 'patient' , populate : {path :'userId' , model : 'User'}})
+		.populate({path: 'med_dosage_list', populate : {path: 'medicine'}})
 		.exec(callback);
 };
 
@@ -18,21 +23,25 @@ module.exports.getPrescriptionByPatientId = function(patientId, callback)
 
 	// Get all prescriptions of this patient
 	Prescription.find({ patient:  id})
-		.populate('patient')
+		.populate({path : 'patient' , populate : {path :'userId' , model : 'User'}})
 		.exec(callback);
 };
 
 module.exports.addPrescription = function(patientId, prescriptionData, callback)
 {
+	console.log('---------1----------');
+	console.log(prescriptionData);
 	var prescription = new Prescription(prescriptionData);
-
+	console.log('---------2----------');
+	console.log(prescription);
 	// Find patient
 	Patient.findOne({_id : patientId} , function (err, patient){
 		if(err) { return callback(err); }
 
 		// Add prescription to patient's prescription record
 		prescription.save(function(err, prescription){
-
+			console.log('---------3----------');
+			console.log(prescription);
 			if(err){ return callback(err); }
 			patient.prescription_record.push(prescription);
 			patient.save(function(err, patient) {
