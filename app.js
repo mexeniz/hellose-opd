@@ -22,6 +22,7 @@ require('./models/model-medicines');
 require('./models/model-users');
 require('./models/model-doctors');
 require('./models/model-roundward');
+require('./models/model-departments');
 
 // Configs
 require('./config/passport');

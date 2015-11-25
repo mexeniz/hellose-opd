@@ -8,15 +8,58 @@
       <md-icon md-font-library="material-icons">menu</md-icon>
     </md-button>
     <h2>
-      <span>Home</span>
+      <span>รายชื่อสมาชิก</span>
     </h2>
   </div>
 </md-toolbar>
 
 <!-- Content -->
-<md-content flex layout-padding>
-  <h1>User page</h1>
-  <p>
-    เย้ๆๆๆๆ
-  </p>
+<md-content ng-controller = "ListCtrl" flex layout-padding>
+  <md-card >
+    <md-card >
+      <md-input-container class="md-icon-float md-block ">
+        <label>ค้นหา (รหัส, ชื่อผู้ใช้)</label>
+        <md-icon md-font-library="material-icons">search</md-icon>
+        <input ng-model="fullnameOrIdFilterItem.store" type="text">
+      </md-input-container>
+    </md-card>
+    <md-data-table-container>
+      <table md-data-table class="md-primary" md-progress="deferred">
+        <thead md-order="query.order" md-trigger="onorderchange">
+          <tr>
+            <th order-by="id" name="รหัส"></th>
+            <th order-by="username" name="ชื่อผู้ใช้"></th>
+            <th name="เป็นหมอ"></th>
+            <th name="เป็นนางพยาบาล"></th>
+            <th name="เป็นเภสัชกร"></th>
+            <th name="เป็นเจ้าหน้าที่"></th>
+          </tr>
+        </thead>
+        <tbody >
+          <tr ng-repeat="u in users | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit | filter: fullnameOrIdFilter">
+            <td>{{u.id}}</td>
+            <td>{{u.username}}</td>
+            <td style="text-align:center">
+              <md-checkbox class="md-primary" ng-checked="u.isDoctor" aria-label="isDoctor" ng-click="toggle(u,'Doctor')">
+              </md-checkbox>
+            </td>
+            <td style="text-align:center">
+              <md-checkbox class="md-primary" ng-checked="u.isNurse" aria-label="isNurse" ng-click="toggle(u,'Nurse')">
+              </md-checkbox>
+            </td>
+            <td style="text-align:center">
+              <md-checkbox class="md-primary" ng-checked="u.isPharmacist" aria-label="isPharmacist" ng-click="toggle(u,'Pharmacist')">
+              </md-checkbox>
+            </td>
+            <td style="text-align:center">
+              <md-checkbox class="md-primary" ng-checked="u.isStaff" aria-label="isStaff" ng-click="toggle(u,'Staff')">
+              </md-checkbox>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </md-data-table-container>
+    <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{patients.length}}" md-trigger="onpagechange"></md-data-table-pagination>
+  </md-card>
 </md-content>

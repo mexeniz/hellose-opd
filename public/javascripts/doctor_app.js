@@ -86,12 +86,14 @@ app.factory('medical_records_fac', ['$http', function($http){
 			// Get disease id only!
 			var newMedRecord = {};
 			angular.copy(medRecord, newMedRecord);
-			console.log(medRecord.diseases.length);
-			if(medRecord.diseases.length > 0){newMedRecord.diseases = [];}
+			if(medRecord.diseases.length > 0){
+				newMedRecord.diseases = [];
+			}
 			for(var i = 0; i < medRecord.diseases.length; i++)
 			{
-				console.log(medRecord.diseases[i]._id);
-				newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				//newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				// Just keep text
+				newMedRecord.diseases.push(medRecord.diseases[i]);
 			}
 
 			return $http.post('/records/medical/insert/'+ patient._id , newMedRecord).success(function(data){
@@ -107,7 +109,9 @@ app.factory('medical_records_fac', ['$http', function($http){
 			angular.copy(medRecord, newMedRecord);
 			for(var i = 0; i < medRecord.diseases; i++)
 			{
-				newMedRecord.diseases.push(medRecord.disease[i]._id);
+				//newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				// Just keep text
+				newMedRecord.diseases.push(medRecord.diseases[i]);
 			}
 
 			return $http.put('/records/medical/update/'+ medRecord._id , newMedRecord).success(function(data){
@@ -633,24 +637,23 @@ app.controller('InfoCtrl', [
 		$scope.diseaseIdOptions = [ 'ICD10', 'SNOMED', 'DRG' ];
 
 		$scope.showMedicalRecordForm = function(ev,mode,medicalRecord){
-			var createMedCtrl = function($scope , medical_records_fac ,patient ,medicalRecord){
+			var createMedCtrl = function($scope , medical_records_fac,medicalRecord){
 				$scope.medicalRecord = {diseases:[]} ;
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
 		        $scope.submitMedicalRecord = function(){
-					medical_records_fac.add(patient, $scope.medicalRecord);
-					$mdDialog.cancel();
+					//medical_records_fac.add(patient, );
+					$mdDialog.hide({mode : 'create' , medicalRecord : $scope.medicalRecord});
 		      	};
 		      };
-		    var editMedCtrl = function($scope , medical_records_fac ,patient ,medicalRecord){
+		    var editMedCtrl = function($scope , medical_records_fac ,medicalRecord){
 				$scope.medicalRecord = medicalRecord ;
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
 		        $scope.submitMedicalRecord = function(){
-					medical_records_fac.update(patient, $scope.medicalRecord);
-					$mdDialog.cancel();
+					$mdDialog.hide({mode : 'edit' , medicalRecord : $scope.medicalRecord});
 		      	};
 		      };
 		    var mCtrl = {};
@@ -661,17 +664,20 @@ app.controller('InfoCtrl', [
 		    	mCtrl = createMedCtrl ;
 		    }
 			$mdDialog.show({
-	        locals:{medical_records_fac : medical_records_fac , patient : $scope.patient , medicalRecord : medicalRecord},
+	        locals:{medical_records_fac : medical_records_fac  , medicalRecord : medicalRecord},
 	        controller: mCtrl,
 	        templateUrl: '/dialog/createMedicalRecord.html',
 	        parent: angular.element(document.body),
 	        targetEvent: ev,
 	        clickOutsideToClose:true
 	      })
-	      .then(function(answer) {
-	        //Do something after close dialog
-	        //Switch to another page
-	      }, function() {
+	      .then(function(response) {
+	        console.log(response);
+	        if(response.mode === "create"){
+	        	medical_records_fac.add($scope.patient, response.medicalRecord);
+	        }else if (response.mode === "edit"){
+				medical_records_fac.update($scope.patient, response.medicalRecord);
+	        }
 	      });
 
 		};
