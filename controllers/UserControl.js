@@ -374,7 +374,7 @@ module.exports.register = function(req, username, password, done) {
 		            newPatient.blood_type = req.body.blood_type;
 
 		        	// save patient data
-		            newPatient.save(function(err) {
+		            newPatient.save(function(err, pat) {
 		            	if (err){
 			              console.log('Error in Saving patient: '+err);  
 			              req.flash('message','Error in Saving patient: '+err);
@@ -382,6 +382,7 @@ module.exports.register = function(req, username, password, done) {
 		            	console.log('User Registration successful');
 		            	// Set role as patient
 						req.session.role = '1';
+						req.session.patient_id = pat._id;
 		            	return done(null, newUser);
 		            });
 		        });
