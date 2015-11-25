@@ -28,7 +28,7 @@ app.factory('prescriptions_fac', ['$http', function($http){
 	  	return $http.get('prescriptions/list').success(function(data){
 	      for(var i = 0  ; i < data.length  ; i++){
 					o.prescriptions.push(data[i]);
-					// console.log(o.prescriptions[o.prescriptions.length-1]);
+					console.log(o.prescriptions[o.prescriptions.length-1]);
 				}
 	    });
 	  };
