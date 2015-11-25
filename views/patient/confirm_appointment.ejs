@@ -17,7 +17,7 @@
 
     <md-content ng-controller="confirmAppointmentCtrl" ng-init="init('<%= earliestData %>')" class="md-padding">
 
-      <div class="h2-th">ยืนยันการนัดหมาย</div>
+      <div class="h2-th" ng-hide="success">กรุณากรอกรายละเอียดและยืนยันการนัดหมาย</div>
       <div ng-show="loadingCount > 0" layout="row" layout-align="space-around">
         <md-progress-circular md-mode="{{ loadingCount == 0 ? null : 'indeterminate' }}" md-diameter="20px"></md-progress-circular>
       </div>
@@ -42,9 +42,21 @@
             <md-button class="md-primary" ng-hide="sending || success" ng-click="showSelectTimeDialog()">เลือกเวลา</md-button>
           </div>
 
+          <br>
+
         </md-card-content>
+
+        <md-card-content layout layout-align="center center">
+          <!-- Symptoms -->
+          <md-input-container flex="80">
+            <md-input-container class="md-block">
+            <label>อาการหรือสาเหตุที่ต้องการพบแพทย์</label>
+            <textarea ng-model="causes" ng-disabled="sending || success" required columns="1"></textarea>
+          </md-input-container>
+        </md-card-content>
+
         <md-card-actions layout="column" layout-align="center center">
-          <md-button class="md-raised md-primary" ng-hide="success" ng-disabled="sending" ng-click="submit()" ><md-icon md-font-library="material-icons">check_circle</md-icon> ยืนยัน</md-button>
+          <md-button class="md-raised md-primary" ng-hide="success" ng-disabled="sending || !causes" ng-click="submit()" ><md-icon md-font-library="material-icons">check_circle</md-icon> ยืนยัน</md-button>
           <div flex ng-show="success">
             <h2><md-icon md-font-library="material-icons" style="font-size: 64px; position: relative; left: -40px; top: -26px">check_circle</md-icon>สร้างการนัดหมายเรียบร้อยแล้ว</h2>
           </div>

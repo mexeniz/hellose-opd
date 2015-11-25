@@ -20,17 +20,8 @@
         
         <div layout="column">
 
-          <!-- Symptoms -->
-          <div class="h2-th">1. กรุณากรอกอาการ/สาเหตุที่ต้องการพบแพทย์</div>
-          <md-input-container flex="80">
-            <md-input-container class="md-block">
-            <label>อาการ/สาเหตุ</label>
-            <textarea ng-model="symptoms" columns="1" md-maxlength="150" rows="5"></textarea>
-          </md-input-container>
-          <br>
-
           <!-- Doctor/Department -->
-          <div class="h2-th">2. ต้องการนัดหมายโดยระบุแพทย์หรือแผนก</div>
+          <div class="h2-th">1. ต้องการนัดหมายโดยระบุแพทย์หรือแผนก</div>
           <md-radio-group ng-model="selectedType" layout="row">
             <md-radio-button value="Doctor" class="md-primary">แพทย์</md-radio-button>
             <md-radio-button value="Department" class="md-primary">แผนก</md-radio-button>
@@ -38,7 +29,7 @@
 
           <!-- Choose Department -->
           <div ng-show="selectedType === 'Department'">
-            <div class="h2-th">3. เลือกแผนกของแพทย์ที่ต้องการพบ</div>
+            <div class="h2-th">2. เลือกแผนกของแพทย์ที่ต้องการพบ</div>
             <md-input-container flex="40">
               <label>Department</label>
               <md-select ng-model="selectedDepartment" placeholder="เลือกแผนก">
@@ -51,7 +42,7 @@
           
           <!-- Choose Doctor -->
           <div ng-show="selectedType === 'Doctor'">
-            <div class="h2-th">3. เลือกแพทย์ที่ต้องการพบ</div>
+            <div class="h2-th">2. เลือกแพทย์ที่ต้องการพบ</div>
             <form name="autocompleteForm" ng-show="selectedType === 'Doctor'">
               <md-autocomplete required md-input-name="autocomplete" placeholder="กรอกชื่อแพทย์" md-selected-item="selectedDoctor" md-search-text="searchText" md-items="doctor in querySearch(searchText)" md-item-text="doctor.firstname + ' ' + doctor.lastname">
                 <md-item-template>

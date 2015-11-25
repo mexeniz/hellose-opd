@@ -954,7 +954,8 @@ app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$filt
 				date: $scope.appointmentDate,
 				status: 'confirmed',
 				slot: $scope.selectedSlot.slot,
-				time: $scope.selectedSlot.time
+				time: $scope.selectedSlot.time,
+				causes: $scope.causes
 			};
 			console.log('sending...');
 			console.log(app);

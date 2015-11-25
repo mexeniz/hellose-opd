@@ -76,6 +76,7 @@ module.exports.createAppointment = function(appInfo, callback){
 		packed.doctor = thisDoctor._id;
 		packed.slot = appInfo.slot;
 		packed.status = appInfo.status;
+		packed.causes = appInfo.causes;
 		return Patient.findOne({userId:appInfo.patient_id}).exec();
 	})
 	.then(function(patient){

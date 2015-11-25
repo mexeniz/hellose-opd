@@ -203,7 +203,8 @@ router.post('/appointment/create', function(req, res, next) {
     date : new Date(req.body['date']),
     time : req.body['time'],
     slot : req.body['slot'],
-    status : req.body['status']
+    status : req.body['status'],
+    causes : req.body['causes']
   };
 
   console.log(appInfo);
