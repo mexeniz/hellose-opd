@@ -152,6 +152,7 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
   var returning = [];
   var freeSlot = [];
   var busySlot = [];
+
   function findDoctorFromUsers(userId){
     return new Promise(
       function (resolve,reject){
@@ -198,6 +199,11 @@ module.exports.getAvailableDateTime = function(doctor_id,month,year,callback){
       //We Got Appointments
         var appointments = arguments;
         onDutyRoundwards.forEach(function(e){
+            if(e.date < new Date())
+            {
+              return;
+            }
+
             var single_roundward = {
               date : e.date,
               firstname : thisDoctor_obj.firstname,

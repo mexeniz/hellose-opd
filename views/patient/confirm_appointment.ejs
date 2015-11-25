@@ -35,11 +35,11 @@
           </div>
           <div flex>
             <span style="font-weight: bold">วันที่: </span> {{ appointmentDate | date: 'dd/MMM/yyyy' }}
-            <md-button class="md-primary" ng-click="showDialog($event)">เลือกวันอื่น</md-button>
+            <md-button class="md-primary" ng-hide="sending || success" ng-click="showDialog($event)">เลือกวันอื่น</md-button>
           </div>
           <div flex>
             <span style="font-weight: bold">เวลา: </span>{{ selectedSlot.displayMsg }}
-            <md-button class="md-primary" ng-click="showSelectTimeDialog()">เลือกเวลา</md-button>
+            <md-button class="md-primary" ng-hide="sending || success" ng-click="showSelectTimeDialog()">เลือกเวลา</md-button>
           </div>
 
         </md-card-content>
