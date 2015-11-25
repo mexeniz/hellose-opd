@@ -493,7 +493,7 @@ router.post('/profile/edit', function(req, res, next) {
 router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '2') {
-      res.render('doctor/patient_profile', { patient_id : req.params.patientId });
+      res.render('doctor/patient_profile', { patient_id : req.params.patientId , user_id : req.session.passport.user});
     }
     else if (req.session.role === '3') {
       res.render('staff/patient_profile', { patient_id : req.params.patientId });
@@ -820,4 +820,14 @@ router.post('/department/:deptId/edit', function(req, res, next) {
 });
 
 
-
+router.get('/user/fullname/:userId', function(req, res) {
+  var user_id = req.params.userId;
+  User.findOne({_id : user_id},function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json({fullname : result.firstname + " " + result.lastname});
+    } 
+  });
+});

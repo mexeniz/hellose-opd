@@ -15,7 +15,7 @@
 </md-toolbar>
 
 <!-- Content -->
-<md-content ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>')" flex layout-padding>
+<md-content ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>' , '<%= user_id %>')" flex layout-padding>
     <md-tabs md-dynamic-height md-border-bottom>
       <md-tab label="ข้อมูลส่วนตัว">
         <md-content class="md-padding">
@@ -206,7 +206,7 @@
         <md-content class="md-padding">
 
         <div class="h1-th">ประวัติการรับยา
-          <md-button class="md-fab md-primary" ng-click="showPrescription($event)">
+          <md-button class="md-fab md-primary" ng-click="showPrescriptionForm($event)">
             <md-icon md-font-library="material-icons">add</md-icon>
           </md-button></div>
         <md-card >
