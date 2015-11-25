@@ -22,8 +22,11 @@
         <label>ค้นหา (ชื่อยา)</label>
         <md-icon md-font-library="material-icons">search</md-icon>
         <input ng-model="fullnameFilterItem.store" type="text">
-        <select class="form-control" ng-model="statusFilterItem.store" ng-options="item.name for item in statusFilterOption.stores">
-                </select>
+      </md-input-container>
+      <md-input-container class="md-icon-float md-block" flex="50">
+        <md-select ng-model="statusFilterItem.store" aria-label="Prescription Status">
+            <md-option ng-value="{{st}}" ng-repeat="st in statusFilterOption.stores">{{ st.name }}</md-option>
+        </md-select>
       </md-input-container>
     </md-card>
     <md-data-table-container>
@@ -41,12 +44,10 @@
           <tr ng-repeat="p in prescriptions | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit  | filter:fullnameFilter |  filter:statusFilter | orderBy:'date':true">
             <td>{{ p.date | date: 'medium' }}</td>
             <td>{{ p.patient.firstname }} {{ p.patient.lastname }}</td>
-            <td>{{ p.patient.firstname }} {{ p.patient.lastname }}</td>
-            <td  ng-class="{red: p.status === 'Pending', green: p.status !== 'Pending'}">{{ p.status }}</td>
+            <td>{{p.doctor}}</td>
+            <td ng-style="{'color':p.status === 'รอการจ่าย'?'red':'green'}">{{p.status}}</td>
             <td>
-              <md-button class="md-primary md-raised" ng-click="showMedicineForm($event,'edit',m)"><md-icon md-font-library="material-icons">info</md-icon>แก้ไข</md-button>
-              <md-button class="md-fab md-mini md-warn"  ng-click="removeMedicine(m)">
-              <md-icon md-font-library="material-icons">delete</md-icon>
+              <md-button class="md-primary md-raised" ng-click="showPresDetail($event,p)"><md-icon md-font-library="material-icons">info</md-icon>แก้ไข</md-button>
             </td>
           </tr>
 
