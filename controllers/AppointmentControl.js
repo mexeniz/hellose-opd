@@ -6,6 +6,7 @@ var Appointment = mongoose.model('Appointment');
 var User = mongoose.model('User');
 var Doctor = mongoose.model('Doctor');
 var RoundWardControl = require('./RoundWardControl.js');
+var NotificationControl = require('./NotificationControl.js');
 var Patient = mongoose.model('Patient');
 
 
@@ -66,7 +67,7 @@ module.exports.createAppointment = function(appInfo, callback){
 		else
 		{
 			console.log('finding doctor');
-			return Doctor.findOne({ 'userId': user._id }).exec();
+			return Doctor.findOne({ 'userId': user._id }).populate('userId').exec();
 		}
 		
 	})
@@ -79,7 +80,7 @@ module.exports.createAppointment = function(appInfo, callback){
 		packed.slot = appInfo.slot;
 		packed.status = appInfo.status;
 		packed.causes = appInfo.causes;
-		return Patient.findOne({userId:appInfo.patient_id}).exec();
+		return Patient.findOne({userId:appInfo.patient_id}).populate('userId').exec();
 	})
 	.then(function(patient){
 		packed.patient = patient._id;
@@ -89,7 +90,24 @@ module.exports.createAppointment = function(appInfo, callback){
 				return callback(err);
 			}
 			console.log('Finish saving appointment');
-			callback(null,result);
+			var mydate = function(time, slot){
+						var startAM = 9 * 60 + 30;
+						var startPM = 13 * 60;
+						var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+						var min = minutes % 60;
+						var hour = (minutes - min) / 60;
+						var dateTime = new Date();
+						dateTime.setHours(hour);
+						dateTime.setMinutes(min);
+						return dateTime;
+					};
+			var content =  "เวลา : "+ mydate(appInfo.time,appInfo.slot)+"\n แพทย์ :"
+			+thisDoctor.userId.firstname+" "+thisDoctor.userId.lastname;
+
+			NotificationControl.sendEmail(patient.userId.email,content,'create appointment',function(err,ress){
+				callback(null,result);
+			});
+			//callback(null,result);
 		});
 
 	});
@@ -98,7 +116,7 @@ module.exports.createAppointment = function(appInfo, callback){
 
 
 module.exports.createAppointment2 = function(appInfo, callback){
-	console.log("create app 2 called");
+	//console.log("create app 2 called");
 	// Guaranteed that input appinFo is valid
 	/*appInfo
 			-userId ( NO-firstname , NO-lastname ) //Doctor id is pass from frontend
@@ -114,7 +132,7 @@ module.exports.createAppointment2 = function(appInfo, callback){
 	var packed = {};
 	//FIND THE ROUNDWARD FIRST 
 	//Create Promise with ROUNDWARD _ID Finding
-		console.log('createAppointment2  with rwID (from Earliest and UpdateApp and CancelRound');
+		//console.log('createAppointment2  with rwID (from Earliest and UpdateApp and CancelRound');
 		var promise = Roundward.findById(appInfo.rwId).exec(); 
 
 	promise.then(function(roundward){
@@ -144,12 +162,12 @@ module.exports.createAppointment2 = function(appInfo, callback){
 
 		if(!user)
 		{
-			console.log('no user');
+			//console.log('no user');
 			callback('no user');
 		}
 		else
 		{
-			console.log('finding doctor');
+			//console.log('finding doctor');
 			return Doctor.findOne({ 'userId': user._id }).exec();
 		}
 		
@@ -163,7 +181,7 @@ module.exports.createAppointment2 = function(appInfo, callback){
 		packed.slot = appInfo.slot;
 		packed.status = appInfo.status;
 		packed.causes = appInfo.causes;
-		return Patient.findOne({userId:appInfo.patient_id}).exec();
+		return Patient.findOne({userId:appInfo.patient_id}).populate('userId').exec();
 	})
 	.then(function(patient){
 		packed.patient = patient._id;
@@ -173,8 +191,24 @@ module.exports.createAppointment2 = function(appInfo, callback){
 				return callback(err);
 			}
 			console.log('Finish saving appointment');
-			console.log(result);
-			callback(null,result);
+			var mydate = function(time, slot){
+						var startAM = 9 * 60 + 30;
+						var startPM = 13 * 60;
+						var minutes = time === 'AM' ? startAM + slot * 10 : startPM + slot * 10;
+						var min = minutes % 60;
+						var hour = (minutes - min) / 60;
+						var dateTime = new Date();
+						dateTime.setHours(hour);
+						dateTime.setMinutes(min);
+						return dateTime;
+					};
+			var content =  "เวลา : "+ mydate(appInfo.time,appInfo.slot)+"\n แพทย์ :"
+			+thisDoctor.userId.firstname+" "+thisDoctor.userId.lastname;
+
+			NotificationControl.sendEmail(patient.userId.email,content,'Suggested appointment',function(err,ress){
+				callback(null,result);
+			});
+			//callback(null,result);
 		});
 
 	});
@@ -347,9 +381,6 @@ module.exports.updateAppointments = function(department,rwid,callback){
 				// console.log(i);
 				console.log("CAUSES : "+myList[i].causes);
 				console.log("USER_ID : "+myList[i].patient.userId._id);
-				
-				
-
 				promises.push(createAppointment_earliest(myList[i].causes,myList[i].patient.userId._id,department));
 			}
 			
@@ -358,7 +389,10 @@ module.exports.updateAppointments = function(department,rwid,callback){
 					resolve(result);
 				});
 			});*/
-			Promise.all(promises);
+			return Promise.all(promises);
+		}).then(function(data){
+			console.log(data);
+			callback(null,data);
 		});
 			
 
