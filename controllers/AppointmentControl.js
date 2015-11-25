@@ -141,17 +141,6 @@ module.exports.updateAppointments = function(department,rwid,callback){
 			});	
 		});
 	}
-	/*
-var options = {
-      path: 'pages.components',
-      model: 'Component'
-    };
-
-    if (err) return res.json(500);
-    Project.populate(docs, options, function (err, projects) {
-      res.json(projects);
-    });
-	*/
 
 	function findByIdAndPopulate(patient_id){
 		//console.log(patient_id);

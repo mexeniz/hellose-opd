@@ -30,7 +30,7 @@ module.exports.login = function(req, username, password, done) {
 			query.isAdmin = true;
 	}
 
-	
+	/*
 	User.findOne(query, 
 		function(err, user) {
 			// In case of any error, return using the done method
@@ -59,10 +59,11 @@ module.exports.login = function(req, username, password, done) {
 			}
 			
 		}
-	);
+	);*/
 
-	/*User.findOne(query)
-	.then(function(user){
+	User.findOne(query)
+	.then(
+		function(user){
 		if(!user)
 		{
 			console.log('User not found');
@@ -88,17 +89,18 @@ module.exports.login = function(req, username, password, done) {
 					return done(null, false, req.flash('message', 'Not found patient data'));
 				}
 				req.session.patient_id = patient._id;
+				console.log(req.session.patient_id);
 				return done(null, user, req.flash('message', role));
 			});
 		}
 		else if(role === '2')
 		{
-			Patient.findOne({ userId: user._id }, function(err, patient)
+			Doctor.findOne({ userId: user._id }, function(err, doctor)
 			{
-				if(err || !patient) {
+				if(err || !doctor) {
 					return done(null, false, req.flash('message', 'Not found doctor data'));
 				}
-				req.session.patient_id = patient._id;
+				req.session.doctor_id = doctor._id;
 				return done(null, user, req.flash('message', role));
 			});
 		}
@@ -109,11 +111,15 @@ module.exports.login = function(req, username, password, done) {
 
 		
 		
-	})
-	.catch(function(err) {
-		return done(null, false, req.flash('message', 'Something wrong!'));
-	});*/
+	}).then(null,function(err){
+		return done(null, false, req.flash('message', 'Something wrong!'));	
+	});
 
+
+/*.catch(function(err){
+		return done(null, false, req.flash('message', 'Something wrong!'));
+	});
+*/
 };
 
 module.exports.register = function(req, username, password, done) {
