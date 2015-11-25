@@ -14,6 +14,9 @@ var RoundWardControl = require('../controllers/RoundWardControl.js');
 var NotificationControl = require('../controllers/NotificationControl.js');
 var AppointmentControl = require('../controllers/AppointmentControl.js');
 var PatientControl = require('../controllers/PatientControl');
+var MedicineControl = require('../controllers/MedicineControl');
+var DepartmentControl = require('../controllers/DepartmentControl');
+var DiseaseControl = require('../controllers/DiseaseControl');
 
 /* ------------------------------------------------------- */
 // Guest Route
@@ -616,13 +619,13 @@ router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '2') {
       console.log('patient profile doctor view');
-      return res.render('doctor/patient_profile', { patient_id : req.params.patientId });
+      return res.render('doctor/patient_profile', { patient_id : req.params.patientId , user_id : req.session.passport.user});
     }
     else if (req.session.role === '3') {
       return res.render('staff/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '4') {
-      return es.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
+      return res.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '5') {
       return res.render('nurse/patient_profile', { patient_id : req.params.patientId });
@@ -698,6 +701,8 @@ router.get('/prescription', function(req, res, next) {
 /* ------------------------------------------------------- */
 
 // Admin only
+
+// List all user
 router.get('/user', function(req, res, next) {
   if(req.user && req.session.role === '6') {
     res.render('admin/user');
@@ -705,7 +710,57 @@ router.get('/user', function(req, res, next) {
   res.redirect('/login');
 });
 
+// List all user post
+router.get('/store/user', function(req, res, next) {
+  //if(req.user && req.session.role === '6') {
+    UserControl.listUser(function(err, result) {
+      if(err) {
+        res.json({result: 'Error'});
+      } 
+      if(result) {
+        res.json(result);
+      }
+    });
+  //}
+  //res.json({result: 'You cannot access this data'});
+});
 
+// Update user
+router.post('/user/:userId', function(req, res, next) {
+  var user_id = req.params.userId;
+  var role = {};
+  role.isPatient = req.body.isPatient;
+  role.isDoctor = req.body.isDoctor;
+  role.isStaff = req.body.isStaff;
+  role.isPharmacist = req.body.isPharmacist;
+  role.isNurse = req.body.isNurse;
+  if(role.isDoctor) {
+    role.department = req.body.department;
+  }
+  UserControl.updateUser(user_id, role, function(err, result) {
+    if (err) {
+      res.json({result: 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Delete user
+router.post('/user/:userId/delete', function(req, res, next) {
+  var user_id = req.params.userId;
+  UserControl.deleteUser(user_id, function(err, result) {
+    if (err) {
+      res.json({result: 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+//List Medicine
 router.get('/medicine', function(req, res, next) {
   if(req.user && req.session.role === '6') {
     res.render('admin/medicine');
@@ -713,10 +768,193 @@ router.get('/medicine', function(req, res, next) {
   res.redirect('/login');
 });
 
+// List medicine backend
+router.get('/store/medicine', function(req, res, next) {
+  MedicineControl.getMedicine(function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Add medicine
+router.post('/medicine/add', function(req, res, next) {
+  var name = req.body.name;
+  MedicineControl.addMedicine(name, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Delete Medicine
+router.post('/medicine/:medId/delete', function(req, res, next) {
+  var med_id = req.params.medId;
+  MedicineControl.deleteMedicine(med_id, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json({result : 'Success'});
+    }
+  });
+});
+
+// Update Medicine
+router.post('/medicine/:medId/edit', function(req, res, next) {
+  var med_id = req.params.medId;
+  var name = req.body.name;
+  MedicineControl.updateMedicine(med_id, name, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// List disease
 router.get('/disease', function(req, res, next) {
   if(req.user && req.session.role === '6') {
     res.render('admin/disease');
   }
   res.redirect('/login'); 
+});
+
+// List disease backend
+router.get('/store/disease', function(req, res, next) {
+  DiseaseControl.getDisease(function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Add disease
+router.post('/disease/add', function(req, res, next) {
+  var dis_id_type = req.body.disease_id_type;
+  var dis_id = req.body.disease_id;
+  var dis_name = req.body.name;
+  DiseaseControl.addDisease(dis_id_type, dis_id, dis_name, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Delete disease
+router.post('/disease/:disId/delete', function(req, res, next) {
+  var dis_id = req.params.disId;
+  DiseaseControl.deleteDisease(dis_id, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json({result : 'Success'});
+    }
+  });
+});
+
+// Update Disease
+router.post('/disease/:disId/edit', function(req, res, next) {
+  var dis_unique_id = req.params.disId;
+  var dis_id_type = req.body.disease_id_type;
+  var dis_id = req.body.disease_id;
+  var dis_name = req.body.name;
+  DiseaseControl.updateDisease(dis_unique_id, dis_id_type, dis_id, dis_name, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+
+// List Department
+router.get('/department', function(req, res, next) {
+  if(req.user && req.session.role === '6') {
+    res.render('admin/department');
+  }
+  req.redirect('/login');
+});
+
+// List department backend
+router.get('/store/department', function(req, res, next) {
+  DepartmentControl.getDepartment(function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Add department
+router.post('/department/add', function(req, res, next) {
+  var name = req.body.name;
+  DepartmentControl.addDepartment(name, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+// Delete Department
+router.post('/department/:deptId/delete', function(req, res, next) {
+  var dept_id = req.params.deptId;
+  DepartmentControl.deleteDepartment(dept_id, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json({result : 'Success'});
+    }
+  });
+});
+
+// Update Department
+router.post('/department/:deptId/edit', function(req, res, next) {
+  var dept_id = req.params.deptId;
+  var dept_name = req.body.name;
+  DepartmentControl.updateDepartment(dept_id, dept_name, function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json(result);
+    }
+  });
+});
+
+
+router.get('/user/fullname/:userId', function(req, res) {
+  var user_id = req.params.userId;
+  User.findOne({_id : user_id},function(err, result) {
+    if (err) {
+      res.json({result : 'Error'});
+    }
+    if (result) {
+      res.json({fullname : result.firstname + " " + result.lastname});
+    } 
+  });
 });
 

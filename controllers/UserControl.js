@@ -4,11 +4,8 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Patient = mongoose.model('Patient');
 var Doctor = mongoose.model('Doctor');
-<<<<<<< HEAD
 var Department = mongoose.model('Department');
 var async = require('async');
-=======
->>>>>>> origin/santa-materialize
 
 module.exports.login = function(req, username, password, done) { 
 	// check in mongo if a user with username exists or not
