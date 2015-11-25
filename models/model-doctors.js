@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 
 var DoctorsSchema = new Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    department: String,
+    department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department'},
     onDutyRoundward: [{type: mongoose.Schema.Types.ObjectId, ref: 'Roundward', dropDups: true}]
 });
 

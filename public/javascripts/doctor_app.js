@@ -86,12 +86,14 @@ app.factory('medical_records_fac', ['$http', function($http){
 			// Get disease id only!
 			var newMedRecord = {};
 			angular.copy(medRecord, newMedRecord);
-			console.log(medRecord.diseases.length);
-			if(medRecord.diseases.length > 0){newMedRecord.diseases = [];}
+			if(medRecord.diseases.length > 0){
+				newMedRecord.diseases = [];
+			}
 			for(var i = 0; i < medRecord.diseases.length; i++)
 			{
-				console.log(medRecord.diseases[i]._id);
-				newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				//newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				// Just keep text
+				newMedRecord.diseases.push(medRecord.diseases[i].name);
 			}
 
 			return $http.post('/records/medical/insert/'+ patient._id , newMedRecord).success(function(data){
@@ -107,7 +109,9 @@ app.factory('medical_records_fac', ['$http', function($http){
 			angular.copy(medRecord, newMedRecord);
 			for(var i = 0; i < medRecord.diseases; i++)
 			{
-				newMedRecord.diseases.push(medRecord.disease[i]._id);
+				//newMedRecord.diseases.push(medRecord.diseases[i]._id);
+				// Just keep text
+				newMedRecord.diseases.push(medRecord.diseases[i].name);
 			}
 
 			return $http.put('/records/medical/update/'+ medRecord._id , newMedRecord).success(function(data){
@@ -142,7 +146,6 @@ app.factory('medical_records_fac', ['$http', function($http){
 				angular.copy(data, diseaseData);
 			});
 		};
-
 	  return o;
 	}]);
 
@@ -457,7 +460,7 @@ app.controller('InfoCtrl', [
 	'$mdDialog',
 	'$http',
 	function($scope, patients_fac, physical_records_fac, medical_records_fac, prescription_records_fac, medicines_fac,$q,$mdDialog,$http){
-		$scope.init = function(patient_id) {
+		$scope.init = function(patient_id , user_id) {
 			// Get patient info
 			$scope.patient_id = patient_id;
 			patients_fac.getPatient($scope.patient_id).success(function(data){
@@ -479,7 +482,11 @@ app.controller('InfoCtrl', [
 				    // return Math.abs(ageDate.getUTCFullYear() - 1970);
 			    }());
 
-				// console.log(data);
+				//Get Doctor
+				$http.get('/user/fullname/'+user_id).success(function(data){
+					$scope.doctorName = data.fullname ;
+					console.log($scope.doctorName) ;
+				});
 		    });
 		};
 
@@ -520,97 +527,7 @@ app.controller('InfoCtrl', [
 		  };
 
 
-		// PRESCRIPTION RECORD
-		$scope.prescription = {}; // Hold prescription form value (temp)
-
-		$scope.showPresModal = false;
-
-		$scope.showPresForm = function(mode, prescription) {
-			
-			$scope.mode = mode;
-
-			if(mode === 'create')
-			{
-				// Reset form
-				$scope.prescription = {};
-				$scope.prescription.med_dosage_list = [];
-			}
-			else if(mode === 'edit')
-			{
-				// Copy it to form
-				angular.copy(prescription, $scope.prescription);
-			}
-			else
-			{
-				console.error('showPresForm: mode ' + mode + " not found!");
-			}
-			
-
-			$scope.showPresModal = true;
-		};
-
-
-		$scope.med_dosage = {};
 		
-		$scope.showAddMedicineModal = false;
-
-		$scope.medicineList = medicines_fac.medicineList;
-		// Get medicine list
-		
-		$scope.showAddMedicine = function()
-		{
-			$scope.showAddMedicineModal = true;
-			medicines_fac.getMedicineList();
-			// Reset from
-			$scope.med_dosage = {};
-
-		};
-
-		$scope.submitAddMedicine = function() {
-			$scope.showAddMedicineModal = !$scope.showAddMedicineModal;
-			
-			// Add to prescription
-			$scope.prescription.med_dosage_list.push($scope.med_dosage);
-		};
-
-		$scope.removeMedicine = function(index) {
-			// Remove index th med_dosage
-			$scope.prescription.med_dosage_list.splice(index, 1);
-		};
-
-		$scope.submitPrescription = function() {
-			var mode = $scope.mode;
-			if(mode === 'create')
-			{
-				// Add patient id to prescription
-				$scope.prescription.patient = $scope.patient;
-
-				// Call factory to submit it to server
-				prescription_records_fac.add($scope.patient, $scope.prescription);
-
-			}
-			else if(mode === 'edit')
-			{
-				// Call factory to send updated prescription to server
-				prescription_records_fac.update($scope.patient, $scope.prescription);
-
-			}
-			else
-			{
-				console.error('submitPrescription: mode ' + mode + " not found!");
-			}
-
-			
-			$scope.showPresModal = !$scope.showPresModal;
-		};
-
-		$scope.removePrescription = function(prescription) {
-			if(confirm("Are you sure?")){
-				prescription_records_fac.delete($scope.patient, prescription);
-			}
-			
-		};
-
 		/////////////////////////////
 		// Physical Record Tab      //
 		/////////////////////////////
@@ -640,26 +557,68 @@ app.controller('InfoCtrl', [
 		// Medical Record Tab      //
 		/////////////////////////////
 		$scope.diseaseIdOptions = [ 'ICD10', 'SNOMED', 'DRG' ];
+		
+		$http.get('/diseases/list').success(function(data) {
+			$scope.tempList = data ;
+			$scope.loadDiseases = function () {
+		      var d = $scope.tempList ;
+		      return d.map(function (dis) {
+		        dis._lowername = dis.name.toLowerCase();
+		        dis._lowerDiseaseId = dis.disease_id.toLowerCase();
+		        return dis;
+		      });
+		    } ;
+
+			$scope.diseaseList = $scope.loadDiseases() ;		
+		});
+		
+
 
 		$scope.showMedicalRecordForm = function(ev,mode,medicalRecord){
-			var createMedCtrl = function($scope , medical_records_fac ,patient ,medicalRecord){
-				$scope.medicalRecord = {diseases:[]} ;
+			var createMedCtrl = function($scope ,doctorName , medical_records_fac,medicalRecord ,diseaseList){
+				$scope.medicalRecord = {doctor : doctorName , diseases:[]} ;
+				$scope.diseaseList = diseaseList ;
+			    $scope.selectedItem = null;
+			    $scope.searchText = null;
+			    console.log(diseaseList);
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
 		        $scope.submitMedicalRecord = function(){
-					medical_records_fac.add(patient, $scope.medicalRecord);
-					$mdDialog.cancel();
+					//medical_records_fac.add(patient, );
+					$mdDialog.hide({mode : 'create' , medicalRecord : $scope.medicalRecord});
 		      	};
+		      	$scope.transformChip = function(chip) {
+			      // If it is an object, it's already a known chip
+			      if (angular.isObject(chip)) {
+			      	console.log("Tchip");
+			      	console.log(chip.disease_id);
+			        return chip;
+			      }
+			      // Otherwise, create a new one
+			      return ;
+			    };
+			     $scope.querySearch = function (query) {
+			      var results = query ? $scope.diseaseList.filter($scope.createFilterFor(query)) : [];
+			      return results;
+			    };
+			    $scope.createFilterFor = function (query) {
+			      var lowercaseQuery = angular.lowercase(query);
+			      return function filterFn(disease) {
+			      	console.log(disease);
+			        return (disease._lowername.indexOf(lowercaseQuery) === 0) ||
+			            (disease._lowerDiseaseId.indexOf(lowercaseQuery) === 0);
+			      };
+			    };
+
 		      };
-		    var editMedCtrl = function($scope , medical_records_fac ,patient ,medicalRecord){
+		    var editMedCtrl = function($scope , doctorName , medical_records_fac ,medicalRecord , diseaseList){
 				$scope.medicalRecord = medicalRecord ;
 		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
 		        $scope.submitMedicalRecord = function(){
-					medical_records_fac.update(patient, $scope.medicalRecord);
-					$mdDialog.cancel();
+					$mdDialog.hide({mode : 'edit' , medicalRecord : $scope.medicalRecord});
 		      	};
 		      };
 		    var mCtrl = {};
@@ -670,17 +629,20 @@ app.controller('InfoCtrl', [
 		    	mCtrl = createMedCtrl ;
 		    }
 			$mdDialog.show({
-	        locals:{medical_records_fac : medical_records_fac , patient : $scope.patient , medicalRecord : medicalRecord},
+	        locals:{medical_records_fac : medical_records_fac , doctorName : $scope.doctorName  , medicalRecord : medicalRecord , diseaseList : $scope.diseaseList},
 	        controller: mCtrl,
 	        templateUrl: '/dialog/createMedicalRecord.html',
 	        parent: angular.element(document.body),
 	        targetEvent: ev,
 	        clickOutsideToClose:true
 	      })
-	      .then(function(answer) {
-	        //Do something after close dialog
-	        //Switch to another page
-	      }, function() {
+	      .then(function(response) {
+	        console.log(response);
+	        if(response.mode === "create"){
+	        	medical_records_fac.add($scope.patient, response.medicalRecord);
+	        }else if (response.mode === "edit"){
+				medical_records_fac.update($scope.patient, response.medicalRecord);
+	        }
 	      });
 
 		};
@@ -765,21 +727,115 @@ app.controller('InfoCtrl', [
 		/////////////////////////////
 		// Prescription Detail Tab //
 		/////////////////////////////
+		
+		$scope.prescription = {};
+
+		$scope.showPresModal = false;
+
+		$scope.showPresForm = function(mode, prescription) {
+			
+			$scope.mode = mode;
+
+			if(mode === 'create')
+			{
+				// Reset form
+				$scope.prescription = {};
+				$scope.prescription.med_dosage_list = [];
+			}
+			else if(mode === 'edit')
+			{
+				// Copy it to form
+				angular.copy(prescription, $scope.prescription);
+			}
+			else
+			{
+				console.error('showPresForm: mode ' + mode + " not found!");
+			}
+			
+
+			$scope.showPresModal = true;
+		};
+
+
+		$scope.med_dosage = {};
+		
+		$scope.showAddMedicineModal = false;
+
+		medicines_fac.getMedicineList() ;
+		$scope.medicineList = medicines_fac.medicineList;
+		// Get medicine list
+		
+		$scope.showAddMedicine = function()
+		{
+			$scope.showAddMedicineModal = true;
+			medicines_fac.getMedicineList();
+			// Reset from
+			$scope.med_dosage = {};
+
+		};
+
+		$scope.submitAddMedicine = function() {
+			$scope.showAddMedicineModal = !$scope.showAddMedicineModal;
+			
+			// Add to prescription
+			$scope.prescription.med_dosage_list.push($scope.med_dosage);
+		};
+
+		$scope.removeMedicine = function(index) {
+			// Remove index th med_dosage
+			$scope.prescription.med_dosage_list.splice(index, 1);
+		};
+
+		$scope.submitPrescription = function() {
+			var mode = $scope.mode;
+			if(mode === 'create')
+			{
+				// Add patient id to prescription
+				$scope.prescription.patient = $scope.patient;
+
+				// Call factory to submit it to server
+				prescription_records_fac.add($scope.patient, $scope.prescription);
+
+			}
+			else if(mode === 'edit')
+			{
+				// Call factory to send updated prescription to server
+				prescription_records_fac.update($scope.patient, $scope.prescription);
+
+			}
+			else
+			{
+				console.error('submitPrescription: mode ' + mode + " not found!");
+			}
+
+			
+			$scope.showPresModal = !$scope.showPresModal;
+		};
+
+		$scope.removePrescription = function(prescription) {
+			if(confirm("Are you sure?")){
+				prescription_records_fac.delete($scope.patient, prescription);
+			}
+			
+		};
+
 		$scope.allergy = ['Yakult' , 'Amphet' , 'Wappa' ];
-		$scope.medicineList = {};
-		$scope.showPrescription = function(ev){
-		   var createPrescriptionCtrl = function($scope){
+		
+		$scope.showPrescriptionForm = function(ev){
+		   var createPrescriptionCtrl = function($scope , medicineList){
 		   		$scope.addedMedicine = {};
 		      	$scope.prescription = { med_dosage_list :[]} ;
-				$scope.medicine = ['A', 'B', 'AB', 'O'];
-		         $scope.cancel = function() {
+				$scope.medicineList = medicineList;
+				console.log("Med List");
+				console.log($scope.medicineList);
+		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
 		        $scope.submitPrescription = function(prescription){
 				// update in db
 					
 					// console.log($scope.prescription) ;
-					$mdDialog.hide($scope.prescription.med_dosage_list);
+					$mdDialog.hide({ med_dosage_list : $scope.prescription.med_dosage_list});
 		      	};
 		      	$scope.addMedicine = function(){
 		   			$scope.prescription.med_dosage_list.push($scope.addedMedicine);
@@ -792,21 +848,20 @@ app.controller('InfoCtrl', [
 		      	};
 		     };
 			$mdDialog.show({
+	        locals:{medicineList : $scope.medicineList},
 	        controller: createPrescriptionCtrl,
 	        templateUrl: '/dialog/createPrescription.html',
 	        parent: angular.element(document.body),
 	        targetEvent: ev,
 	        clickOutsideToClose:true
 	      })
-	      .then(function(answer) {
-	        //Do something after close dialog
-	        //Switch to another page
-	        // console.log(answer);
-	        var medicineList = {patient: $scope.patient._id, doctor: $scope.patient._id, status: 'รอการจ่าย',
-	        		date: new Date(), med_dosage_list: answer};
+	      .then(function(response) {
+	        
+	        var medicineList = {patient: $scope.patient._id, doctor: $scope.doctorName , status: 'รอการจ่าย',
+	        		date: new Date(), med_dosage_list: response.med_dosage_list};
         	$http.post('/prescriptions/insert/' + $scope.patient._id, medicineList).success(function(){
         	
-				$scope.prescriptionList.push(medicineList);
+				$scope.patient.prescription_record.push(medicineList);
 	  		});
 	      }, function() {
 	      });
@@ -816,7 +871,7 @@ app.controller('InfoCtrl', [
 		      	$scope.prescriptionList = prescriptionList;
 		      	console.log($scope.prescriptionList);
 		      	$scope.prescription =prescription ;
-		         $scope.cancel = function() {
+		        $scope.cancel = function() {
 		            $mdDialog.cancel();
 		        };
 		        $scope.completePrescription = function(prescription){
@@ -849,6 +904,7 @@ app.controller('InfoCtrl', [
 		};
 	}
 ]);
+
 app.controller('symptomCtrl', function($scope, $mdSidenav) {
                 $scope.departmentList = [
                   {id:"10",name:"Comp"},

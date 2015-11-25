@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Patient = mongoose.model('Patient');
 var Doctor = mongoose.model('Doctor');
+var Department = mongoose.model('Department');
+var async = require('async');
 
 module.exports.login = function(req, username, password, done) { 
 	// check in mongo if a user with username exists or not
@@ -118,6 +120,161 @@ module.exports.login = function(req, username, password, done) {
 	});*/
 
 };
+
+module.exports.listUser = function(done) {
+	var result = [];
+	User.find().populate('doctor').exec(function(err, users) {
+		async.forEach(users, function(user, done) {
+			Doctor.findOne().where('userId').in([user.id]).exec(function(err, doctor) {
+				var item = {};
+				item.id = user._id;
+				item.username = user.username;
+				item.isPatient = user.isPatient;
+				item.isDoctor = user.isDoctor;
+				item.isStaff = user.isStaff;
+				item.isPharmacist = user.isPharmacist;
+				item.isNurse = user.isNurse;
+				if(doctor) {
+					var query = doctor.department;
+					item.department_id = query;
+					Department.findOne({ _id: query}, function(err, department) {
+						item.department = department.name;
+						result.push(item);
+						done(err);
+					});
+				} else {
+					result.push(item);
+					done(err);
+				}
+				//item.department = doctor.department;
+				//result.push(item);
+				//console.log(item);
+				//done(err);
+			});
+		}, function(err) {
+			return done(null, result);
+		});
+	});
+};
+
+module.exports.updateUser = function(userid, role, done) {
+	var query = {};
+	query._id = userid;
+	// Find that user 
+	console.log(userid);
+	console.log(role);
+	User.findOne(query, function(err, user) {
+		console.log(user);
+		if (err) {
+			return done(null, false);
+		}
+		console.log('findOne');
+		if (user) {
+			user.isPatient = role.isPatient;
+			user.isDoctor = role.isDoctor;
+			user.isStaff = role.isStaff;
+			user.isPharmacist = role.isPharmacist;
+			user.isNurse = role.isNurse;
+			console.log(user);
+			user.save(function (err) {
+				if (err) {
+					return done(null,false);
+				} else {
+					if (user.isDoctor) {
+						Doctor.findOne({ userId: userid}, function(err, doctor) {
+							if (doctor) {
+								doctor.department = role.department;
+								doctor.save(function(err) {
+									if(err) {
+										done(err);
+									} else {
+										done(err);
+									}
+								});
+							} else {
+								var item = new Doctor({ userId: userid, department: role.department });
+								item.save(function (err, item) {
+								if (err) {
+								  	done(err);
+								  }
+								  
+								  if(item) {
+								  	done(err);
+								  }
+								});
+							}
+						});
+					} else {
+						Doctor.findOne({ userId: userid}, function(err, doctor) {
+							if (doctor) {
+								Doctor.remove({ userId: userid}, function(err) {
+								    if (err) {
+								        done(err);
+								    }
+								    else {
+								        done(err);
+								    }
+								});
+							} else {
+								done(err);
+							}
+						});
+					}
+					return done(null,user);
+				}
+			});
+		}
+	});
+};
+
+module.exports.deleteUser = function(userid, done) {
+	// Check if that user is a doctor
+	Doctor.findOne({ userId: userid}, function(err, doctor) {
+		if(err) {
+			done(null, false);
+		}
+		// If they are doctor remove doctor info
+		if(doctor) {
+			Doctor.remove({ userId: userid}, function(err) {
+				if(err) {
+					return done(null,false);
+				} else {
+					// Then remove user info
+					User.remove({ _id: userid}, function(err) {
+						if(err) {
+							return done(null,false);
+						} else {
+							// Then remove patient info
+							Patient.remove({ userId: userid}, function(err) {
+								if (err) {
+									return done(null, false);
+								} else {
+									return done(null, true);
+								}
+							});
+						}
+					});
+				}
+			});
+		} else {
+			// Remove user info
+			User.remove({ _id: userid}, function(err) {
+				if(err) {
+					return done(null,false);
+				} else {
+					// Remove patient info
+					Patient.remove({ userId: userid} ,function(err) {
+						if (err) {
+							return done(null, false);
+						} else {
+							return done(null, true);
+						}
+					});
+				}
+			});
+		}
+	});
+}
 
 module.exports.register = function(req, username, password, done) {
 	var ssn = req.body.ssn;

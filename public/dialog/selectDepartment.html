@@ -1,0 +1,31 @@
+<md-dialog aria-label="เลือกแผนก"  ng-cloak>
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2 style="font-size: 36px">เลือกแผนก</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="close()">
+          <md-icon md-font-library="material-icons" class="material-icons">clear</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+      <!-- Content -->
+      <div layout>
+        <md-input-container flex>
+          <md-select ng-model="department" class="md-padding" aria-label="กรุณาเลือกแผนก" >
+            <md-option ng-value="{{department}}" ng-repeat="department in departmentList" ng-selected="(department === departmentList[0]) ? true:false">
+              {{department.name}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button class="md-raised md-primary" ng-click="select()">
+        ยืนยัน
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

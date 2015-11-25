@@ -40,7 +40,6 @@ router.post('/physical/insert/:patient', function(req, res, next) {
 router.post('/medical/insert/:patient', function(req, res, next) {
 
   var medicalRecord = new MedicalRecord(req.body);
-  console.log(medicalRecord);
   // Save new medical record
   medicalRecord.save(function(err, medicalRecord){
       // Update patient's medical record
@@ -49,12 +48,14 @@ router.post('/medical/insert/:patient', function(req, res, next) {
       req.patient.save(function(err, patient) {
 
       if(err){ return next(err); }
+      res.json(medicalRecord);
 
-      MedicalRecord.populate(medicalRecord, 'diseases', function(err, medicalRecord) {
+      //Use below code when complete Diseases Model
+      /*MedicalRecord.populate(medicalRecord, 'diseases', function(err, medicalRecord) {
         // Get disease info and return it
         if(err){ return next(err); }
         res.json(medicalRecord);
-      });
+      });*/
       
     });
   });
