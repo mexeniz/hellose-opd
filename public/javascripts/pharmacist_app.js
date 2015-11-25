@@ -1,5 +1,5 @@
 (function(){
-var app = angular.module('prescriptions', ['ui.router']) ;
+var app = angular.module('prescriptions', ['ui.router', 'ngMaterial']) ;
 
 app.factory('prescriptions_fac', ['$http', function($http){
 	  var o = {
@@ -19,7 +19,7 @@ app.factory('prescriptions_fac', ['$http', function($http){
 	  	return $http.post('complete/' + prescription._id).success(function(){
 			for(var i = 0  ; i < o.prescriptions.length  ; i++){
 					if(prescription._id === o.prescriptions[i]._id){
-						o.prescriptions[i].status = 'Completed';
+						o.prescriptions[i].status = 'จ่ายแล้ว';
 					}
 				}
 	  	});
@@ -30,10 +30,40 @@ app.factory('prescriptions_fac', ['$http', function($http){
 
 app.controller('ListCtrl', [
 	'$scope',
+	'$q',
 	'prescriptions_fac',
-	function($scope, prescriptions_fac){
+	'$mdDialog',
+
+	function($scope,$q, prescriptions_fac,$mdDialog){
 		prescriptions_fac.getList();
 		$scope.prescriptions = prescriptions_fac.prescriptions;
+	    $scope.selected = [];
+	  
+	      $scope.query = {
+	       order: 'username',
+	       limit: 5,
+	        page: 1
+	    };
+
+	    $scope.onpagechange = function(page, limit) {
+	        var deferred = $q.defer();
+	        
+	        setTimeout(function () {
+	          deferred.resolve();
+	        }, 2000);
+	        
+	        return deferred.promise;
+	      };
+	    
+	    $scope.onorderchange = function(order) {
+	        var deferred = $q.defer();
+	        
+	        setTimeout(function () {
+	          deferred.resolve();
+	        }, 2000);
+	        
+	        return deferred.promise;
+	      };
 
 		// Custom Filter by Full Name
 		$scope.fullnameFilterItem = {
@@ -48,9 +78,9 @@ app.controller('ListCtrl', [
 		// Custom Filter by Status
 		$scope.statusFilterOption = {
 			stores : [
-				{id : 0, name : 'All'},
-				{id : 1, name : 'Pending'},
-				{id : 2, name : 'Completed'}
+				{id : 0, name : 'ทั้งหมด'},
+				{id : 1, name : 'รอการจ่าย'},
+				{id : 2, name : 'จ่ายแล้ว'}
 			]
 		};
 
@@ -59,31 +89,13 @@ app.controller('ListCtrl', [
 		};
 
 		$scope.statusFilter = function(data){
-			if ($scope.statusFilterItem.store.name === 'All') {
+			if ($scope.statusFilterItem.store.id === 0) {
 		    	return true;
 		    } else if(data.status === $scope.statusFilterItem.store.name){
 				return true;
 			}else {
 		    	return false;
 		  	}
-		};
-
-		// Medicine List Detail Modal
-		$scope.medicineList = {};
-
-		$scope.showMedicineListModal = false;
-		$scope.pharmacistView = true;
-
-		$scope.showMedicineList = function(prescription) {
-			$scope.showMedicineListModal = true;
-			angular.copy(prescription,$scope.medicineList);
-		};
-
-		$scope.completePrescription = function(prescription){
-			// update in db
-			prescriptions_fac.complete(prescription);
-			// fix data in angular
-			$scope.showMedicineListModal = false;
 		};
 	}
 ]);
