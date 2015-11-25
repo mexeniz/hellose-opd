@@ -1,7 +1,7 @@
 
 
 <md-dialog aria-label="Create Medical Record"  ng-cloak>
-  <form>
+  <form ng-submit="submitMedicalRecord()">
     <md-toolbar>
       <div class="md-toolbar-tools">
         <h2>เพิ่มประวัติการรักษา</h2>
@@ -18,28 +18,39 @@
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
             <label>แพทย์</label>
-            <input ng-model="medicalRecord.doctor" type="text" >
+            <input ng-model="medicalRecord.doctor" type="text" required>
           </md-input-container>
-          <!-- <md-input-container class="md-icon-float md-block" flex="100" >
-            <label>โรค</label>
-            <input ng-model="medicalRecord.diseases" type="text" >
-          </md-input-container> -->
-          <md-chips
-            ng-model="medicalRecord.diseases"
-            readonly="false"
-            placeholder="ใส่รหัสโรค"
-            delete-button-label="ลบโรค"
-            secondary-placeholder="+ โรค">
+          
+          <md-chips ng-model="medicalRecord.diseases"
+              delete-button-label="ลบโรค" 
+              md-autocomplete-snap
+              md-transform-chip="transformChip($chip)"
+              md-require-match="true">
+            <md-autocomplete
+                md-selected-item="selectedItem"
+                md-search-text="searchText"
+                md-items="item in querySearch(searchText)"
+                md-item-text="item.name"
+                placeholder="ใส่รหัสโรค">
+              <span md-highlight-text="searchText">{{item.disease_id}} :: {{item.name}}</span>
+            </md-autocomplete>
+            <md-chip-template>
+              <span>
+                <strong>{{$chip.disease_id}}</strong>
+                <em>({{$chip.name}})</em>
+              </span>
+            </md-chip-template>
           </md-chips>
+
           <md-input-container class="md-icon-float md-block" flex="100" >
             <!-- Use floating label instead of placeholder -->
             <label>อาการ</label>
-            <input ng-model="medicalRecord.symptoms" type="text" >
+            <input ng-model="medicalRecord.symptoms" type="text" required>
           </md-input-container>
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <span flex></span>
-      <md-button type="submit" class="md-raised md-primary" ng-click="submitMedicalRecord()">
+      <md-button type="submit" class="md-raised md-primary" >
         ยืนยัน
       </md-button>
     </md-dialog-actions>

@@ -59,7 +59,6 @@ router.get('/info/:patid', function(req, res, next) {
           .populate('prescription_record')
           .populate('userId')
           .exec(function(err, patient) {
-              console.log(patient);
               if(err) {
                 return res.json(500, {
                     message: 'Error getting patient.'
@@ -85,7 +84,6 @@ router.get('/info/:patid', function(req, res, next) {
                 // Get medicine info
                 Patient.populate(patient, options2, function(err, patient) {
                   if(err) return next(err);
-                  console.log(patient);
                   res.json(patient);
                 });
                 
