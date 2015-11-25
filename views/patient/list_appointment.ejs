@@ -14,31 +14,30 @@
 </md-toolbar>
 
 <!-- Content -->
-<md-content flex layout-padding>
+<md-content flex layout-padding ng-init="init()" >
   <h1>รายการนัดหมายกับแพทย์</h1>
 
-  <md-data-table-container>
-  <table md-data-table ng-init="init()">
-    <thead>
-      <tr>
-        <th>วันที่</th>
-        <th>เวลา</th>
-        <th>ชื่อแพทย์</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="app in appointmentList">
-        <td>{{ app.roundWard.date | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ getTimeMessage(app.roundWard.time, app.slot) }}</td>
-        <td>{{ app.doctor.userId.firstname }} {{ app.doctor.userId.lastname }}</td>
-        <td><md-button class="md-primary" href="/appointment/{{app._id}}">ดูรายละเอียด</md-button></td>
-      </tr>
-    </tbody>
-  </table>
-</md-data-table-container>
-<div ng-show="selectedRoundward.length == 0">
-  ไม่มีนัดหมาย
-</div>
-
+  	<md-data-table-container ng-show="appointmentList.length > 0">
+	  	<table md-data-table>
+		    <thead>
+		      <tr>
+		        <th>วันที่</th>
+		        <th>เวลา</th>
+		        <th>ชื่อแพทย์</th>
+		        <th>Actions</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr ng-repeat="app in appointmentList" | orderBy: 'date' >
+		        <td>{{ app.roundWard.date | date: 'dd/MM/yyyy' }}</td>
+		        <td>{{ getTimeMessage(app.roundWard.time, app.slot) }}</td>
+		        <td>{{ app.doctor.userId.firstname }} {{ app.doctor.userId.lastname }}</td>
+		        <td><md-button class="md-primary" href="/appointment/{{app._id}}">ดูรายละเอียด</md-button></td>
+		      </tr>
+		    </tbody>
+  		</table>
+	</md-data-table-container>
+	<div ng-show="appointmentList.length == 0" align="center">
+		<md-icon md-font-library="material-icons">error</md-icon>ไม่มีนัดหมาย
+	</div>
 </md-content>
