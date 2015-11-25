@@ -180,6 +180,15 @@ app.factory('departments_fac', ['$http', function($http){
     departments: []
   };
 
+  o.getList = function()
+  {
+    return $http.get('/store/department').success(function(data){
+        for(var i = 0  ; i < data.length  ; i++){
+          o.departments.push(data[i]);
+        }
+      });
+  };
+
   o.add = function(department)
   {
     return $http.post('/department/add', department).success(function(data){
@@ -190,7 +199,7 @@ app.factory('departments_fac', ['$http', function($http){
   o.update = function(department)
   {
     return $http.post('department/' + department._id + '/edit', department).success(function(result){
-      for(var i = 0; i < o.department.length; i++)
+      for(var i = 0; i < o.departments.length; i++)
       {
         if(o.departments[i]._id === department._id)
         {
@@ -370,10 +379,99 @@ app.controller('MedicineListCtrl', [
         }, function() {
         });
     };
-    
+
     $scope.removeMedicine = function(medicine){
+
       if(confirm("Are you sure?") ){
         medicines_fac.delete(medicine);
+      }
+    };
+}]);
+
+app.controller('DepartmentListCtrl', [
+  '$scope',
+  '$q',
+  'departments_fac',
+  '$mdDialog',
+
+  function($scope,$q, departments_fac,$mdDialog){
+    departments_fac.getList();
+    $scope.departments = departments_fac.departments;
+    $scope.selected = [];
+  
+      $scope.query = {
+       order: 'username',
+       limit: 5,
+        page: 1
+    };
+
+    $scope.onpagechange = function(page, limit) {
+        var deferred = $q.defer();
+        
+        setTimeout(function () {
+          deferred.resolve();
+        }, 2000);
+        
+        return deferred.promise;
+      };
+    
+    $scope.onorderchange = function(order) {
+        var deferred = $q.defer();
+        
+        setTimeout(function () {
+          deferred.resolve();
+        }, 2000);
+        
+        return deferred.promise;
+      };
+
+    $scope.showDepartmentForm = function(ev,mode, department){
+        var createDepartmentCtrl = function($scope , departments_fac , department){
+          $scope.department = {name:[]};
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.submitDepartment = function(){
+              departments_fac.add($scope.department);
+              $mdDialog.cancel();
+            };
+          };
+        var editDepartmentCtrl = function($scope , departments_fac , department){
+          $scope.department = department ;
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.submitDepartment = function(){
+              departments_fac.update($scope.department);
+              $mdDialog.cancel();
+            };
+          };
+        var mCtrl = {};
+        if (mode === 'edit'){
+          mCtrl = editDepartmentCtrl ;
+        }
+        else{
+          mCtrl = createDepartmentCtrl ;
+        }
+        $mdDialog.show({
+          locals:{departments_fac : departments_fac , department : JSON.parse(JSON.stringify(department))},
+          controller: mCtrl,
+          templateUrl: '/dialog/createDepartment.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose:true
+        })
+        .then(function(answer) {
+          //Do something after close dialog
+          //Switch to another page
+        }, function() {
+        });
+    };
+
+    $scope.removeDepartment = function(department){
+      
+      if(confirm("Are you sure?") ){
+        departments_fac.delete(department);
       }
     };
 }]);
