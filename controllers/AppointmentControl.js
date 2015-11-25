@@ -281,3 +281,8 @@ module.exports.getAppointment = function(userId,month,year,callback){
   	});
 
 };
+
+module.exports.getAppointmentByPatientId = function(patientId, callback)
+{
+
+};

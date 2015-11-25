@@ -369,6 +369,29 @@ router.get('/appointment', function(req, res, next) {
   res.redirect('/login');
 });
 
+
+// Get list of appointment
+router.get('/appointment/list', function(req, res, next) {
+  if(req.user) {
+    var returnFunction = function(err, result)
+    {
+      if(err) { next(err); }
+      return res.json(result);
+    };
+
+    if(req.session.role === '1') { // Patient
+      AppointmentControl.getAppointmentByPatientId(req.session.patient_id, returnFunction);
+    }
+    else if(req.session.role === '2') { // Doctor
+      return res.json([]);
+    }
+  }
+  else
+  {
+    res.json([]);
+  }
+});
+
 /* ------------------------------------------------------- */
 // Patient and Doctor and Staff Route
 
