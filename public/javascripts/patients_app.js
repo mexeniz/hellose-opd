@@ -997,13 +997,12 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
 	$scope.selectedType = 'Doctor';
 
-    $scope.departmentList = [
-      {name:"Comp"},
-      {name:"Elec"},
-      {name:"Chem"},
-      {name:"Civil"},
-      {name:"Mech"},
-    ];
+    $scope.departmentList = [];
+
+    $http.get('/store/department').success(function(data){
+    	angular.copy(data, $scope.departmentList);
+    });
+
     $scope.doctorList = [
       {id:"1",name:"Santa",department:"Comp"},
       {id:"2",name:"Gale",department:"Elec"},
@@ -1028,40 +1027,6 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
  }]);
 
-app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$http', function($scope, $q, $timeout, $log, $http) {
-
-	$scope.selectedType = 'Doctor';
-
-    $scope.departmentList = [
-      {name:"Comp"},
-      {name:"Elec"},
-      {name:"Chem"},
-      {name:"Civil"},
-      {name:"Mech"},
-    ];
-    $scope.doctorList = [
-      {id:"1",name:"Santa",department:"Comp"},
-      {id:"2",name:"Gale",department:"Elec"},
-      {id:"3",name:"Kirk",department:"Mech"},
-      {id:"4",name:"Tutor",department:"Mech"},
-      {id:"5",name:"Mma",department:"Mech"},
-    ];
-    $scope.submit = function(){
-        
-    };
-
-
-
-    $scope.querySearch = function (query) {
-      	deferred = $q.defer();
-      	$http.get('/doctor/find/' + query).success(function(data){
-      		deferred.resolve(data);
-      	});
-      	return deferred.promise;
-    };
-
-
- }]);
 
 app.controller('confirmAppointmentCtrl', ['$scope', '$mdDialog', '$http', '$filter', 'CalendarData', function($scope, $mdDialog, $http, $filter, CalendarData) {
 		

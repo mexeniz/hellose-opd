@@ -83,7 +83,7 @@ module.exports.getEarliest = function(department,callback){
   module.exports.getDepartmentFreeMonth(
           date.getMonth(),
           date.getFullYear(),
-          department,
+          mongoose.Types.ObjectId(department),
           function(err,result){
             if(err){
               return callback(err)
