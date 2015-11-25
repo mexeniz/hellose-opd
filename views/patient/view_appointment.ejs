@@ -52,9 +52,9 @@
 	        <br>
 	        </md-card-content>
 		      <md-card-actions layout="row" layout-align="end center">
-		      	<md-button class="md-primary md-raised">ยืนยันนัดหมาย</md-button>
-		        <md-button class="md-primary">เลื่อนนัดหมาย</md-button>
-		        <md-button class="md-warn" ng-click="cancel()">ยกเลิกนัดหมาย</md-button>
+		      	<md-button class="md-primary md-raised" ng-show="appInfo.status === 'suggested'">ยืนยันนัดหมาย</md-button>
+		        <md-button class="md-primary" ng-hide="appInfo.status === 'canceled'">เลื่อนนัดหมาย</md-button>
+		        <md-button class="md-warn" ng-hide="appInfo.status === 'canceled'" ng-click="cancel()">ยกเลิกนัดหมาย</md-button>
 		      </md-card-actions>
 	      </md-card>
 	</md-content>

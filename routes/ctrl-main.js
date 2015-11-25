@@ -509,6 +509,10 @@ router.get('/appointment/:appId', function(req, res, next) {
     if(req.session.role === '1') {
       return res.render('patient/view_appointment', { appId: appId });
     }
+    else if(req.session.role === '2')
+    {
+      return res.render('doctor/view_appointment', { appId: appId });
+    }
     else if(req.session.role === '3') {
       res.render('staff/view_appointment');
     }
