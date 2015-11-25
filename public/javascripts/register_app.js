@@ -34,13 +34,18 @@ app.controller('registerCtrl', [
     $scope.regData = {};
     $scope.regData.blood_type = 'A';
     $scope.regData.gender = 'M';
-
+    $scope.requireBirthdate = false ;
+    $scope.maxDate = new Date();
     // Validate form and show modal
     $scope.checkRegister = function(ev){
       if($scope.regData.password !== $scope.regData.repeatPassword)
       {
         $scope.pwNotMatch = true;
         return;
+      }
+      if(!$scope.regData.birthdate){
+        $scope.requireBirthdate = true ;
+        return ;
       }
       var confirmCtrl = function($scope, regData) {
           $scope.regMessage = "" ;

@@ -151,16 +151,76 @@ router.get('/appointment/create', function(req, res, next) {
 
 // Create appointment
 router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
-  if(req.user && req.session.role === '1')
+  //if(req.user && req.session.role === '1')
   {
     var doctorid = req.params.doctorId;
-    res.render('patient/confirm_appointment', { doctorid: doctorid });
+    var curDate = new Date();
+    RoundWardControl.getAvailableDateTime(doctorid,curDate.getMonth(),curDate.getFullYear(),function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        if(result.length > 0)
+        {
+          res.render('patient/confirm_appointment', { earliestData: JSON.stringify(result[0]) });
+        }
+        else
+        {
+          res.render('patient/create_appointment', req.flash( {message: 'แพทย์ไม่ว่างเลย'}));
+        }
+      }
+    });
+    
   }
 });
 
 // Create appointment post
 router.post('/appointment/create', function(req, res, next) {
-  res.send('create success');
+  var patientId = '';
+  var doctorId = '';
+  if(req.user)
+  {
+    if(req.session.role === '1') // Patient
+    {
+      patientId = req.user._id;
+      doctorId = req.body['doctor_id'];
+
+    }
+    else if(req.session.role === '2') // Doctor
+    {
+      patientId = req.body['patient_id'];
+      doctorId = req.user._id;
+    } 
+    else if(req.session.role === '3') // Staff
+    {
+      patientId = req.body['patient_id'];
+      doctorId = req.body['doctor_id'];
+    }
+    else
+    {
+      res.send('No permission');
+    }
+  }
+  var appInfo = {
+    doctor_id : mongoose.Types.ObjectId(doctorId),
+    patient_id : mongoose.Types.ObjectId(patientId), 
+    date : new Date(req.body['date']),
+    time : req.body['time'],
+    slot : req.body['slot'],
+    status : req.body['status'],
+    causes : req.body['causes']
+  };
+
+  console.log(appInfo);
+
+  AppointmentControl.createAppointment(appInfo,function(err,result){
+    if(err){
+      console.log(err);
+      return next(err);
+    }else{
+      console.log('success');
+      return res.json(result);
+    }
+  });
 });
 
 /* ------------------------------------------------------- */
@@ -211,25 +271,22 @@ router.post('/cancelRoundward', function(req,res,next){
 //GET A FREE SLOT ROUNDWARD FROM A DOCTOR in A MONTH
 //BUSY ROUNDWARD WILL NOT BE FETCHED
 router.post('/getAvailableDateTime', function(req,res,next){
-  if(req.user && (req.session.role === '1' || req.session.role === '2' || req.session.role === '3'))
+  console.log("request");
+  if(true)
+  //if(req.user && (req.session.role === '1' || req.session.role === '2' || req.session.role === '3'))
   {
 
     var doctor_id = req.session.role === '2' ? req.user._id : req.body['doctor_id']; // If doctor, use user id of doctor, else must pass doctorid(userid of doctor)
     var month = req.body['month'];
     var year = req.body['year'];
 
-    console.log(doctor_id + month + year);
+    console.log('ctrl-main.js[218] : '+doctor_id);
 
     RoundWardControl.getAvailableDateTime(doctor_id,month,year,function(err,result) {
       if(err){
         return next(err);
       }else{    
-        var returning = {
-          'doctor_id' : doctor_id,
-          'month' : month,
-          'data': result
-        };
-        return res.json(returning);
+        return res.json(result);
       }
     });
   }
@@ -282,7 +339,7 @@ router.post('/addRoundward', function(req,res,next){
 // Create appointment
 router.get('/patient/:patientId/create_appointment', function(req, res, next) {
   if(req.user && req.session.role === '2') {
-    res.render('doctor/create_appointment', { patient_id : req.param.patientId });
+    res.render('doctor/create_appointment', { patient_id : req.params.patientId });
   }
   res.redirect('/login');
 });
@@ -436,16 +493,16 @@ router.post('/profile/edit', function(req, res, next) {
 router.get('/patient/:patientId', function(req, res, next) {
   if(req.user) {
     if(req.session.role === '2') {
-      res.render('doctor/patient_profile', { patient_id : req.param.patientId });
+      res.render('doctor/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '3') {
-      res.render('staff/patient_profile', { patient_id : req.param.patientId });
+      res.render('staff/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '4') {
-      res.render('pharmacist/patient_profile', { patient_id : req.param.patientId });
+      res.render('pharmacist/patient_profile', { patient_id : req.params.patientId });
     }
     else if (req.session.role === '5') {
-      res.render('nurse/patient_profile', { patient_id : req.param.patientId });
+      res.render('nurse/patient_profile', { patient_id : req.params.patientId });
     }
   }
   res.redirect('/login');

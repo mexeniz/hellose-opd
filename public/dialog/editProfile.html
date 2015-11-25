@@ -1,7 +1,7 @@
 
 
 <md-dialog aria-label="Edit Profile"  ng-cloak>
-  <form>
+  <form ng-submit="submitProfile()">
     <md-toolbar>
       <div class="md-toolbar-tools">
         <h2>แก้ไขข้อมูลส่วนตัว</h2>
@@ -47,7 +47,7 @@
             <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
             <!-- Use floating label instead of placeholder -->
             <label>เบอร์โทรศัพท์</label>
-            <input ng-model="patient.tel_number" type="text" >
+            <input ng-model="patient.telNum" type="text" >
           </md-input-container>
           </div>
           <div layout layout-sm="column">
@@ -74,7 +74,7 @@
     </md-dialog-content>
     <md-dialog-actions layout="row">
       <span flex></span>
-      <md-button class="md-raised md-primary" ng-click="submitProfile()">
+      <md-button class="md-raised md-primary" type="submit" >
         ยืนยัน
       </md-button>
     </md-dialog-actions>

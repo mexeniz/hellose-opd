@@ -89,7 +89,7 @@
               <md-icon md-font-library="material-icons" class="material-icons">call</md-icon>
               <div class="md-list-item-text">
                 <div class="h3-th">เบอร์โทรศัพท์</div>
-                <div class="h2-th">{{patient.tel_number}}</div>
+                <div class="h2-th">{{patient.telNum}}</div>
               </div>
             </md-list-item>
 
@@ -123,39 +123,42 @@
             <md-icon md-font-library="material-icons">add</md-icon>
           </md-button></div>
           <br>
-          <md-data-table-container>
-            <table md-data-table>
-              <thead>
-                <tr>
-                  <th>วันที่</th>
-                  <th>น้ำหนัก</th>
-                  <th>ส่วนสูง</th>
-                  <th>ความดันโลหิต</th>
-                  <th>อัตราการเต้นหัวใจ</th>
-                  <th>อุณหภูมิร่างกาย</th>
-                  <th>การจัดการ</th>
-                </tr>
-              </thead>
-              <tbody ng-repeat="physicalRecord in physicalRecordList">
-                <tr>
-                  <td>{{physicalRecord.date | date : 'medium'}}</td>
-                  <td>{{physicalRecord.weight}}</td>
-                  <td>{{physicalRecord.height}}</td>
-                  <td>{{physicalRecord.blood_pressure}}</td>
-                  <td>{{physicalRecord.pulse}}</td>
-                  <td>{{physicalRecord.temperature}}</td>
-                  <td>
-                    <md-button class="md-fab md-mini md-primary" ng-click="showPhysicalRecordForm($event,'edit',physicalRecord)">
-                      <md-icon md-font-library="material-icons">mode_edit</md-icon>
-                    </md-button>
-                    <md-button class="md-fab md-mini md-warn"  ng-click="removePhysicalRecord(physicalRecord, $index)">
-                      <md-icon md-font-library="material-icons">delete</md-icon>
-                    </md-button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </md-data-table-container>
+          <md-card>
+            <md-data-table-container>
+              <table md-data-table class="md-accent" md-progress="deferred">
+                <thead>
+                  <tr>
+                    <th name="วันที่"></th>
+                    <th name="น้ำหนัก"></th>
+                    <th name="ส่วนสูง"></th>
+                    <th name="ความดันโลหิต"></th>
+                    <th name="อัตราการเต้นหัวใจ"></th>
+                    <th name="อุณหภูมิร่างกาย"></th>
+                    <th name="การจัดการ"></th>
+                  </tr>
+                </thead>
+                <tbody >
+                  <tr ng-repeat="physicalRecord in patient.physical_record | orderBy: physicalRecord.date | limitTo: query.limit: (query.page - 1) * query.limit">
+                    <td>{{physicalRecord.date | date : 'medium'}}</td>
+                    <td>{{physicalRecord.weight}}</td>
+                    <td>{{physicalRecord.height}}</td>
+                    <td>{{physicalRecord.blood_pressure}}</td>
+                    <td>{{physicalRecord.pulse}}</td>
+                    <td>{{physicalRecord.temperature}}</td>
+                    <td>
+                      <md-button class="md-fab md-mini md-primary" ng-click="showPhysicalRecordForm($event,'edit',physicalRecord)">
+                        <md-icon md-font-library="material-icons">mode_edit</md-icon>
+                      </md-button>
+                      <md-button class="md-fab md-mini md-warn"  ng-click="removePhysicalRecord(physicalRecord, $index)">
+                        <md-icon md-font-library="material-icons">delete</md-icon>
+                      </md-button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </md-data-table-container>
+        <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{patient.physical_record.length}}" md-trigger="onpagechange"></md-data-table-pagination>
+        </md-card>
           
         </md-content>
       </md-tab>

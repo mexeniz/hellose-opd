@@ -1,0 +1,41 @@
+<md-dialog aria-label="เลือกวันที่ต้องการนัดพบแพทย์" ng-init="init()" ng-cloak style="width: 100%">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2 style="font-size: 36px">เลือกวันที่ต้องการนัดพบแพทย์</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="close()">
+        <md-icon aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+  <md-dialog-content layout-padding>
+    
+    <calendar-md md-accent flex layout layout-fill
+      calendar-direction="direction"
+      on-prev-month="prevMonth"
+      on-next-month="nextMonth"
+      on-day-click="dayClick"
+      title-format="'MMMM y'"
+      ng-model='selectedDate'
+      week-starts-on="firstDayOfWeek"
+      data-start-month=""
+      data-start-year=""
+      tooltips=""
+      day-format="'d'"
+      day-label-format="'EEE'"
+      day-label-tooltip-format="'EEEE'"
+      day-tooltip-format="'fullDate'"
+      day-content="setDayContent"
+      disable-future-selection="false">
+    </calendar-md>
+    <md-dialog-actions layout="row">
+      <small><i class='material-icons'>assignment_turned_in</i> แสดงถึงวันที่สามารถนัดพบแพทย์ได้</small>
+      <span flex></span>
+      <md-button ng-disabled="!selectedDate" ng-click="changeDate(selectedDate)" style="margin-right:20px;">
+        ยืนยัน
+      </md-button>
+    </md-dialog-actions>
+  </md-dialog-content>
+  
+</md-dialog>

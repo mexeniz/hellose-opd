@@ -1,5 +1,5 @@
 (function(){
-var app = angular.module('patients', ['ui.router', 'ngMaterial', 'materialCalendar']) ;
+var app = angular.module('patients', ['ui.router', 'ngMaterial', 'materialCalendar'  ,'md.data.table']) ;
 
 // Angular Material Config
 app.config(function($mdThemingProvider, $mdIconProvider){
