@@ -270,6 +270,31 @@ router.get('/appointment/confirm_Doctor/:doctorId/:patientId', function(req, res
   }
 });
 
+// Create appointment by staff
+router.get('/appointment/confirm_Department/:depId/:patientId', function(req, res, next) {
+  if(req.user && req.session.role === '3')
+  {
+    var depId = req.params.depId;
+    var patientid = req.params.patientId;
+    var curDate = new Date();
+    RoundWardControl.getEarliest(depId, function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        console.log('result');
+        console.log(result);
+        if(result)
+        {
+          res.render('staff/confirm_appointment', { earliestData: JSON.stringify(result), patientId: patientid });
+        }
+        else
+        {
+          res.render('staff/create_appointment', req.flash( {message: 'แพทย์ไม่ว่างเลย'}));
+        }
+      }
+    });
+  }
+});
 
 // Create appointment post
 router.post('/appointment/create', function(req, res, next) {

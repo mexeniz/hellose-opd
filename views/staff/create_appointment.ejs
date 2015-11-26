@@ -33,7 +33,7 @@
             <md-input-container flex="40">
               <label>Department</label>
               <md-select ng-model="selectedDepartment" placeholder="เลือกแผนก">
-                <md-option ng-repeat="dep in departmentList" value="{{dep.name}}">
+                <md-option ng-repeat="dep in departmentList" value="{{dep._id}}">
                   {{dep.name}}
                 </md-option>
               </md-select>

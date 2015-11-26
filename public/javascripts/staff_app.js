@@ -577,13 +577,12 @@ app.controller('makeAppointmentCtrl', ['$scope', '$q', '$timeout', '$log', '$htt
 
 	$scope.selectedType = 'Doctor';
 
-    $scope.departmentList = [
-      {name:"Comp"},
-      {name:"Elec"},
-      {name:"Chem"},
-      {name:"Civil"},
-      {name:"Mech"},
-    ];
+    $scope.departmentList = [];
+
+    $http.get('/store/department').success(function(data){
+    	angular.copy(data, $scope.departmentList);
+    });
+    
     $scope.doctorList = [
       {id:"1",name:"Santa",department:"Comp"},
       {id:"2",name:"Gale",department:"Elec"},
