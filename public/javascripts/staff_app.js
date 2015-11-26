@@ -504,51 +504,51 @@ app.controller('ImportCtrl', [	'$scope', '$parse', 'schedule_fac',
 				$scope.startYear = currentDate.getFullYear();
 				$scope.monthList = [
 					{
-						value: 1,
+						value: 0,
 						msg: 'มกราคม'
 					},
 					{
-						value: 2,
+						value: 1,
 						msg: 'กุมภาพันธ์'
 					},
 					{
-						value: 3,
+						value: 2,
 						msg: 'มีนาคม'
 					},
 					{
-						value: 4,
+						value: 3,
 						msg: 'เมษายน'
 					},
 					{
-						value: 5,
+						value: 4,
 						msg: 'พฤษภาคม'
 					},
 					{
-						value: 6,
+						value: 5,
 						msg: 'มิถุนายน'
 					},
 					{
-						value: 7,
+						value: 6,
 						msg: 'กรกฎาคม'
 					},
 					{
-						value: 8,
+						value: 7,
 						msg: 'สิงหาคม'
 					},
 					{
-						value: 9,
+						value: 8,
 						msg: 'กันยายน'
 					},
 					{
-						value: 10,
+						value: 9,
 						msg: 'ตุลาคม'
 					},
 					{
-						value: 11,
+						value: 10,
 						msg: 'พฤศจิกายน'
 					},
 					{
-						value: 12,
+						value: 11,
 						msg: 'ธันวาคม'
 					}
 				];

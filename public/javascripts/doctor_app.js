@@ -838,8 +838,22 @@ app.controller('InfoCtrl', [
 					$mdDialog.hide({ med_dosage_list : $scope.prescription.med_dosage_list});
 		      	};
 		      	$scope.addMedicine = function(){
-		   			$scope.prescription.med_dosage_list.push($scope.addedMedicine);
-
+		   			
+		   			for(var i in $scope.medicineList) {
+		   				var med = $scope.medicineList[i];
+		   				if(med._id === $scope.addedMedicine.medicine)
+		   				{
+		   					$scope.addedMedicine.medicine = med;
+		   					break;
+		   				}
+		   			}
+		   			var aMed = {
+		   				medicine: $scope.addedMedicine.medicine,
+		   				dosage: $scope.addedMedicine.dosage,
+		   				howTo: $scope.addedMedicine.howTo
+		   			};
+		   			$scope.prescription.med_dosage_list.push(aMed);
+		   			console.log($scope.addedMedicine);		   			
 		   			$scope.addedMedicine = {};
 		      	};
 		      	$scope.removeMedicine = function(index){
