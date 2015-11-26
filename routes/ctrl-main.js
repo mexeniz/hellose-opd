@@ -221,6 +221,31 @@ router.get('/appointment/confirm_Doctor/:doctorId', function(req, res, next) {
   }
 });
 
+// Create appointment
+router.get('/appointment/confirm_Department/:depId', function(req, res, next) {
+  if(req.user && req.session.role === '1')
+  {
+    var depId = req.params.depId;
+    var curDate = new Date();
+    RoundWardControl.getEarliest(depId, function(err,result){
+      if(err){
+        return next(err);
+      }else{
+        console.log('result');
+        console.log(result);
+        if(result)
+        {
+          res.render('patient/confirm_appointment', { earliestData: JSON.stringify(result) });
+        }
+        else
+        {
+          res.render('patient/create_appointment', req.flash( {message: 'แพทย์ไม่ว่างเลย'}));
+        }
+      }
+    });
+  }
+});
+
 // Create appointment by staff
 router.get('/appointment/confirm_Doctor/:doctorId/:patientId', function(req, res, next) {
   if(req.user && req.session.role === '3')
@@ -426,16 +451,6 @@ router.get('/roundward/add', function(req, res, next) {
   res.redirect('/login');
 });
 
-
-router.post('/kuy',function(req,res,next){
-    var department = req.body['department'];
-    RoundWardControl.getEarliest (department,function(err,result){
-      if(err){
-        return next(err);
-      }
-      return res.json(result);
-    });
-});
 
 // Add roundward post
 router.post('/addRoundward', function(req,res,next){
