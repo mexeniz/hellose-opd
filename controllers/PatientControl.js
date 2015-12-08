@@ -4,32 +4,44 @@ var mongoose = require('mongoose');
 var Patient = mongoose.model('Patient');
 var User = mongoose.model('User');
 
-module.exports.editPatientInfo = function(patId, newPat, callback)
+module.exports.editPatientInfo = function(patId, newProfile, callback)
 {
 	// Find patient
-	User.findById(patId, function (err, oldPat){
+	User.findById(patId, function (err, oldUser){
 		if(err) { return callback(err); }
 
 		// Update prescription
-		oldPat.firstname = newPat.firstname;
-		oldPat.lastname = newPat.lastname;
-		oldPat.gender = newPat.gender;
-		oldPat.email = newPat.email;
-		oldPat.address = newPat.address;
-		oldPat.ssn = newPat.ssn;
-		oldPat.blood_type = newPat.blood_type;
-		oldPat.birthdate = newPat.birthdate;
-		oldPat.tel_number = newPat.tel_number;
+		oldUser.firstname = newProfile.firstname;
+		oldUser.lastname = newProfile.lastname;
+		oldUser.gender = newProfile.gender;
+		oldUser.email = newProfile.email;
+		oldUser.address = newProfile.address;
+		oldUser.ssn = newProfile.ssn;
+		oldUser.birthdate = newProfile.birthdate;
+		oldUser.telNum = newProfile.telNum;
 
-		// Save it
-		oldPat.save(function(err, patient) {
+		// first change patient bloodType
+		var query = {};
+		query.userId = patId;
 
+		Patient.findOne(query, function(err, patient){
 			if(err) { return callback(err); }
 
-			// pres.med_dosage_list = newPres.med_dosage_list;
-			// Populate new med dosage
-			// pres.populate('med_dosage_list.medicine', callback);
-			callback(null, patient);
+			patient.blood_type = newProfile.blood_type;
+
+			patient.save(function(err){
+				if(err) { return callback(err); }
+
+				oldUser.save(function(err, user) {
+
+					if(err) { return callback(err); }
+
+					// pres.med_dosage_list = newPres.med_dosage_list;
+					// Populate new med dosage
+					// pres.populate('med_dosage_list.medicine', callback);
+					callback(null, user);
+				});
+			});
 		});
 
 	});
