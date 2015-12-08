@@ -579,8 +579,8 @@ app.controller('InfoCtrl', [
 	      })
 	      .then(function(patient) {
 	        //Do something after close dialog
-	        patients_fac.update(patient, $scope.physicalRecord);
-	        // console.log(patient);
+	        patients_fac.update(patient);
+	         //console.log(patient);
 	        //Switch to another page
 	      }, function() {
 
