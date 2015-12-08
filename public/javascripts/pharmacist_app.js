@@ -435,6 +435,9 @@ app.controller('InfoUserCtrl', [
 	      })
 	      .then(function(patient) {
 	        //Do something after close dialog
+	        $scope.patient.age = (function(){
+				    return (new Date().getFullYear() - patient.birthdate.getFullYear());
+			}());
 	        patients_fac.update(patient);
 	         //console.log(patient);
 	        //Switch to another page

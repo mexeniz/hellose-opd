@@ -38,7 +38,12 @@ app.factory('patients_fac', ['$http', function($http){
 		    o.patients.push(data);
 			});
 	  };
-
+	  o.update = function(patient)
+	{
+		return $http.put('/patients/update/'+ patient._id , patient).success(function(data){
+				console.log(data);
+		});
+	};
 
 		o.getPatient = function(patient_id) {
 			return $http.get('/patients/info/' +patient_id);
@@ -1615,7 +1620,6 @@ app.controller('InfoUserCtrl', [
 				$scope.patient.physical_record = data.physical_record ;
 				$scope.patient.medical_record = data.medical_record ;
 				$scope.patient.prescription_record = data.prescription_record ;
-				$scope.patient._id = obj_id ; 
 				
 				$scope.patient.birthdate = new Date(data.userId.birthdate);
 
@@ -1629,6 +1633,68 @@ app.controller('InfoUserCtrl', [
 				// console.log(data);
 		    });
 		};
+
+
+		$scope.showEditProfile = function(ev){
+			var editCtrl = function($scope,patient){
+		      	$scope.cancel = function() {
+			         $mdDialog.cancel();
+			    };
+		      	$scope.patient = patient;
+		      	// $scope.patient.gender = "M";
+		      	// $scope.patient.blood_type = "A";
+		      	$scope.bloodList = ["A","B","AB","O"];
+	    		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		      	$scope.submitProfile = function(){
+		        	if ($scope.patient.firstname !== null &&
+		        		$scope.patient.lastname !== null &&
+		        		$scope.patient.gender !== null &&
+		        		$scope.patient.email !== null &&
+		        		$scope.patient.address !== null &&
+		        		$scope.patient.ssn !== null &&
+		        		$scope.patient.blood_type !== null &&
+		        		$scope.patient.birthdate !== null &&
+		        		$scope.patient.telNum !== null
+		        		){
+		        			console.log($scope.patient);
+							$mdDialog.hide($scope.patient);}
+		      	};
+	            /*$http.post('/register', $scope.regData).success(function(data) {
+	              if(data.status === 'success')
+	              {
+	                $scope.regMessage = 'Successfully registered!';
+	                $window.location.href = "/home" ;
+	              }
+	              else
+	              {
+	                $scope.regMessage = 'Try again!';
+	              }
+	            });*/
+		      $scope.updateProfile = function(){	
+	        	console.log(patient);
+		      };
+		      };	
+		$mdDialog.show({
+	        locals:{patient: $scope.patient},
+	        controller: editCtrl,
+	        templateUrl: '/dialog/editProfile.html',
+	        parent: angular.element(document.body),
+	        targetEvent: ev,
+	        clickOutsideToClose:true
+	      })
+	      .then(function(patient) {
+	        //Do something after close dialog
+	        $scope.patient.age = (function(){
+				    return (new Date().getFullYear() - patient.birthdate.getFullYear());
+			}());
+	        patients_fac.update(patient);
+	         //console.log(patient);
+	        //Switch to another page
+	      }, function() {
+
+	      });
+
+	    } 	;
 
 		$scope.showPhysicalRecordForm = function(ev,mode,physicalRecord){
 
