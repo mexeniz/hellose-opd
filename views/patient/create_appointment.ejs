@@ -46,7 +46,7 @@
             <form name="autocompleteForm" ng-show="selectedType === 'Doctor'">
               <md-autocomplete required md-input-name="autocomplete" placeholder="กรอกชื่อแพทย์" md-selected-item="selectedDoctor" md-search-text="searchText" md-items="doctor in querySearch(searchText)" md-item-text="doctor.firstname + ' ' + doctor.lastname">
                 <md-item-template>
-                  <span md-highlight-text="searchText" md-highlight-flags="^i">{{doctor.firstname}} {{doctor.lastname}} - {{doctor.department}}</span>
+                  <span md-highlight-text="searchText" md-highlight-flags="^i">{{doctor.firstname}} {{doctor.lastname}}</span>
                 </md-item-template>
                 <md-not-found>
                   No matches found.
