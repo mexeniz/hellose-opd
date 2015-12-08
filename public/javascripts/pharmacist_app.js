@@ -37,7 +37,13 @@ app.factory('patients_fac', ['$http', function($http){
 			});
 	  };
 
-
+	  o.update = function(patient)
+	{
+		console.log(patient._id);
+		return $http.put('/patients/update/'+ patient._id , patient).success(function(data){
+				console.log(data);
+		});
+	};
 		o.getPatient = function(patient_id) {
 			return $http.get('/patients/info/' +patient_id);
 		};
@@ -350,7 +356,7 @@ app.controller('InfoUserCtrl', [
 	'patients_fac',
 	'$mdDialog',
 	'$q',
-	function($scope, patients_fac,  prescription_records_fac, $mdDialog,$q){
+	function($scope, patients_fac, $mdDialog,$q){
       	$scope.bloodList = ["A","B","AB","O"];
 		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
 		$scope.init = function(patient_id) {
@@ -364,7 +370,7 @@ app.controller('InfoUserCtrl', [
 				$scope.patient.physical_record = data.physical_record ;
 				$scope.patient.medical_record = data.medical_record ;
 				$scope.patient.prescription_record = data.prescription_record ;
-				$scope.patient._id = obj_id ; 
+				//$scope.patient._id = obj_id ; 
 				
 				$scope.patient.birthdate = new Date(data.userId.birthdate);
 
@@ -379,109 +385,65 @@ app.controller('InfoUserCtrl', [
 		    });
 		};
 
-		$scope.showPhysicalRecordForm = function(ev,mode,physicalRecord){
 
-			var createPhysCtrl = function($scope ,physicalRecord){
-				$scope.physicalRecord = {} ;
-		        $scope.cancel = function() {
-		            $mdDialog.cancel();
-		        };
-		        $scope.submitPhysicalRecord = function(){
-		        	if ($scope.physicalRecord.weight != null &&
-		        		$scope.physicalRecord.height != null &&
-		        		$scope.physicalRecord.temperature != null &&
-		        		$scope.blood_pressure_sys != null &&
-		        		$scope.blood_pressure_di != null &&
-		        		$scope.physicalRecord.pulse != null ){
-		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
-
-					$mdDialog.hide({mode :'create',physicalRecord : $scope.physicalRecord});
-				}
+		$scope.showEditProfile = function(ev){
+			var editCtrl = function($scope,patient){
+		      	$scope.cancel = function() {
+			         $mdDialog.cancel();
+			    };
+		      	$scope.patient = patient;
+		      	// $scope.patient.gender = "M";
+		      	// $scope.patient.blood_type = "A";
+		      	$scope.bloodList = ["A","B","AB","O"];
+	    		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
+		      	$scope.submitProfile = function(){
+		        	if ($scope.patient.firstname !== null &&
+		        		$scope.patient.lastname !== null &&
+		        		$scope.patient.gender !== null &&
+		        		$scope.patient.email !== null &&
+		        		$scope.patient.address !== null &&
+		        		$scope.patient.ssn !== null &&
+		        		$scope.patient.blood_type !== null &&
+		        		$scope.patient.birthdate !== null &&
+		        		$scope.patient.telNum !== null
+		        		){
+		        			console.log($scope.patient);
+							$mdDialog.hide($scope.patient);}
 		      	};
+	            /*$http.post('/register', $scope.regData).success(function(data) {
+	              if(data.status === 'success')
+	              {
+	                $scope.regMessage = 'Successfully registered!';
+	                $window.location.href = "/home" ;
+	              }
+	              else
+	              {
+	                $scope.regMessage = 'Try again!';
+	              }
+	            });*/
+		      $scope.updateProfile = function(){	
+	        	console.log(patient);
 		      };
-		    var editPhysCtrl = function($scope ,physicalRecord){
-				$scope.physicalRecord = {
-		    		_id : physicalRecord._id ,
-		    		weight : physicalRecord.weight ,
-		        	height : physicalRecord.height ,
-		        	temperature : physicalRecord.temperature ,
-		        	pulse : physicalRecord.pulse
-		    	};
-		    	var b = physicalRecord.blood_pressure.split('/');
-				$scope.blood_pressure_sys = Number(b[0]) ;
-				$scope.blood_pressure_di = Number(b[1]) ;
-		        $scope.cancel = function() {
-		            $mdDialog.cancel();
-		        };
-		        $scope.submitPhysicalRecord = function(){
-		        	if ($scope.physicalRecord.weight !== null &&
-		        		$scope.physicalRecord.height !== null &&
-		        		$scope.physicalRecord.temperature !== null &&
-		        		$scope.blood_pressure_sys !== null &&
-		        		$scope.blood_pressure_di !== null &&
-		        		$scope.physicalRecord.pulse !== null ){
-		        	$scope.physicalRecord.blood_pressure = $scope.blood_pressure_sys+"/"+$scope.blood_pressure_di;
-					$mdDialog.hide({mode :'edit',physicalRecord : $scope.physicalRecord});
-					}
-		      	};
-		      };
-		    var pCtrl = {};
-		    if (mode === 'edit'){
-		    	pCtrl = editPhysCtrl ;
-		    }
-		    else{
-		    	pCtrl = createPhysCtrl ;
-		    }
-
-		    //Copy value
-		    
-
-			$mdDialog.show({
-	        locals:{physicalRecord : physicalRecord},
-	        controller: pCtrl,
-	        templateUrl: '/dialog/createPhysicalRecord.html',
+		      };	
+		$mdDialog.show({
+	        locals:{patient: $scope.patient},
+	        controller: editCtrl,
+	        templateUrl: '/dialog/editProfile.html',
 	        parent: angular.element(document.body),
 	        targetEvent: ev,
 	        clickOutsideToClose:true
 	      })
-	      .then(function( response ) {
-	        if(response.mode === "create"){
-	        	physical_records_fac.add($scope.patient, response.physicalRecord);
-	        }
-	        else if (response.mode === "edit"){
-				physical_records_fac.update($scope.patient, response.physicalRecord);
-	        }
+	      .then(function(patient) {
+	        //Do something after close dialog
+	        patients_fac.update(patient);
+	         //console.log(patient);
+	        //Switch to another page
+	      }, function() {
+
 	      });
 
-		};
-		$scope.submitPhysicalRecord = function()
-		{
-
-			if($scope.mode === 'create'){
-				physical_records_fac.add($scope.patient, $scope.physicalRecord);
-			}
-
-			else if($scope.mode === 'edit')
-			{
-				physical_records_fac.update($scope.patient, $scope.physicalRecord);
-			}
-
-			$scope.showPhysModal = !$scope.showPhysModal ;
-		};
-
-		$scope.removePhysicalRecord = function(pRecord, index){
-			if(confirm("Are you sure?") ){
-				physical_records_fac.delete($scope.patient, pRecord, index);
-			}
-		};
-
-		//Pagination Function
-		$scope.query = {
-	 	   order: 'physicalRecord.date',
-	 	   limit: 10,
-		    page: 1
-		};
-
+	    } 	;
+	    
 		$scope.onpagechange = function(page, limit) {
 		    var deferred = $q.defer();
 		    

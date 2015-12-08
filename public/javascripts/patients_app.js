@@ -540,7 +540,6 @@ app.controller('InfoCtrl', [
 		      	// $scope.patient.blood_type = "A";
 		      	$scope.bloodList = ["A","B","AB","O"];
 	    		$scope.genderList = [{abb:"M",gen:"ชาย"},{abb:"F",gen:"หญิง"}];
-		      	console.log("Update profile!");
 		      	$scope.submitProfile = function(){
 		        	if ($scope.patient.firstname !== null &&
 		        		$scope.patient.lastname !== null &&
@@ -550,7 +549,7 @@ app.controller('InfoCtrl', [
 		        		$scope.patient.ssn !== null &&
 		        		$scope.patient.blood_type !== null &&
 		        		$scope.patient.birthdate !== null &&
-		        		$scope.patient.tel_number !== null
+		        		$scope.patient.telNum !== null
 		        		){
 							$mdDialog.hide($scope.patient);}
 		      	};
