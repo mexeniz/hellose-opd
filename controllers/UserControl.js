@@ -33,36 +33,7 @@ module.exports.login = function(req, username, password, done) {
 			query.isAdmin = true;
 	}
 
-	/*
-	User.findOne(query, 
-		function(err, user) {
-			// In case of any error, return using the done method
-			if(!user)
-			{
-				return done(null, false, req.flash('message', 'User not found'));
-
-			}
-			else
-			{
-				// Check password
-				if(!user.validPassword(password))
-				{
-					console.log('Invalid Password');
-					return done(null, false, req.flash('message', 'Invalid Password'));
-				}
-				
-				// User and password both match, return user from 
-				// done method which will be treated like success
-				//user.aa = "aa";
-				//console.log(user);
-
-				// Set role
-				req.session.role = role;
-				return done(null, user, req.flash('message', role));
-			}
-			
-		}
-	);*/
+	// Find
 
 	User.findOne(query)
 	.then(
@@ -70,13 +41,13 @@ module.exports.login = function(req, username, password, done) {
 		if(!user)
 		{
 			console.log('User not found');
-			return done(null, false, req.flash('message', 'User not found'));
+			return done(null, false, req.flash('message', 'ไม่พบบัญชีผู้ใช้นี้'));
 		}
 		// Check password
 		if(!user.validPassword(password))
 		{
 			console.log('Invalid Password');
-			return done(null, false, req.flash('message', 'Invalid Password'));
+			return done(null, false, req.flash('message', 'รหัสผ่านไม่ถูกต้อง'));
 		}
 		
 		// User and password both match, return user from 
@@ -89,7 +60,7 @@ module.exports.login = function(req, username, password, done) {
 			Patient.findOne({ userId: user._id }, function(err, patient)
 			{
 				if(err || !patient) {
-					return done(null, false, req.flash('message', 'Not found patient data'));
+					return done(null, false, req.flash('message', 'ไม่พบข้อมูลผู้ป่วย'));
 				}
 				req.session.patient_id = patient._id;
 				console.log(req.session.patient_id);
@@ -103,7 +74,7 @@ module.exports.login = function(req, username, password, done) {
 			{
 				console.log(doctor);
 				if(err || !doctor) {
-					return done(null, false, req.flash('message', 'Not found doctor data'));
+					return done(null, false, req.flash('message', 'ไม่พบข้อมูลแพทย์'));
 				}
 				req.session.doctor_id = doctor._id;
 				console.log(req.session.doctor_id);
@@ -291,43 +262,20 @@ module.exports.register = function(req, username, password, done) {
 		    }
 		    // already exists
 		    if (user) {
-
-				// Check if old patient
-				Patient.findOne( { 'userId': user._id }, function(err, patient) {
-					// Found patient data
-					if(patient)
-					{
-						return done(null, false, 
-				 		req.flash('message', 'มีผู้ใช้บัญชีนี้แล้ว'));
-					}
-					else // Not found patient data
-					{
-						// create patient data
-			            var newPatient = new Patient();
-			            newPatient.userId = newUser;
-
-			            // Get next patient id
-			            var pat_id = n + '';
-			            var size = 8;
-		    			while (pat_id.length < size) {
-		    				pat_id = '0' + pat_id;
-		    			}
-
-			            newPatient.patient_id = pat_id;
-			            newPatient.blood_type = req.body.blood_type;
-					    newPatient.save(function(err) {
-					    	if (err){
-					          console.log('Error in Saving patient: '+err);  
-					          req.flash('message','Error in Saving patient: '+err);
-					        }
-					    	console.log('User Registration successful');    
-					    	// Set role as patient
-							req.session.role = '1';
-					    	return done(null, newUser);
-					    });
-					}
-				});
-
+		    	if(user.username === username)
+		    	{
+		    		return done(null, false, 
+				 		req.flash('message', 'มีผู้ใช้งาน Username นี้แล้ว'));
+		    	}
+		    	else if(user.ssn === ssn)
+		    	{
+		    		return done(null, false, 
+				 		req.flash('message', 'มีผู้ใช้งานรหัสบัตรประชาชนนี้แล้ว'));
+		    	} else
+		    	{
+		    		return done(null, false, 
+				 		req.flash('message', 'มีผู้ใช้งานอีเมลนี้แล้ว'));
+		    	}
 		    } else {
 		      // if there is no user data
 		      // create the user
@@ -355,8 +303,8 @@ module.exports.register = function(req, username, password, done) {
 		        // Count all patient number
 		        Patient.count({}, function(err, n) {
 		        	if(err) {
-		        		console.log('Error in Saving user: '+err);  
-		          		req.flash('message','Error in Saving user: '+err);
+		        		console.log('Error in counting patients: '+err);  
+		          		return done(null, false, req.flash('message', 'Error in counting patient: '+err));
 		        	}
 
 		        	// create patient data
@@ -377,7 +325,7 @@ module.exports.register = function(req, username, password, done) {
 		            newPatient.save(function(err, pat) {
 		            	if (err){
 			              console.log('Error in Saving patient: '+err);  
-			              req.flash('message','Error in Saving patient: '+err);
+			              return done(null, false, req.flash('message', 'Error in Saving patient: '+err));
 			            }
 		            	console.log('User Registration successful');
 		            	// Set role as patient

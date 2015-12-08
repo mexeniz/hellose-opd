@@ -9,8 +9,20 @@ app.controller('LoginCtrl', [
 	'$http',
 	function($scope , $window ,$stateParams,$http){
 	 	$scope.loginSubmit = function() {
-	 		console.log("email : " + this.email + " pw : "+ this.password);
-			$window.location = "/home" ;
+      console.log('Logging in');
+      $http.post('/login', { username: $scope.username, password: $scope.password })
+        .success(function(data)
+        {
+          if(data.status === 'failed')
+          {
+            if(data.message.length > 0)
+              $scope.message = data.message[0];
+          }
+          else
+          {
+            $window.location.href = "/home";
+          }
+        });
 		};
 
 		$scope.showRegModal = false;

@@ -46,11 +46,16 @@ router.get('/login', function(req, res, next) {
 });
 
 /* Handle Login POST */
-router.post('/login', passport.authenticate('login', {
-  successRedirect: '/home',
-  failureRedirect: '/login',
-  failureFlash : true,
-}));
+router.post('/login', function(req, res, next) {
+  passport.authenticate('login', function(err, user, info) {
+    if(err) { return res.json({status: 'failed', message: 'เกิดข้อผิดพลาด ไม่สามารถเข้าสู่ระบบได้ในขณะนี้'}); }
+    if(!user) { return res.json({status: 'failed', message: req.flash('message')}); }
+    req.logIn(user, function(err) {
+      if (err) { res.json({status: 'failed', message: 'เกิดข้อผิดพลาด ไม่สามารถเข้าสู่ระบบได้ในขณะนี้'}); }
+        return res.json({status:'success'});
+    });
+  })(req, res, next);
+});
 
 /* Handle Logout */
 router.get('/logout', function(req, res) {
