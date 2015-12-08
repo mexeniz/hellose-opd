@@ -8,7 +8,7 @@ app.controller('LoginCtrl', [
 	'$stateParams', 
 	'$http',
 	function($scope , $window ,$stateParams,$http){
-    $scope.role = 1;
+    $scope.role = '1';
 	 	$scope.loginSubmit = function() {
       console.log('Logging in');
       $http.post('/login', { username: $scope.username, password: $scope.password, role: $scope.role })
