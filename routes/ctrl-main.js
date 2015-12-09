@@ -830,7 +830,7 @@ router.get('/user', function(req, res, next) {
 
 // List all user post
 router.get('/store/user', function(req, res, next) {
-  //if(req.user && req.session.role === '6') {
+  if(req.user && req.session.role === '6') {
     UserControl.listUser(function(err, result) {
       if(err) {
         res.json({result: 'Error'});
@@ -839,43 +839,50 @@ router.get('/store/user', function(req, res, next) {
         res.json(result);
       }
     });
-  //}
+  }
+  res.redirect('/login');
   //res.json({result: 'You cannot access this data'});
 });
 
 // Update user
 router.post('/user/:userId', function(req, res, next) {
-  var user_id = req.params.userId;
-  var role = {};
-  role.isPatient = req.body.isPatient;
-  role.isDoctor = req.body.isDoctor;
-  role.isStaff = req.body.isStaff;
-  role.isPharmacist = req.body.isPharmacist;
-  role.isNurse = req.body.isNurse;
-  if(role.isDoctor) {
-    role.department = req.body.department;
+  if(req.user && req.session.role === '6') {
+    var user_id = req.params.userId;
+    var role = {};
+    role.isPatient = req.body.isPatient;
+    role.isDoctor = req.body.isDoctor;
+    role.isStaff = req.body.isStaff;
+    role.isPharmacist = req.body.isPharmacist;
+    role.isNurse = req.body.isNurse;
+    if(role.isDoctor) {
+      role.department = req.body.department;
+    }
+    UserControl.updateUser(user_id, role, function(err, result) {
+      if (err) {
+        res.json({result: 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
   }
-  UserControl.updateUser(user_id, role, function(err, result) {
-    if (err) {
-      res.json({result: 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  res.redirect('/login');
 });
 
 // Delete user
 router.post('/user/:userId/delete', function(req, res, next) {
-  var user_id = req.params.userId;
-  UserControl.deleteUser(user_id, function(err, result) {
-    if (err) {
-      res.json({result: 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var user_id = req.params.userId;
+    UserControl.deleteUser(user_id, function(err, result) {
+      if (err) {
+        res.json({result: 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 //List Medicine
@@ -888,54 +895,66 @@ router.get('/medicine', function(req, res, next) {
 
 // List medicine backend
 router.get('/store/medicine', function(req, res, next) {
-  MedicineControl.getMedicine(function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    MedicineControl.getMedicine(function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Add medicine
 router.post('/medicine/add', function(req, res, next) {
-  var name = req.body.name;
-  MedicineControl.addMedicine(name, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var name = req.body.name;
+    MedicineControl.addMedicine(name, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Delete Medicine
 router.post('/medicine/:medId/delete', function(req, res, next) {
-  var med_id = req.params.medId;
-  MedicineControl.deleteMedicine(med_id, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json({result : 'Success'});
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var med_id = req.params.medId;
+    MedicineControl.deleteMedicine(med_id, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json({result : 'Success'});
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Update Medicine
 router.post('/medicine/:medId/edit', function(req, res, next) {
-  var med_id = req.params.medId;
-  var name = req.body.name;
-  MedicineControl.updateMedicine(med_id, name, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var med_id = req.params.medId;
+    var name = req.body.name;
+    MedicineControl.updateMedicine(med_id, name, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // List disease
@@ -948,58 +967,70 @@ router.get('/disease', function(req, res, next) {
 
 // List disease backend
 router.get('/store/disease', function(req, res, next) {
-  DiseaseControl.getDisease(function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    DiseaseControl.getDisease(function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Add disease
 router.post('/disease/add', function(req, res, next) {
-  var dis_id_type = req.body.disease_id_type;
-  var dis_id = req.body.disease_id;
-  var dis_name = req.body.name;
-  DiseaseControl.addDisease(dis_id_type, dis_id, dis_name, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var dis_id_type = req.body.disease_id_type;
+    var dis_id = req.body.disease_id;
+    var dis_name = req.body.name;
+    DiseaseControl.addDisease(dis_id_type, dis_id, dis_name, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Delete disease
 router.post('/disease/:disId/delete', function(req, res, next) {
-  var dis_id = req.params.disId;
-  DiseaseControl.deleteDisease(dis_id, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json({result : 'Success'});
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var dis_id = req.params.disId;
+    DiseaseControl.deleteDisease(dis_id, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json({result : 'Success'});
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Update Disease
 router.post('/disease/:disId/edit', function(req, res, next) {
-  var dis_unique_id = req.params.disId;
-  var dis_id_type = req.body.disease_id_type;
-  var dis_id = req.body.disease_id;
-  var dis_name = req.body.name;
-  DiseaseControl.updateDisease(dis_unique_id, dis_id_type, dis_id, dis_name, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var dis_unique_id = req.params.disId;
+    var dis_id_type = req.body.disease_id_type;
+    var dis_id = req.body.disease_id;
+    var dis_name = req.body.name;
+    DiseaseControl.updateDisease(dis_unique_id, dis_id_type, dis_id, dis_name, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 
@@ -1013,54 +1044,66 @@ router.get('/department', function(req, res, next) {
 
 // List department backend
 router.get('/store/department', function(req, res, next) {
-  DepartmentControl.getDepartment(function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    DepartmentControl.getDepartment(function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Add department
 router.post('/department/add', function(req, res, next) {
-  var name = req.body.name;
-  DepartmentControl.addDepartment(name, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var name = req.body.name;
+    DepartmentControl.addDepartment(name, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 // Delete Department
 router.post('/department/:deptId/delete', function(req, res, next) {
-  var dept_id = req.params.deptId;
-  DepartmentControl.deleteDepartment(dept_id, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json({result : 'Success'});
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var dept_id = req.params.deptId;
+    DepartmentControl.deleteDepartment(dept_id, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json({result : 'Success'});
+      }
+    });    
+  }
+  res.redirect('/login');
 });
 
 // Update Department
 router.post('/department/:deptId/edit', function(req, res, next) {
-  var dept_id = req.params.deptId;
-  var dept_name = req.body.name;
-  DepartmentControl.updateDepartment(dept_id, dept_name, function(err, result) {
-    if (err) {
-      res.json({result : 'Error'});
-    }
-    if (result) {
-      res.json(result);
-    }
-  });
+  if(req.user && req.session.role === '6') {
+    var dept_id = req.params.deptId;
+    var dept_name = req.body.name;
+    DepartmentControl.updateDepartment(dept_id, dept_name, function(err, result) {
+      if (err) {
+        res.json({result : 'Error'});
+      }
+      if (result) {
+        res.json(result);
+      }
+    });
+  }
+  res.redirect('/login');
 });
 
 
