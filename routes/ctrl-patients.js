@@ -53,7 +53,7 @@ router.put('/update/:patid', function(req, res, next) {
 // Physical Record for individual patient
 router.get('/info/:patid', function(req, res, next) {
   var id = req.params.patid;
-    Patient.findOne({patient_id: id})
+  Patient.findOne({patient_id: id})
           .populate('physical_record')
           .populate('medical_record')
           .populate('prescription_record')
@@ -136,14 +136,28 @@ router.get('/info_user/:patid', function(req, res, next) {
 
 });
 
-/*
-router.param('patient', function(req, res, next, id) {
-  Patient.findOne({patient_id : id} , function (err, patient){
-    if (err) { return next(err); }
-    if (!patient) { return next(new Error('can\'t find post')); }
-    console.log(patient) ;
-    req.patient = patient;
-    return next();
-  });
+// Update allergy
+router.post('/allergy/:patid', function(req, res, next) {
+  var id = req.params.patid;
+  Patient.findOne({patient_id: id})
+          .exec(function(err, patient) {
+              if(err) {
+                return res.json(500, {
+                    message: 'Error getting patient.'
+                });
+              }
+              if(!patient) {
+                  return res.json(404, {
+                      message: 'Patient not found!'
+                  });
+              }
+              patient.allergy = req.body ;
+              patient.save(function(err, patient2) {
+
+                if(err){ return next(err); }
+                res.json(patient2);
+
+              });
+
+          });
 });
-*/

@@ -17,12 +17,13 @@
 <!-- Content -->
 <md-content ng-controller="InfoCtrl" ng-init="init('<%= patient_id %>' , '<%= user_id %>')" flex layout-padding>
     <md-tabs md-dynamic-height md-border-bottom>
+
       <md-tab label="ข้อมูลส่วนตัว">
         <md-content class="md-padding">
           <div class="h1-th">ข้อมูลส่วนตัว
           <md-button class="md-fab md-primary" href="/appointment/create/{{patient._id + '/' + patient.firstname + '/' + patient.lastname}}">
             <md-icon md-font-library="material-icons">add</md-icon>
-          </md-button></div>
+          </md-button>
           </div>
           <md-list>
             <md-list-item class="md-2-line">
@@ -205,27 +206,23 @@
 
         </md-content>
       </md-tab>
-      <md-tab label="ประวัติการรับยา">
+       <md-tab label="ประวัติการรับยา">
         <md-content class="md-padding">
 
         <div class="h1-th">ประวัติการรับยา
           <md-button class="md-fab md-primary" ng-click="showPrescriptionForm($event)">
             <md-icon md-font-library="material-icons">add</md-icon>
-          </md-button></div>
+          </md-button>
+          </div>
+
         <md-card >
           <md-card >
             <md-card-content flex="50">
-              <md-list>
-                <md-list-item class="md-2-line">
-                  <md-icon md-font-library="material-icons">adb</md-icon>
-                  <div class="md-list-item-text">
-                    <div class="h1-th">ยาที่แพ้</div>
-                    <span class="h2-th" ng-repeat="al in allergy" >
-                      {{al+" "}} 
-                     </span>
-                  </div>
-                </md-list-item>
-              </md-list>
+              <md-icon md-font-library="material-icons">adb</md-icon>
+              <div class="md-list-item-text">
+                <div class="h1-th">ยาที่แพ้</div>
+                <md-chips ng-model="patient.allergy" readonly="false" md-on-add="updateAllergy()" md-on-remove="updateAllergy()"></md-chips>
+              </div>
             </md-card-content>
           </md-card>
            <md-data-table-container>
@@ -253,9 +250,7 @@
           <md-data-table-pagination md-limit="queryPres.limit" md-page="queryPres.page" md-total="{{patient.prescription_record.length}}" md-trigger="onpagechange"></md-data-table-pagination>
           </md-card>
 
-           </md-list>
         </md-content>
       </md-tab>
-      
     </md-tabs>
 </md-content>

@@ -1,4 +1,4 @@
-(function(){
+	(function(){
 var app = angular.module('doctor', ['ui.router', 'ngMaterial', 'materialCalendar'  ,'md.data.table']) ;
 
 // Angular Material Config
@@ -480,7 +480,7 @@ app.controller('InfoCtrl', [
 				$scope.patient.medical_record = data.medical_record ;
 				$scope.patient.prescription_record = data.prescription_record ;
 				$scope.patient._id = obj_id ; 
-				
+				$scope.patient.allergy = data.allergy ;
 				$scope.patient.birthdate = new Date(data.userId.birthdate);
 
 				$scope.patient.age = (function(){
@@ -826,7 +826,12 @@ app.controller('InfoCtrl', [
 			
 		};
 
-		$scope.allergy = ['Yakult' , 'Amphet' , 'Wappa' ];
+		//Allergy Functions
+		$scope.updateAllergy = function(){
+			$http.post('/patients/allergy/'+ $scope.patient.patient_id , $scope.patient.allergy).success(function(data){
+			});
+		};
+
 		
 		$scope.showPrescriptionForm = function(ev){
 		   var createPrescriptionCtrl = function($scope , medicineList){

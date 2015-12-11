@@ -236,6 +236,7 @@ app.controller('InfoCtrl', [
 				$scope.patient.medical_record = data.medical_record ;
 				$scope.patient.prescription_record = data.prescription_record ;
 				$scope.patient._id = obj_id ; 
+				$scope.patient.allergy = data.allergy ;
 				
 				$scope.patient.birthdate = new Date(data.userId.birthdate);
 

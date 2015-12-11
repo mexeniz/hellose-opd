@@ -126,9 +126,7 @@
                   <md-icon md-font-library="material-icons">adb</md-icon>
                   <div class="md-list-item-text">
                     <div class="h1-th">ยาที่แพ้</div>
-                    <span class="h2-th" ng-repeat="al in allergy" >
-                      {{al+" "}} 
-                     </span>
+                    <md-chips ng-model="patient.allergy" readonly="true" ></md-chips>
                   </div>
                 </md-list-item>
               </md-list>
